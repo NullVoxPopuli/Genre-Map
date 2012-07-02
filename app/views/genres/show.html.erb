@@ -23,3 +23,11 @@
 <%= link_to 'Edit', edit_genre_path(@genre) %> |
 <%= link_to 'Back', genres_path %>
 
+<br />
+<% if @genre.tracks.size > 0 %>
+  List of tracks currently associated with genre: <br /> <br />
+  <% @genre.tracks.each do |track| %>
+
+    <%= track.name %> | <%= track.artist.name %> <br />
+  <% end %>
+<% end %>

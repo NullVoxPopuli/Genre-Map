@@ -12,7 +12,7 @@
 				</span>
 			<% end %>
 			<div class="examples">
-				<% genre.tracks do |track| %>
+				<% genre.tracks.each do |track| %>
 					<div class="track">
 						<span class="attribute" data-attr="name">
 							<%= track.name %>

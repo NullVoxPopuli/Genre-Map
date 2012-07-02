@@ -4,10 +4,13 @@ class Genre < ActiveRecord::Base
   				  	:direct_influences, 
   				  	:name,
   				  	:aka,
+  				  	:track_ids,
   				  	:partial_influences, 
   				  	:time_of_inception
   				  	
-  	has_and_belongs_to_many :tracks
+  	has_and_belongs_to_many :tracks, 
+                            :join_table => 'genres_tracks',
+                            :foreign_key => "genre_id"
   	has_and_belongs_to_many :direct_influences,
                           	:class_name => 'Genre',
                           	:join_table => 'genres_direct_influences',

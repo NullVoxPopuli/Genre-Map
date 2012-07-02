@@ -3,7 +3,9 @@ class Track < ActiveRecord::Base
   					:link, 
   					:name
 
-  	has_and_belongs_to_many :genres
+  	has_and_belongs_to_many :genres,
+  							:join_table => "genres_tracks",
+  							:foreign_key => "track_id"
   	belongs_to :artist
 
   	validates_presence_of :artist_id

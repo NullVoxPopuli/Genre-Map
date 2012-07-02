@@ -27,8 +27,22 @@
     <%= f.label :cultural_origins %><br />
     <%= f.text_field :cultural_origins %>
   </div>
+  <% Track.all.each do |track| %>
+           <%= check_box_tag "genre[track_ids][]", "#{track.id}", @genre.tracks.include?(track) %> <%= track.name %> | <%= track.artist.name %>
+           <br />
+  <% end %>
+
 
   <div class="actions">
     <%= f.submit %>
   </div>
+<% end %>
+
+
+<% if @genre.tracks.size > 0 %>
+  List of tracks currently associated with genre: <br /> <br />
+  <% @genre.tracks.each do |track| %>
+
+    <%= track.name %> | <%= track.artist.name %> <br />
+  <% end %>
 <% end %>

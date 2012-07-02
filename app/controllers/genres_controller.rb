@@ -43,7 +43,6 @@ class GenresController < ApplicationController
   # POST /genres.json
   def create
     @genre = Genre.new(params[:genre])
-
     respond_to do |format|
       if @genre.save
         format.html { redirect_to @genre, notice: 'Genre was successfully created.' }
@@ -59,6 +58,7 @@ class GenresController < ApplicationController
   # PUT /genres/1.json
   def update
     @genre = Genre.find(params[:id])
+    ap params
 
     respond_to do |format|
       if @genre.update_attributes(params[:genre])
@@ -80,6 +80,18 @@ class GenresController < ApplicationController
     respond_to do |format|
       format.html { redirect_to genres_url }
       format.json { head :no_content }
+    end
+  end
+
+
+  def add_track
+    # updates songs based on artist selected
+    @genre = Genre.find(params[:id])
+    track = Track.find(params[:track_id])
+    @tracks  = @genre.tracks
+
+    render :update do |page|
+      page.replace_html 'examples', :partial => 'tracks'
     end
   end
 end
