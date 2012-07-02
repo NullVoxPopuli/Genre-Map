@@ -16,6 +16,10 @@ html, body{
 	margin: 0px;
 }
 .toolbar {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	right: 0px;
 	background: #2d2d2d;
 	padding: 5px;
 	border-bottom: 1px solid black;
@@ -54,6 +58,38 @@ html, body{
 	box-shadow: 
 		0 1px 3px rgba(150,150,255,0.5);}
 
+.genre{
+	margin: 30px;
+	border: 1px solid #E5E5E5;
+	display: inline-block;
+	background: #f4f4f4;
+	-webkit-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+-moz-box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+.genre .attribute[data-attr="name"]{
+	padding: 5px;
+		cursor: pointer;
+
+}
+.genre.active .attribute[data-attr="name"]{
+	background: #55B7C8;
+	color: white;
+	font-weight: bold;
+}
+.genre .details{
+	padding: 5px;
+}
+.genre.active .details{
+	background: white;
+}
+.genre .details,
+.genre .theater {
+	display: none;
+}
+.genre .examples .track{
+	display: table;
+}
 .genre .attribute{
 	display: block;
 }
@@ -73,3 +109,24 @@ html, body{
 .examples{
 	padding: 10px;
 }
+.track{
+	cursor:pointer;
+	padding: 3px;
+	border-bottom: 1px solid silver;
+
+}
+.track_list {
+	border-top: 1px solid silver;
+}
+.track:hover{
+	background: #e9e9e9;
+}
+.track .name{
+	width: 200px;
+	display: inline-block;
+}
+.track .artist{
+	width: 150px;
+	display: inline-block;
+}
+

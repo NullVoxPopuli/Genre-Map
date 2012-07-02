@@ -5,26 +5,41 @@
 
 <div class="genres">
 	<% @genres.each do |genre| %>
-		<span class="genre">
-			<% genre.attributes.each do |attr, value| %>
-				<span class="attribute" data-attr="<%= attr %>">
-					<%= value %>
+		<div class="genre">
+			<span class="attribute" data-attr="name">
+				<%= genre.name %>
+			</span>
+			<div class="details">
+				<span class="attribute" data-attr="aka">
+					<%= genre.aka %>
 				</span>
-			<% end %>
-			<div class="examples">
-				<% genre.tracks.each do |track| %>
-					<div class="track">
-						<span class="attribute" data-attr="name">
-							<%= track.name %>
-						</span> | 
-						<span class="attribute" data-attr="artist">
-							<%= track.artist.name %>
-						</span>
-						<iframe width="853" height="480" src="<%= track.url.gsub("watch?v=", "embed/") %>" frameborder="0" allowfullscreen></iframe>
+				<span class="attribute" data-attr="description">
+					<%= genre.description %>
+				</span>
+				<br />
+				<span class="instructions">
+					Click a track to listen to this genre:
+				</span>
+
+				<div class="examples">
+					<div class="track_list">
+						<% genre.tracks.each do |track| %>
+							<span class="track" data-embed-url="<%= track.url.gsub("watch?v=", "embed/") %>">
+								<span class="name">
+									<%= track.name %>
+								</span> |
+								<span class="artist">
+									<%= track.artist.name %>
+								</span>
+							</span>
+						<% end %>
 					</div>
-				<% end %>
+				</div>
+				<div class="theater">
+
+				</div>
 			</div>
-		</span> 
+		</div> 
 	<% end %>
 </div>
 

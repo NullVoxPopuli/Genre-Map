@@ -13,3 +13,35 @@
 //= require jquery
 //= require jquery_ujs
 //= require_tree .
+$(function(){
+	$(".genre > .attribute[data-attr='name']").click(function(){
+		var parent = $(this).parent();
+		if (parent.hasClass("active")){
+			parent.find(".details").hide();
+			parent.removeClass("active");
+			// remove the theater iframe we don't use a ton of ram
+			parent.find(".theater").html("");
+		} else {
+			$(this).parent().find(".details").show();
+			$(this).parent().addClass("active");
+		}
+	});
+	$(".track").click(function(){
+		var theater = $(this).closest(".genre").find(".theater");
+		var theaterFrame = document.createElement("iframe");
+
+		var tF = $(theaterFrame);
+		tF.attr({
+			"width": 853,
+			"height": 480,
+			"frameborder": 0,
+			"allowfullscreen":"",
+			"src": $(this).attr("data-embed-url") + "?autoplay=1"
+		});
+
+		theater.html(tF);
+		theater.show();
+
+
+	});
+});
