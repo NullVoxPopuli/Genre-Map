@@ -58,7 +58,6 @@ class GenresController < ApplicationController
   # PUT /genres/1.json
   def update
     @genre = Genre.find(params[:id])
-    ap params
 
     respond_to do |format|
       if @genre.update_attributes(params[:genre])

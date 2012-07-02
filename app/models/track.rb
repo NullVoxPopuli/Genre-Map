@@ -11,4 +11,7 @@ class Track < ActiveRecord::Base
   	validates_presence_of :artist_id
   	validates_presence_of :name
   	validates_presence_of :link
+
+  	def url; self.link; end
+  	def youtube; self.link; end
 end

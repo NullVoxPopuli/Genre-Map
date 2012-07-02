@@ -54,7 +54,22 @@ html, body{
 	box-shadow: 
 		0 1px 3px rgba(150,150,255,0.5);}
 
-.attribute{
+.genre .attribute{
 	display: block;
 }
+.examples .attribute{
+	display: inline;
+}
 
+.attribute[data-attr="id"]{
+	display: none;
+}
+.attribute[data-attr="name"]{
+
+}
+.attribute[data-attr="description"]{
+
+}
+.examples{
+	padding: 10px;
+}

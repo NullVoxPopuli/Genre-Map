@@ -16,10 +16,11 @@
 					<div class="track">
 						<span class="attribute" data-attr="name">
 							<%= track.name %>
-						</span>
+						</span> | 
 						<span class="attribute" data-attr="artist">
 							<%= track.artist.name %>
 						</span>
+						<iframe width="853" height="480" src="<%= track.url.gsub("watch?v=", "embed/") %>" frameborder="0" allowfullscreen></iframe>
 					</div>
 				<% end %>
 			</div>
