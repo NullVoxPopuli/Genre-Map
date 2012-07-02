@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @genre.name %>
+</p>
+
+<p>
+  <b>Description:</b>
+  <%= @genre.description %>
+</p>
+
+<p>
+  <b>Time of inception:</b>
+  <%= @genre.time_of_inception %>
+</p>
+
+<p>
+  <b>Cultural origins:</b>
+  <%= @genre.cultural_origins %>
+</p>
+
+<%= link_to 'Edit', edit_genre_path(@genre) %> |
+<%= link_to 'Back', genres_path %>
+

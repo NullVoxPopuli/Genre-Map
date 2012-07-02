@@ -1,0 +1,29 @@
+<div class="search_container">
+	<%= text_field_tag 'search', nil, :placeholder => 'Search...' %>
+</div>
+
+
+<div class="genres">
+	<% @genres.each do |genre| %>
+		<span class="genre">
+			<% genre.attributes.each do |attr, value| %>
+				<span class="attribute" data-attr="<%= attr %>">
+					<%= value %>
+				</span>
+			<% end %>
+			<div class="examples">
+				<% genre.tracks do |track| %>
+					<div class="track">
+						<span class="attribute" data-attr="name">
+							<%= track.name %>
+						</span>
+						<span class="attribute" data-attr="artist">
+							<%= track.artist.name %>
+						</span>
+					</div>
+				<% end %>
+			</div>
+		</span> 
+	<% end %>
+</div>
+

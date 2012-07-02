@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GenreMap</title>
+  <%= stylesheet_link_tag    "application", :media => "all" %>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+
+<div class="toolbar">
+	<% @toolbar.each do |item, path| %>
+		<span class="toolbar_item">
+			<%= link_to item, path %>
+		</span>
+	<% end %>
+</div>
+
+
+<%= yield %>
+
+</body>
+</html>
