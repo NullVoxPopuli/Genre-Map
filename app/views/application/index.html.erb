@@ -22,18 +22,18 @@
 				</span>
 
 				<div class="examples">
-					<div class="track_list">
+					<table class="track_list">
 						<% genre.tracks.each do |track| %>
-							<span class="track" data-embed-url="<%= track.url.gsub("watch?v=", "embed/") %>">
-								<span class="name">
+							<tr class="track" data-embed-url="<%= track.url.gsub("watch?v=", "embed/") %>">
+								<td class="name">
 									<%= track.name %>
-								</span> |
-								<span class="artist">
+								</td>
+								<td class="artist">
 									<%= track.artist.name %>
-								</span>
-							</span>
+								</td>
+							</tr>
 						<% end %>
-					</div>
+					</table>
 				</div>
 				<div class="theater">
 
