@@ -1,45 +1,13 @@
+<script type="text/javascript">
+	var genres = <%= @genres.html_safe %>;
+</script>
+
+<%= javascript_include_tag "genre-map" %>
+
+
 <div class="search_container">
 	<%= text_field_tag 'search', nil, :placeholder => 'Search...' %>
 </div>
 
 
-<div class="genres">
-	<% @genres.each do |genre| %>
-		<div class="genre">
-			<span class="attribute" data-attr="name">
-				<%= genre.name %>
-			</span>
-			<div class="details">
-				<span class="attribute" data-attr="aka">
-					<%= genre.aka %>
-				</span>
-				<span class="attribute" data-attr="description">
-					<%= genre.description %>
-				</span>
-				<br />
-				<span class="instructions">
-					Click a track to listen to this genre:
-				</span>
-
-				<div class="examples">
-					<table class="track_list">
-						<% genre.tracks.each do |track| %>
-							<tr class="track" data-embed-url="<%= track.url.gsub("watch?v=", "embed/") %>">
-								<td class="name">
-									<%= track.name %>
-								</td>
-								<td class="artist">
-									<%= track.artist.name %>
-								</td>
-							</tr>
-						<% end %>
-					</table>
-				</div>
-				<div class="theater">
-
-				</div>
-			</div>
-		</div> 
-	<% end %>
-</div>
-
+<canvas id="viewport" width="1000" height="600" style="position: relative; top: 0px; bottom: 0px; right: 0px; left: 0px;"></canvas>

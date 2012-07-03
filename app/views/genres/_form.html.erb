@@ -31,6 +31,12 @@
            <%= check_box_tag "genre[track_ids][]", "#{track.id}", @genre.tracks.include?(track) %> <%= track.name %> | <%= track.artist.name %>
            <br />
   <% end %>
+<br/>
+  Direct Influences <br/>
+  <% Genre.all.each do |g| %>
+           <%= check_box_tag "genre[direct_influence_ids][]", "#{g.id}", @genre.direct_influences.include?(g) %> <%= g.name %> 
+           <br />
+  <% end %>
 
 
   <div class="actions">

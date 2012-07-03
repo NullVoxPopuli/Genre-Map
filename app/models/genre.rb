@@ -1,7 +1,7 @@
 class Genre < ActiveRecord::Base
   	attr_accessible :cultural_origins, 
   				  	:description, 
-  				  	:direct_influences, 
+  				  	:direct_influence_ids, 
   				  	:name,
   				  	:aka,
   				  	:track_ids,
@@ -24,4 +24,15 @@ class Genre < ActiveRecord::Base
 
 
     validates_presence_of :name
+
+    def as_json(options = {})
+      self.attributes.merge({
+        :direct_influences => self.direct_influence_ids,
+        :tracks => self.tracks.map {|t|
+          t.attributes.merge!({
+            :artist => t.artist.attributes
+          })
+        }
+      })
+    end
 end

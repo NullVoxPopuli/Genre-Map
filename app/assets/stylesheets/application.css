@@ -69,8 +69,13 @@ box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 .genre .attribute[data-attr="name"]{
 	padding: 5px;
-		cursor: pointer;
-
+	cursor: pointer;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;	
 }
 .genre.active .attribute[data-attr="name"]{
 	background: #55B7C8;

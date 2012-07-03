@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
  	before_filter :create_toolbar
 
  	def index
- 		@genres = Genre.all
+ 		@genres = Genre.all.as_json.to_json
  	end
 
 protected
