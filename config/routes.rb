@@ -1,4 +1,7 @@
 GenreMap::Application.routes.draw do
+  devise_for :users
+  devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
+  match "users/auth/google/callback" => "users/omniauth_callbacks#google"
   resources :artists
 
   resources :tracks

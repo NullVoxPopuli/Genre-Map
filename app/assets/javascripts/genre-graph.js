@@ -125,10 +125,10 @@ function getSizeForCanvas(){
   var h = $(window).height();
   var x = 0;
   var y = 0;
-  var toolbar_visible = toolbar.is(":visible");
-  var sidebar_visible = sidebar.is(":visible");
-  if (toolbar_visible) x = sidebar_width;
-  if (sidebar_visible) y = toolbar_height
+  var toolbar_visible = typeof(toolbar) == "undefined" ? false : toolbar.is(":visible");
+  var sidebar_visible = typeof(sidebar) == "undefined" ? false : sidebar.is(":visible");
+  if (sidebar_visible) x = sidebar_width;
+  if (toolbar_visible) y = toolbar_height
   return {
     x: x,
     y: y,
@@ -156,7 +156,7 @@ var force = d3.layout.force()
     .links(links)
     .size([w, h])
     .linkDistance(80)
-    .charge(-400)
+    .charge(-1000)
     .on("tick", tick)
     .start();
 

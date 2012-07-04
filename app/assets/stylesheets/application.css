@@ -123,6 +123,11 @@ text.shadow {
 .information .disclaimer .claimer{
 
 }
+.information .signin{
+	position: absolute;
+	bottom: 20px;
+	left: 20px;
+}
 .graph_container{
 	position: fixed;
 	top: 30px;

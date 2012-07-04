@@ -72,6 +72,12 @@
 			=D
 		</div>
 	</div>
+	<% unless user_signed_in? %>
+		<div class="signin">
+			<%= link_to "Sign In", new_user_session_path %> | 
+			<%= link_to "sign in with google", user_omniauth_authorize_path(:google), :method => :post %>
+		</div>
+	<% end %>
 </div>
 
 

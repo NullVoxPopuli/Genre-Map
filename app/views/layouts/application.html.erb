@@ -7,14 +7,22 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
+<p class="notice"><%= notice %></p>
+<p class="alert"><%= alert %></p>
 
-<div class="toolbar">
-	<% @toolbar.each do |item, path| %>
+<% if user_signed_in? %>
+	<div class="toolbar">
+		<% @toolbar.each do |item, path| %>
+			<span class="toolbar_item">
+				<%= link_to item, path %>
+			</span>
+		<% end %>
+		<span width="70px"></span>
 		<span class="toolbar_item">
-			<%= link_to item, path %>
+			<%= link_to "Sign Out", destroy_user_session_path, :method => :delete %>
 		</span>
-	<% end %>
-</div>
+	</div>
+<% end %>
 
 
 <%= yield %>
