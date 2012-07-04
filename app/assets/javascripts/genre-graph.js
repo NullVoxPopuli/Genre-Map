@@ -1,10 +1,81 @@
+var FADE_OUT_SPEED = 200;
+var VIDEO_PLAYER_WIDTH = 853;
+var VIDEO_PLAYER_HEIGHT = 480;
+
 $(function(){
-// http://blog.thomsonreuters.com/index.php/mobile-patent-suits-graphic-of-the-day/
+
+/*
+  Interface Code
+*/
 
 var toolbar = $(".toolbar"); 
 var sidebar = $(".information");
 var toolbar_height = toolbar.outerHeight();
 var sidebar_width = sidebar.outerWidth();
+
+$(".genre > .attribute[data-attr='name']").click(function(){
+  var parent = $(this).parent();
+  if (parent.hasClass("active")){
+    parent.find(".details").hide();
+    parent.removeClass("active");
+    // remove the theater iframe we don't use a ton of ram
+    $(".theater").html("");
+  } else {
+    $(this).parent().find(".details").show();
+    $(".genre").removeClass("active");
+    $(this).parent().addClass("active");
+  }
+});
+$(".track").click(function(){
+  var theater = $(this).closest(".genre").find(".theater");
+  var theaterFrame = document.createElement("iframe");
+
+  var tF = $(theaterFrame);
+  tF.attr({
+    "width": VIDEO_PLAYER_WIDTH,
+    "height": VIDEO_PLAYER_HEIGHT,
+    "frameborder": 0,
+    "allowfullscreen":"",
+    "src": $(this).attr("data-embed-url") + "?autoplay=1"
+  });
+
+  theater.html(tF);
+  theater.show();
+
+
+});
+
+$(".interface_options .hide").click(function(){
+  if (toolbar.is(":visible") || (sidebar.is(":visible"))){
+      toolbar.fadeOut(FADE_OUT_SPEED);
+      sidebar.fadeOut(FADE_OUT_SPEED);
+      $(this).text("Show Interface")
+  } else {
+    toolbar.fadeIn(FADE_OUT_SPEED);
+    sidebar.fadeIn(FADE_OUT_SPEED);
+    $(this).text("Hide Interface")
+  }
+  setTimeout(resizeSVG, 250);
+});
+
+function resizeSVG(){
+  var size = getSizeForCanvas();
+  $("svg").animate({
+    "top": size.y,
+    "left": size.x,
+    "width": size.w,
+    "height": size.h
+  });
+}
+
+$(window).resize(resizeSVG);
+
+/*
+  Graph Code
+
+*/
+// http://blog.thomsonreuters.com/index.php/mobile-patent-suits-graphic-of-the-day/
+
 
 function getSizeForCanvas(){
   var w = $(window).width();
@@ -41,22 +112,17 @@ var force = d3.layout.force()
     .nodes(d3.values(nodes))
     .links(links)
     .size([w, h])
-    .linkDistance(60)
+    .linkDistance(80)
     .charge(-300)
     .on("tick", tick)
     .start();
 
-var svg = d3.select("body").append("svg:svg")
-    .attr("width", w)
-    .attr("height", h);
-$("svg").css({
-  "top": y,
-  "left": x
-});
+var svg = d3.select("body").append("svg:svg");
+resizeSVG();
 
 // Per-type markers, as they don't inherit styles.
 svg.append("svg:defs").selectAll("marker")
-    .data(["suit", "licensing", "resolved"])
+    .data(categories)
   .enter().append("svg:marker")
     .attr("id", String)
     .attr("viewBox", "0 -5 10 10")

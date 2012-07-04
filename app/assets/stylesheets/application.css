@@ -22,6 +22,7 @@
 html, body{
 	padding: 0px;
 	margin: 0px;
+	background: white;
 }
 .debug_panel{
 	position:fixed;
@@ -55,6 +56,7 @@ html, body{
 
   svg{
   	position: fixed;
+  	z-index: 0;
   }
 
 path.link {
@@ -63,20 +65,21 @@ path.link {
   stroke-width: 1.5px;
 }
 
-marker#licensing {
-  fill: green;
+marker#trance {
+  fill: lightblue;
 }
 
-path.link.licensing {
-  stroke: green;
+path.link.direct {
+  stroke: black;
 }
 
-path.link.resolved {
+path.link.partial {
   stroke-dasharray: 0,2 1;
+  stroke: black;
 }
 
 circle {
-  fill: #ccc;
+  fill: #ddd;
   stroke: #333;
   stroke-width: 1.5px;
 }
@@ -114,6 +117,16 @@ text.shadow {
 	-moz-box-shadow: 0 4px 16px rgba(0,0,0,0.2);
 	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
+.information .author {
+	display: block;
+	padding-left: 40px;
+}
+.information .disclaimer {
+	margin-top: 40px;
+}
+.information .disclaimer .claimer{
+	
+}
 .graph_container{
 	position: fixed;
 	top: 30px;
@@ -140,7 +153,6 @@ text.shadow {
 	color: gray;
 	background: none;
 }
-
 .search_container input[type="text"] {
 	border: 1px solid #D9D9D9;
 	border-bottom: 1px solid silver;
@@ -150,6 +162,7 @@ text.shadow {
 	width: 250px;
 	outline: none;
 	position: fixed;
+	z-index: 1;
 	top: 20px;
 	right: 20px;
 }
@@ -162,6 +175,28 @@ text.shadow {
 	box-shadow: 
 		0 1px 3px rgba(150,150,255,0.5);}
 
+.interface_options{
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	z-index: 1;
+
+}
+.interface_options a{
+	background: #55B7C8;
+	color: white;
+	font-weight: bold;
+	padding: 5px;
+	text-decoration: none;
+	border: 1px solid #D9D9D9;
+	color: white;
+	border-bottom: 1px solid silver;
+}
+.interface_options a:hover,
+.interface_options a:active{
+	background: #45a7b8;
+	color: white;
+}
 /*
 	END DOM LAYOUT
 */

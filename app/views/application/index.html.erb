@@ -1,6 +1,7 @@
 <script type="text/javascript">
 	var genres = <%= @data.html_safe %>;
 	var links = <%= @connections.html_safe %>;
+	var categories = [];// ["trance", "techno", etc]
 </script>
 
 <div class="debug_panel">
@@ -11,11 +12,24 @@
 <div class="search_container">
 	<%= text_field_tag 'search', nil, :placeholder => 'Search...' %>
 </div>
+<div class="interface_options">
+	<a href="#" class="hide">Hide Interface</a>
+</div>
+
+
+<div class="theater_container">
+
+	<div class="theater">
+
+	</div>
+</div>
+
 
 <div class="information">
 	<div class="welcome">
 		<h2>Electronic Music Genre Graph</h2>
 		<div class="authors">
+			By:
 			<span class="author">
 				L. Preston Sego III
 			</span>
@@ -28,6 +42,12 @@
 		</div>
 	</div>
 	<div class="disclaimer">
-		Disclaimer:
+		<h4>Disclaimer:</h4>
+		<div class="claimer">
+			We don't claim any of these relationships or examples of genres to be fact. But since we know more than you do (the reason why you are here), it's best you just take our word for it. <br />
+			=D
+		</div>
 	</div>
 </div>
+
+
