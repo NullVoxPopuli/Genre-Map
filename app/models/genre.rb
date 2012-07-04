@@ -40,15 +40,15 @@ class Genre < ActiveRecord::Base
       result = []
       self.direct_influence_ids.each { |d_id|
         result << {
-          :source => self[:id],
-          :target => d_id,
+          :source => d_id,
+          :target => self[:id],
           :type => "direct" 
         }
       }
       self.partial_influence_ids.each { |p_id|
         result << {
-          :source => self[:id],
-          :target => d_id,
+          :source => d_id,
+          :target => self[:id],
           :type => "partial" 
         } 
       }

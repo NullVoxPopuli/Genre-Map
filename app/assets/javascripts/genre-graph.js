@@ -12,6 +12,7 @@ var toolbar = $(".toolbar");
 var sidebar = $(".information");
 var toolbar_height = toolbar.outerHeight();
 var sidebar_width = sidebar.outerWidth();
+var genre_details = $(".genre_details");
 
 $(".genre > .attribute[data-attr='name']").click(function(){
   var parent = $(this).parent();
@@ -26,23 +27,9 @@ $(".genre > .attribute[data-attr='name']").click(function(){
     $(this).parent().addClass("active");
   }
 });
-$(".track").click(function(){
-  var theater = $(this).closest(".genre").find(".theater");
-  var theaterFrame = document.createElement("iframe");
 
-  var tF = $(theaterFrame);
-  tF.attr({
-    "width": VIDEO_PLAYER_WIDTH,
-    "height": VIDEO_PLAYER_HEIGHT,
-    "frameborder": 0,
-    "allowfullscreen":"",
-    "src": $(this).attr("data-embed-url") + "?autoplay=1"
-  });
-
-  theater.html(tF);
-  theater.show();
-
-
+$(".genre_details .close").click(function(){
+  $(".genre_details").fadeOut(FADE_OUT_SPEED);
 });
 
 $(".interface_options .hide").click(function(){
@@ -66,6 +53,62 @@ function resizeSVG(){
     "width": size.w,
     "height": size.h
   });
+}
+
+function setTheaterForURL(url, autoplay){
+  var autoplay = (typeof(autoplay) == "undefined") ? "?autoplay=1" : ""
+  var theater = $(".theater");
+  var theaterFrame = document.createElement("iframe");
+
+  var tF = $(theaterFrame);
+  tF.attr({
+    "width": VIDEO_PLAYER_WIDTH,
+    "height": VIDEO_PLAYER_HEIGHT,
+    "frameborder": 0,
+    "allowfullscreen":"",
+    "src": url + autoplay
+  });
+
+  theater.html(tF);
+  theater.show();
+}
+
+function makeCenter(obj){
+  // obj : jQuery object
+  obj.css({
+    "top": $(window).height() /2 - obj.height() / 2,
+    "left": $(window).width() / 2 - obj.width() / 2,
+  })
+}
+
+function showGenreDetails(o){
+  // o : a d3.js node object
+
+  var genre = genres[o.name];
+  genre_details.find(".name").html(genre.name);
+
+  // set tracks
+  var examples = genre_details.find(".examples");
+  examples.empty();
+  for(var i = 0; i < genre.tracks.length; i++){
+    var current_track = genre.tracks[i];
+    var example = $(document.createElement("span"));
+    example.attr("data-track", current_track.name);
+    example.attr("data-artist", current_track.artist.name);
+    example.attr("data-url", current_track.link);
+    example.html(i + 1);
+
+    example.click(function(){
+      setTheaterForURL($(this).attr("data-url").replace("watch?v=", "embed/"));
+    });
+    example.appendTo(examples);
+  }
+
+  genre_details.find(".description").html(genre.description);
+  genre_details.find(".wiki a").attr("href", genre.wikipedia);
+
+  genre_details.fadeIn();
+
 }
 
 $(window).resize(resizeSVG);
@@ -113,16 +156,17 @@ var force = d3.layout.force()
     .links(links)
     .size([w, h])
     .linkDistance(80)
-    .charge(-300)
+    .charge(-400)
     .on("tick", tick)
     .start();
 
 var svg = d3.select("body").append("svg:svg");
 resizeSVG();
 
+
 // Per-type markers, as they don't inherit styles.
 svg.append("svg:defs").selectAll("marker")
-    .data(categories)
+    .data(["direct", "partial"])
   .enter().append("svg:marker")
     .attr("id", String)
     .attr("viewBox", "0 -5 10 10")
@@ -144,7 +188,8 @@ var circle = svg.append("svg:g").selectAll("circle")
     .data(force.nodes())
   .enter().append("svg:circle")
     .attr("r", 6)
-    .call(force.drag);
+    .call(force.drag)
+    .on("click", function(d) { showGenreDetails(d) });;
 
 var text = svg.append("svg:g").selectAll("g")
     .data(force.nodes())
@@ -168,7 +213,7 @@ function tick() {
     var dx = d.target.x - d.source.x,
         dy = d.target.y - d.source.y,
         dr = Math.sqrt(dx * dx + dy * dy);
-    return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
+    return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,0 " + d.target.x + "," + d.target.y;
   });
 
   circle.attr("transform", function(d) {

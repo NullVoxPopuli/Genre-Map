@@ -42,14 +42,6 @@ html, body{
     z-index: 0;
   }​
 
-  .canvas{
-  	position: fixed;
-  	top: 30px;
-  	bottom: 0px;
-  	left: 0px;
-  	right: 0px;
-  }
-
   .genre{
   	z-index: 1;
   }
@@ -64,6 +56,7 @@ path.link {
   stroke: #666;
   stroke-width: 1.5px;
 }
+
 
 marker#trance {
   fill: lightblue;
@@ -82,6 +75,9 @@ circle {
   fill: #ddd;
   stroke: #333;
   stroke-width: 1.5px;
+
+
+
 }
 
 text {
@@ -125,7 +121,7 @@ text.shadow {
 	margin-top: 40px;
 }
 .information .disclaimer .claimer{
-	
+
 }
 .graph_container{
 	position: fixed;
@@ -197,74 +193,104 @@ text.shadow {
 	background: #45a7b8;
 	color: white;
 }
-/*
-	END DOM LAYOUT
-*/
 
-.genre{
+.genre_details{
+}
+
+.genre_details .content{
 	border: 1px solid #E5E5E5;
 	background: #f4f4f4;
 	-webkit-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 	-moz-box-shadow: 0 4px 16px rgba(0,0,0,0.2);
 	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-	position: absolute;
 }
-.genre .attribute[data-attr="name"]{
+
+.genre_details .header{
+	display: block;
 	padding: 5px;
-	cursor: pointer;
-}
-.genre.active .attribute[data-attr="name"]{
 	background: #55B7C8;
 	color: white;
 	font-weight: bold;
+	height: 20px;
+	min-width: 300px;
 }
-.genre .details{
+.genre_details .body{
 	padding: 5px;
+	padding-bottom: 0px;
 }
-.genre.active .details{
+	.genre_details .name{
+		margin-right: 70px;
+		display: inline-block
+
+	}
+	.genre_details .close{
+		position: absolute;
+		top: 4px;
+		right: 8px;
+		cursor: pointer;
+	}
+	.genre_details .description{
+		max-width: 843px;
+	}
+
+	.genre_details .wiki{
+		font-size: 10px;
+		display: block;
+		text-align: right;
+	}
+.genre_details .examples{
+	margin: 5px;
+}
+.genre_details .examples span{
 	background: white;
-}
-.genre .details,
-.genre .theater {
-	display: none;
+	border: 1px solid silver;
+	padding: 0px 5px;
+	margin: 5px;
+	cursor: pointer;
 }
 
-.genre .attribute{
+.example_title{
 	display: block;
 }
-.examples .attribute{
-	display: inline;
-}
+/*
+	END DOM LAYOUT
+*/
 
-.attribute[data-attr="id"]{
-	display: none;
-}
-.attribute[data-attr="name"]{
+/* 
+	Centering verticalyl and horizontally
 
-}
-.attribute[data-attr="description"]{
+*/
 
-}
-.examples{
-	padding: 10px;
-}
-.track{
-	cursor:pointer;
-	padding: 3px;
-	border-bottom: 1px solid silver;
-
-}
-.track_list {
-	border-top: 1px solid silver;
-	border-collapse: collapse;
-	padding: 0px;
+.super_container{
+	position: fixed;
+	z-index: 3;
+	top: 10%;
 	width: 100%;
+	left: 0px;
 }
-.track:hover{
-	background: #e9e9e9;
+.super_container .background{
+	position:fixed;
+	top: 0px;
+	right: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,0.2);
 }
-.track .name{
+.super_container .container{
+	float: left;
+	position: relative;
+	left: 50%;
 }
-.track .artist{
-}
+.super_container .container .content{
+	float: left;
+	position: relative;
+	left: -50%;
+	top: 10%;
 
+}
+/*
+	end center
+*/
+
+	
