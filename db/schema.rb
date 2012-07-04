@@ -30,19 +30,19 @@ ActiveRecord::Schema.define(:version => 20120702005941) do
 
   create_table "genres_direct_influences", :id => false, :force => true do |t|
     t.integer "genre_id"
-    t.integer "genres_direct_influence_id"
+    t.integer "direct_influence_id"
   end
 
-  add_index "genres_direct_influences", ["genre_id", "genres_direct_influence_id"], :name => "genre_direct_inflence_index"
-  add_index "genres_direct_influences", ["genres_direct_influence_id", "genre_id"], :name => "direct_influence_genre_index"
+  add_index "genres_direct_influences", ["direct_influence_id", "genre_id"], :name => "direct_influence_genre_index"
+  add_index "genres_direct_influences", ["genre_id", "direct_influence_id"], :name => "direct_inflence_index"
 
   create_table "genres_partial_influences", :id => false, :force => true do |t|
     t.integer "genre_id"
-    t.integer "genres_partial_influence_id"
+    t.integer "partial_influence_id"
   end
 
-  add_index "genres_partial_influences", ["genre_id", "genres_partial_influence_id"], :name => "genre_partial_influence_index"
-  add_index "genres_partial_influences", ["genres_partial_influence_id", "genre_id"], :name => "partial_influence_genre_index"
+  add_index "genres_partial_influences", ["genre_id", "partial_influence_id"], :name => "genre_partial_influence_index"
+  add_index "genres_partial_influences", ["partial_influence_id", "genre_id"], :name => "partial_influence_genre_index"
 
   create_table "genres_tracks", :id => false, :force => true do |t|
     t.integer "genre_id"
