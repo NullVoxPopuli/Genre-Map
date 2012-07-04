@@ -4,7 +4,11 @@ class ApplicationController < ActionController::Base
  	before_filter :create_toolbar
 
  	def index
- 		@genres = Genre.all.as_json.to_json
+ 		@genres = Genre.all
+ 		@data = {}
+ 		Genre.all.map{|g| @data.merge!({g[:id] => g.as_json})}
+ 		@connections = Genre.all.map{|g| g.connections_as_json}.flatten.to_json
+ 		@data = @data.to_json
  	end
 
 protected

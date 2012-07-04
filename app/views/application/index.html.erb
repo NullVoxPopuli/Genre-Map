@@ -1,13 +1,33 @@
 <script type="text/javascript">
-	var genres = <%= @genres.html_safe %>;
+	var genres = <%= @data.html_safe %>;
+	var links = <%= @connections.html_safe %>;
 </script>
 
-<%= javascript_include_tag "genre-map" %>
+<div class="debug_panel">
+
+</div>
 
 
 <div class="search_container">
 	<%= text_field_tag 'search', nil, :placeholder => 'Search...' %>
 </div>
 
+<div class="information">
+	<div class="welcome">
+		<h2>Electronic Music Genre Graph</h2>
+		<div class="authors">
+			<span class="author">
+				L. Preston Sego III
+			</span>
+			<span class="author">
+				Evan Kirsch
+			</span>
+		</div>
+		<div class="development_info">
 
-<canvas id="viewport" width="1000" height="600" style="position: relative; top: 0px; bottom: 0px; right: 0px; left: 0px;"></canvas>
+		</div>
+	</div>
+	<div class="disclaimer">
+		Disclaimer:
+	</div>
+</div>

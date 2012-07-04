@@ -20,9 +20,10 @@ $(function(){
 			parent.find(".details").hide();
 			parent.removeClass("active");
 			// remove the theater iframe we don't use a ton of ram
-			parent.find(".theater").html("");
+			$(".theater").html("");
 		} else {
 			$(this).parent().find(".details").show();
+			$(".genre").removeClass("active");
 			$(this).parent().addClass("active");
 		}
 	});

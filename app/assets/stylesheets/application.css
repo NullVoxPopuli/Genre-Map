@@ -11,9 +11,113 @@
  *= require_self
  *= require_tree .
  */
+/* *{
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;	
+ }*/
 html, body{
 	padding: 0px;
 	margin: 0px;
+}
+.debug_panel{
+	position:fixed;
+	top:30px;
+	left:0px;
+	z-index: 10;
+}
+/*
+	GRAHPICAL ELEMENTS
+*/
+
+  .line {
+  	position: absolute;
+	height: 1px;
+    background: black;
+    margin: 0px;
+    z-index: 0;
+  }​
+
+  .canvas{
+  	position: fixed;
+  	top: 30px;
+  	bottom: 0px;
+  	left: 0px;
+  	right: 0px;
+  }
+
+  .genre{
+  	z-index: 1;
+  }
+
+  svg{
+  	position: fixed;
+  }
+
+path.link {
+  fill: none;
+  stroke: #666;
+  stroke-width: 1.5px;
+}
+
+marker#licensing {
+  fill: green;
+}
+
+path.link.licensing {
+  stroke: green;
+}
+
+path.link.resolved {
+  stroke-dasharray: 0,2 1;
+}
+
+circle {
+  fill: #ccc;
+  stroke: #333;
+  stroke-width: 1.5px;
+}
+
+text {
+  font: 10px sans-serif;
+  pointer-events: none;
+}
+
+text.shadow {
+  stroke: #fff;
+  stroke-width: 3px;
+  stroke-opacity: .8;
+}
+
+/* 
+	END GRAPHICAL ELEMENTS
+*/
+
+/* 
+	DOM LAYOUT
+*/
+.information{
+	width: 350px;
+	position: fixed;
+	top: 0;
+	z-index: -1;
+	padding: 10px;
+	padding-top: 20px;	
+	left: 0px;
+	bottom: 0px;
+	border: 1px solid #E5E5E5;
+	background: #f4f4f4;
+	-webkit-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+	-moz-box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+.graph_container{
+	position: fixed;
+	top: 30px;
+	left: 350px;
 }
 .toolbar {
 	position: fixed;
@@ -58,24 +162,21 @@ html, body{
 	box-shadow: 
 		0 1px 3px rgba(150,150,255,0.5);}
 
+/*
+	END DOM LAYOUT
+*/
+
 .genre{
-	margin: 30px;
 	border: 1px solid #E5E5E5;
-	display: inline-block;
 	background: #f4f4f4;
 	-webkit-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
--moz-box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+	-moz-box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+	position: absolute;
 }
 .genre .attribute[data-attr="name"]{
 	padding: 5px;
 	cursor: pointer;
-	-webkit-touch-callout: none;
-	-webkit-user-select: none;
-	-khtml-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;	
 }
 .genre.active .attribute[data-attr="name"]{
 	background: #55B7C8;

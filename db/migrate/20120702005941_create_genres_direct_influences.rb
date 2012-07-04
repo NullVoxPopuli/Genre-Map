@@ -2,7 +2,7 @@ class CreateGenresDirectInfluences < ActiveRecord::Migration
 	def up
   		create_table :genres_direct_influences, :id => false do |t|
         	t.references :genre
-        	t.references :genres_direct_influence
+        	t.references :direct_influence
     	end
     	add_index :direct_influences, 
     				[:genre_id, :direct_influence_id], 

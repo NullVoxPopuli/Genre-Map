@@ -5,7 +5,7 @@ class Genre < ActiveRecord::Base
   				  	:name,
   				  	:aka,
   				  	:track_ids,
-  				  	:partial_influences, 
+  				  	:partial_influence_ids, 
   				  	:time_of_inception
   				  	
   	has_and_belongs_to_many :tracks, 
@@ -34,5 +34,24 @@ class Genre < ActiveRecord::Base
           })
         }
       })
+    end
+
+    def connections_as_json(options = {})
+      result = []
+      self.direct_influence_ids.each { |d_id|
+        result << {
+          :source => self[:id],
+          :target => d_id,
+          :type => "direct" 
+        }
+      }
+      self.partial_influence_ids.each { |p_id|
+        result << {
+          :source => self[:id],
+          :target => d_id,
+          :type => "partial" 
+        } 
+      }
+      return result
     end
 end
