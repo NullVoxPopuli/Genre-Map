@@ -1,33 +1,42 @@
 class Genre < ActiveRecord::Base
   	attr_accessible :cultural_origins, 
   				  	:description, 
-  				  	:direct_influence_ids, 
+  				  	:stylistic_origin_ids, 
   				  	:name,
   				  	:aka,
+              :type,
   				  	:track_ids,
-  				  	:partial_influence_ids, 
-  				  	:time_of_inception
-  				  	
+  				  	:time_of_inception,
+              :super_genre_id,
+              :wikipedia
+  	
+    belongs_to :super_genre,
+                :class_name => "Genre",
+                :foreign_key => "super_genre_id"
+
   	has_and_belongs_to_many :tracks, 
                             :join_table => 'genres_tracks',
                             :foreign_key => "genre_id"
-  	has_and_belongs_to_many :direct_influences,
+  	has_and_belongs_to_many :stylistic_origins,
                           	:class_name => 'Genre',
-                          	:join_table => 'genres_direct_influences',
+                          	:join_table => 'genres_stylistic_origins',
                           	:foreign_key => 'genre_id',
-                          	:association_foreign_key => 'direct_influence_id'
-    has_and_belongs_to_many :partial_influences,
-                          	:class_name => 'Genre',
-                          	:join_table => 'genres_partial_influences',
-                          	:foreign_key => 'genre_id',
-                          	:association_foreign_key => 'partial_influence_id'
+                          	:association_foreign_key => 'stylistic_origin_id'
+   
+    SUB_GENRE = 0 # or nil
+    SUPER_GENRE = 1
+
+    def self.types
+      return {:sub_genre => SUB_GENRE, :super_genre => SUPER_GENRE}
+    end
 
 
     validates_presence_of :name
+    validates :time_of_inception, :numericality => { :only_integer => true, :allow_nil => true }
 
     def as_json(options = {})
       self.attributes.merge({
-        :direct_influences => self.direct_influence_ids,
+        :stylistic_origin_ids => self.stylistic_origin_ids,
         :tracks => self.tracks.map {|t|
           t.attributes.merge!({
             :artist => t.artist.attributes
@@ -38,19 +47,12 @@ class Genre < ActiveRecord::Base
 
     def connections_as_json(options = {})
       result = []
-      self.direct_influence_ids.each { |d_id|
+      self.stylistic_origin_ids.each { |o_id|
         result << {
-          :source => d_id,
+          :source => o_id,
           :target => self[:id],
           :type => "direct" 
         }
-      }
-      self.partial_influence_ids.each { |p_id|
-        result << {
-          :source => d_id,
-          :target => self[:id],
-          :type => "partial" 
-        } 
       }
       return result
     end

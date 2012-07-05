@@ -7,13 +7,22 @@
       <% @genre.errors.full_messages.each do |msg| %>
         <li><%= msg %></li>
       <% end %>
-      </ul>
+      </ul> 
     </div>
   <% end %>
 
   <div class="field">
     <%= f.label :name %><br />
     <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :aka %><br />
+    <%= f.text_field :aka %>
+  </div>
+
+  <div class="field">
+    <%= f.label :super_genre %><br />
+    <%= f.select :super_genre_id, (Genre.all - [@genre]).map {|r| [r.name,r.id] }, :include_blank => true %>
   </div>
   <div class="field">
     <%= f.label :description %><br />
@@ -27,28 +36,41 @@
     <%= f.label :cultural_origins %><br />
     <%= f.text_field :cultural_origins %>
   </div>
-  <% Track.all.each do |track| %>
-           <%= check_box_tag "genre[track_ids][]", "#{track.id}", @genre.tracks.include?(track) %> <%= track.name %> | <%= track.artist.name %>
-           <br />
-  <% end %>
+    <div class="field">
+    <%= f.label :wikipedia %><br />
+    <%= f.text_field :wikipedia %>
+  </div>
 <br/>
-  Direct Influences <br/>
-  <% Genre.all.each do |g| %>
-           <%= check_box_tag "genre[direct_influence_ids][]", "#{g.id}", @genre.direct_influences.include?(g) %> <%= g.name %> 
-           <br />
-  <% end %>
-
 
   <div class="actions">
     <%= f.submit %>
   </div>
 <% end %>
+<% unless @genre.new_record? %>
+  <table class="relationships">
+    <tr>
+    <td class="origins">
+      <h5>Origin Genres</h5>
+      <div id="current_genres">
+        <%= render :partial => "current_origins" %>
+      </div>
+      <h5>Available Genres</h5>
+      <div id="available_genres">
+        <%= render :partial => "available_origins" %>
+      </div>
+    </td>
 
+    <td class="tracks">
+      <h5>Current Associated Tracks</h5>
+      <div id="current_tracks">
+        <%= render :partial => "current_tracks" %>
+      </div>
+      <h5>Available Tracks</h5>
+      <div id="available_tracks">
+        <%= render :partial => "available_tracks" %>
+      </div>
+    </td>
+  </tr>
 
-<% if @genre.tracks.size > 0 %>
-  List of tracks currently associated with genre: <br /> <br />
-  <% @genre.tracks.each do |track| %>
-
-    <%= track.name %> | <%= track.artist.name %> <br />
-  <% end %>
+  </table>
 <% end %>

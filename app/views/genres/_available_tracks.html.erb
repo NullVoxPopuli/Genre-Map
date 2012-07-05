@@ -1,0 +1,34 @@
+<%= text_field_tag "search_available_tracks", nil, :placeholder => "Too lazy to scroll.." %>
+<br />
+<div class="tracks">
+<% @available_tracks.each do |track| %>
+	<div class="track">
+		<%= link_to "Add", {:controller => :genres,
+			:action => :update_tracks, :id => @genre[:id], 
+			:track_id => track[:id], :update => "add"}, :class => "add", :remote => true %> | 
+		<span class="name">
+			<%= link_to track.name, edit_track_path(track) %>
+			by 
+			<%= link_to track.artist.name, edit_artist_path(track.artist) %>
+		</span>
+	</div>
+<% end %>
+</div>
+
+
+<script type="text/javascript">
+		$("#search_available_tracks").unbind("keyup input paste");
+		$("#search_available_tracks").bind("keyup input paste", function(){
+		    var search_text = $(this).val().toUpperCase();
+		    $("#available_tracks .track").hide().filter(function(){
+		        return $(this).find(".name").text().toUpperCase().indexOf(search_text) != -1
+		    }).show();
+			return false;     
+		});
+		$(".track .add").unbind("click");
+		$(".track .add").bind("click", function(){
+			// remove from this list, add to other list, change the link
+			$("#current_tracks .tracks").append($(this).parent());
+			$(this).remove();
+		});
+</script>

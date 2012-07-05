@@ -1,11 +1,10 @@
+<br />
+<br />
 <h1>Listing genres</h1>
 
 <table>
   <tr>
     <th>Name</th>
-    <th>Description</th>
-    <th>Time of inception</th>
-    <th>Cultural origins</th>
     <th></th>
     <th></th>
     <th></th>
@@ -14,9 +13,6 @@
 <% @genres.each do |genre| %>
   <tr>
     <td><%= genre.name %></td>
-    <td><%= genre.description %></td>
-    <td><%= genre.time_of_inception %></td>
-    <td><%= genre.cultural_origins %></td>
     <td><%= link_to 'Show', genre %></td>
     <td><%= link_to 'Edit', edit_genre_path(genre) %></td>
     <td><%= link_to 'Destroy', genre, method: :delete, data: { confirm: 'Are you sure?' } %></td>

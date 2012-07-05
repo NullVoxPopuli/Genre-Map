@@ -1,10 +1,14 @@
+<br />
+<br />
 <p id="notice"><%= notice %></p>
 
 <p>
   <b>Name:</b>
   <%= @genre.name %>
 </p>
-
+<p>AKA:</b>
+  <%= @genre.aka %>
+</p>
 <p>
   <b>Description:</b>
   <%= @genre.description %>
@@ -18,6 +22,14 @@
 <p>
   <b>Cultural origins:</b>
   <%= @genre.cultural_origins %>
+</p>
+<p>
+  <b>Wiki:</b>
+  <%= @genre.wikipedia %>
+</p>
+<p>
+  <b>Super Genre:</b>
+  <%= @genre.super_genre.name %>
 </p>
 
 <%= link_to 'Edit', edit_genre_path(@genre) %> |

@@ -38,6 +38,12 @@ class GenresController < ApplicationController
   def edit
     @genre = Genre.find(params[:id])
     @genres = Genre.all
+
+    @current_origins = @genre.stylistic_origins
+    @available_origins =  Genre.all - @current_origins
+
+    @current_tracks = @genre.tracks
+    @available_tracks = Track.all - @current_tracks
   end
 
   # POST /genres
@@ -84,14 +90,46 @@ class GenresController < ApplicationController
   end
 
 
-  def add_track
+  def update_tracks
     # updates songs based on artist selected
     @genre = Genre.find(params[:id])
-    track = Track.find(params[:track_id])
-    @tracks  = @genre.tracks
+    track = Track.find(params[:track_id].to_i)
+    update = params[:update]
 
-    render :update do |page|
-      page.replace_html 'examples', :partial => 'tracks'
+    if update == "add"
+      @genre.tracks << track
+    else update == "remove"
+      @genre.tracks.delete(track)
+    end
+    @genre.save
+
+    if @genre.errors.size > 0
+      flash[:notice] = "Something Bad Happened"
+      redirect_to edit_genre_path(@genre)
+    else
+      render :nothing => true
     end
   end
+
+  def update_origin_genres
+    # updates songs based on artist selected
+    @genre = Genre.find(params[:id])
+    origin = Genre.find(params[:origin_genre_id].to_i)
+    update = params[:update]
+
+    if update == "add"
+      @genre.stylistic_origins << origin
+    else update == "remove"
+      @genre.stylistic_origins.delete(origin)
+    end
+    @genre.save
+
+    if @genre.errors.size > 0
+      flash[:notice] = "Something Bad Happened"
+      redirect_to edit_genre_path(@genre)
+    else
+      render :nothing => true
+    end
+  end
+
 end
