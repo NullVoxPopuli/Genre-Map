@@ -7,6 +7,7 @@ var COOKIE_EXPIRATION = 1825;
 // make sure these stay synced with Genre.rb
 var SUB_GENRE = 0;
 var SUPER_GENRE = 1;
+var NON_ELECTRONIC = 2;
 // end ruby constants™
 
 
@@ -208,7 +209,7 @@ function genreRadius(d){
   // d : d3 node object
   var radius;
   genre = genres[d.name];
-  if (genre.kind == SUPER_GENRE){ radius = 15; } 
+  if (genre.kind == SUPER_GENRE){ radius = 25; } 
   else { radius = 6; }
   return radius;
 }
@@ -216,7 +217,14 @@ function genreRadius(d){
 function genreKind(d){
   // d : d3 node object
   genre = genres[d.name];
-  result = (genre.kind == SUPER_GENRE) ? "super_genre" : "sub_genre";
+  result = ""
+  if (genre.kind == SUPER_GENRE)
+    result = "super_genre"
+  else if (genre.kind == NON_ELECTRONIC)
+    result = "non_electronic"
+  else
+    result = "sub_genre"
+
   return result;
 }
 
@@ -281,13 +289,13 @@ var text = svg.append("svg:g").selectAll("g")
 
 // A copy of the text with a thick white stroke for legibility.
 text.append("svg:text")
-    .attr("x", 8)
+    .attr("x", 0)
     .attr("y", ".31em")
     .attr("class", "shadow")
     .text(function(d) { return genres[d.name].name; });
 
 text.append("svg:text")
-    .attr("x", 8)
+    .attr("x", 0)
     .attr("y", ".31em")
     .text(function(d) { return genres[d.name].name; });
 
@@ -297,7 +305,7 @@ function tick() {
     var dx = d.target.x - d.source.x,
         dy = d.target.y - d.source.y,
         dr = Math.sqrt(dx * dx + dy * dy);
-    return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,0 " + d.target.x + "," + d.target.y;
+    return "M" + d.source.x + "," + d.source.y + "L"+ d.target.x + "," + d.target.y;
   });
 
   circle.attr("transform", function(d) {

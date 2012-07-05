@@ -9,6 +9,13 @@ class ApplicationController < ActionController::Base
  		Genre.all.map{|g| @data.merge!({g[:id] => g.as_json})}
  		@connections = Genre.all.map{|g| g.connections_as_json}.flatten.to_json
  		@data = @data.to_json
+ 		@node_data = []
+ 		@genres.each { |g|
+ 			@node_data << {:name => g[:id],
+ 			 	:children => g.stylistic_origin_ids}
+ 		}
+ 		@node_data = {:name => "Electronic", :children => @node_data}.to_json
+ 		ap @node_data
  	end
 
 protected

@@ -66,10 +66,6 @@ path.link.direct {
   stroke: black;
 }
 
-path.link.partial {
-  stroke-dasharray: 0,2 1;
-  stroke: black;
-}
 
 circle {
   fill: #ddd;
@@ -84,6 +80,11 @@ circle.super_genre{
 	stroke: #000;
 }
 
+circle.non_electronic{
+	fill: white;
+	stroke-dasharray: 0,2 1;
+
+}
 
 text {
   font: 10px sans-serif;

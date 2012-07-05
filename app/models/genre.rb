@@ -25,9 +25,11 @@ class Genre < ActiveRecord::Base
    
     SUB_GENRE = 0 # or nil
     SUPER_GENRE = 1
+    NON_ELECTRONIC = 2
 
     def self.kinds
-      return {:sub_genre => SUB_GENRE, :super_genre => SUPER_GENRE}
+      return {:sub_genre => SUB_GENRE, :super_genre => SUPER_GENRE,
+        :non_electronic => NON_ELECTRONIC}
     end
 
     def kind_name
