@@ -4,7 +4,7 @@ class Genre < ActiveRecord::Base
   				  	:stylistic_origin_ids, 
   				  	:name,
   				  	:aka,
-              :type,
+              :kind,
   				  	:track_ids,
   				  	:time_of_inception,
               :super_genre_id,
@@ -26,8 +26,15 @@ class Genre < ActiveRecord::Base
     SUB_GENRE = 0 # or nil
     SUPER_GENRE = 1
 
-    def self.types
+    def self.kinds
       return {:sub_genre => SUB_GENRE, :super_genre => SUPER_GENRE}
+    end
+
+    def kind_name
+      result = ""
+      result = "Sub Genre" if self.kind == SUB_GENRE
+      result = "Super Genre" if self.kind == SUPER_GENRE
+      return result
     end
 
 

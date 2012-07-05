@@ -9,6 +9,9 @@
 <p>AKA:</b>
   <%= @genre.aka %>
 </p>
+<p>Kind:</b>
+  <%= @genre.kind_name %>
+</p>
 <p>
   <b>Description:</b>
   <%= @genre.description %>
@@ -29,7 +32,7 @@
 </p>
 <p>
   <b>Super Genre:</b>
-  <%= @genre.super_genre.name %>
+  <%= @genre.super_genre.name if @genre.super_genre %>
 </p>
 
 <%= link_to 'Edit', edit_genre_path(@genre) %> |

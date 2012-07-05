@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120704200508) do
+ActiveRecord::Schema.define(:version => 20120705004502) do
 
   create_table "artists", :force => true do |t|
     t.string "name"
@@ -26,17 +26,12 @@ ActiveRecord::Schema.define(:version => 20120704200508) do
     t.date    "time_of_inception"
     t.string  "cultural_origins"
     t.string  "wikipedia"
-    t.integer "type"
+    t.decimal "kind"
     t.integer "super_genre_id"
   end
 
-  create_table "genres_partial_influences", :id => false, :force => true do |t|
-    t.integer "genre_id"
-    t.integer "partial_influence_id"
-  end
-
-# Could not dump table "genres_stylstic_origins" because of following StandardError
-#   Unknown type 'stylistic_origin_id' for column 'direct_influence_id'
+# Could not dump table "genres_stylistic_origins" because of following StandardError
+#   Unknown type 'stylistic_origin_id' for column 'stylistic_origin_id'
 
   create_table "genres_tracks", :id => false, :force => true do |t|
     t.integer "genre_id"
