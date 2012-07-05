@@ -75,10 +75,15 @@ circle {
   fill: #ddd;
   stroke: #333;
   stroke-width: 1.5px;
-
-
-
 }
+circle.sub_genre{
+}
+
+circle.super_genre{
+	fill: #42B6C9;
+	stroke: #000;
+}
+
 
 text {
   font: 10px sans-serif;

@@ -1,9 +1,59 @@
 var FADE_OUT_SPEED = 200;
 var VIDEO_PLAYER_WIDTH = 853;
 var VIDEO_PLAYER_HEIGHT = 480;
+var TRANSITION_DURATION = 500;
+var COOKIE_EXPIRATION = 1825;
+
+// make sure these stay synced with Genre.rb
+var SUB_GENRE = 0;
+var SUPER_GENRE = 1;
+// end ruby constants™
+
+
+/*
+  COOKIE UTILS - by w3c schools
+*/
+
+function getCookie(c_name)
+{
+var i,x,y,ARRcookies=document.cookie.split(";");
+for (i=0;i<ARRcookies.length;i++)
+  {
+  x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
+  y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
+  x=x.replace(/^\s+|\s+$/g,"");
+  if (x==c_name)
+    {
+    return unescape(y);
+    }
+  }
+}
+
+function setCookie(c_name,value,exdays)
+{
+var exdate=new Date();
+exdate.setDate(exdate.getDate() + exdays);
+var c_value=escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
+document.cookie=c_name + "=" + c_value;
+}
+
+function interfaceIsHidden()
+{
+var c=getCookie("interface_is_hidden");
+if (c!=null && c!="")
+  {
+    return c;
+  }
+else 
+  return false;
+}
+
+
+/*
+  END COOKIE UTILS
+*/
 
 $(function(){
-
 /*
   Interface Code
 */
@@ -13,6 +63,9 @@ var sidebar = $(".information");
 var toolbar_height = toolbar.outerHeight();
 var sidebar_width = sidebar.outerWidth();
 var genre_details = $(".genre_details");
+
+initUI();
+
 
 $(".genre > .attribute[data-attr='name']").click(function(){
   var parent = $(this).parent();
@@ -30,6 +83,7 @@ $(".genre > .attribute[data-attr='name']").click(function(){
 
 $(".genre_details .close").click(function(){
   $(".genre_details").fadeOut(FADE_OUT_SPEED);
+  $(".theater").html("");
 });
 
 $(".interface_options .hide").click(function(){
@@ -37,13 +91,26 @@ $(".interface_options .hide").click(function(){
       toolbar.fadeOut(FADE_OUT_SPEED);
       sidebar.fadeOut(FADE_OUT_SPEED);
       $(this).text("Show Interface")
+      setCookie("interface_is_hidden", true, COOKIE_EXPIRATION);
   } else {
     toolbar.fadeIn(FADE_OUT_SPEED);
     sidebar.fadeIn(FADE_OUT_SPEED);
     $(this).text("Hide Interface")
+    setCookie("interface_is_hidden", false, COOKIE_EXPIRATION);   
   }
   setTimeout(resizeSVG, 250);
 });
+
+function initUI(){
+  if (interfaceIsHidden()){
+    toolbar.hide();
+    sidebar.hide();
+    $(".interface_options .hide").text("Show Interface")
+
+  } else {
+    // do nothing, they are visible by default
+  }
+}
 
 function resizeSVG(){
   var size = getSizeForCanvas();
@@ -137,6 +204,22 @@ function getSizeForCanvas(){
   }
 }
 
+function genreRadius(d){
+  // d : d3 node object
+  var radius;
+  genre = genres[d.name];
+  if (genre.kind == SUPER_GENRE){ radius = 15; } 
+  else { radius = 6; }
+  return radius;
+}
+
+function genreKind(d){
+  // d : d3 node object
+  genre = genres[d.name];
+  result = (genre.kind == SUPER_GENRE) ? "super_genre" : "sub_genre";
+  return result;
+}
+
 var nodes = {};
 
 // Compute the distinct nodes from the links.
@@ -166,7 +249,7 @@ resizeSVG();
 
 // Per-type markers, as they don't inherit styles.
 svg.append("svg:defs").selectAll("marker")
-    .data(["direct", "partial"])
+    .data(["direct"])
   .enter().append("svg:marker")
     .attr("id", String)
     .attr("viewBox", "0 -5 10 10")
@@ -187,9 +270,10 @@ var path = svg.append("svg:g").selectAll("path")
 var circle = svg.append("svg:g").selectAll("circle")
     .data(force.nodes())
   .enter().append("svg:circle")
-    .attr("r", 6)
+    .attr("r", function(d) { return genreRadius(d); })
     .call(force.drag)
-    .on("click", function(d) { showGenreDetails(d) });;
+    .on("click", function(d) { showGenreDetails(d) })
+    .attr("class", function(d) {return genreKind(d);});
 
 var text = svg.append("svg:g").selectAll("g")
     .data(force.nodes())
@@ -224,5 +308,7 @@ function tick() {
     return "translate(" + d.x + "," + d.y + ")";
   });
 }
+
+
 
 })
