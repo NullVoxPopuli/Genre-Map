@@ -21,7 +21,6 @@
   </div>
   <div class="field">
     <%= f.label :kind %><br />
-    <%= @genre.kind %>
     <%= f.select :kind, options_for_select(Genre.kinds, @genre.kind.to_i), {:selected => @genre.kind.to_i }%> 
   </div>
   <div class="field">
@@ -61,6 +60,17 @@
       <h5>Available Genres</h5>
       <div id="available_genres">
         <%= render :partial => "available_origins" %>
+      </div>
+    </td>
+
+    <td class="children">
+      <h5>Current Children</h5>
+      <div id="current_children">
+        <%= render :partial => "current_children" %>
+      </div>
+      <h5>Available Children</h5>
+      <div id="available_children">
+        <%= render :partial => "available_children" %>
       </div>
     </td>
 

@@ -15,7 +15,7 @@
 		// $("#search_available_origins").unbind("keyup input paste");
 		$("#search_available_origins").bind("keyup input paste", function(){
 		    var search_text = $(this).val().toUpperCase();
-		    $(".origin_genre").hide().filter(function(){
+		    $("#available_genres .origin_genre").hide().filter(function(){
 		        return $(this).find(".name").text().toUpperCase().indexOf(search_text) != -1
 		    }).show();
 			return false;     

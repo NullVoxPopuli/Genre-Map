@@ -22,6 +22,11 @@ class Genre < ActiveRecord::Base
                           	:join_table => 'genres_stylistic_origins',
                           	:foreign_key => 'genre_id',
                           	:association_foreign_key => 'stylistic_origin_id'
+    has_and_belongs_to_many :children,
+                            :class_name => "Genre",
+                            :join_table => "genres_stylistic_origins",
+                            :foreign_key => "stylistic_origin_id",
+                            :association_foreign_key => "genre_id"
    
     SUB_GENRE = 0 # or nil
     SUPER_GENRE = 1

@@ -44,6 +44,9 @@ class GenresController < ApplicationController
 
     @current_tracks = @genre.tracks
     @available_tracks = Track.all - @current_tracks
+
+    @current_children = @genre.children
+    @available_children = Genre.all - @current_children
   end
 
   # POST /genres
@@ -125,6 +128,27 @@ class GenresController < ApplicationController
     @genre.save
 
     if @genre.errors.size > 0
+      flash[:notice] = "Something Bad Happened"
+      redirect_to edit_genre_path(@genre)
+    else
+      render :nothing => true
+    end
+  end
+
+    def update_children
+    # updates songs based on artist selected
+    @genre = Genre.find(params[:id])
+    child = Genre.find(params[:child_id].to_i)
+    update = params[:update]
+
+    if update == "add"
+      child.stylistic_origins << @genre
+    else update == "remove"
+      child.stylistic_origins.delete(@genre)
+    end
+    child.save
+
+    if child.errors.size > 0
       flash[:notice] = "Something Bad Happened"
       redirect_to edit_genre_path(@genre)
     else

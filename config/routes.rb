@@ -2,6 +2,7 @@ GenreMap::Application.routes.draw do
 
   match "genres/update_tracks" => "genres#update_tracks"
   match "genres/update_origin_genres" => "genres#update_origin_genres"
+  match "genres/update_children" => "genres#update_children"
 
 
   devise_for :users
