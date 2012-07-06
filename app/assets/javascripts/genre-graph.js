@@ -69,7 +69,10 @@ initUI();
 
 $(".genre_details .close").click(function(){
   $(".genre_details").fadeOut(FADE_OUT_SPEED);
-  $(".theater").html("");
+});
+
+$(".stop_playback").click(function(){
+    $(".theater").html("");
 });
 
 $(".interface_options .hide").click(function(){
@@ -322,21 +325,21 @@ function mouseMove(){
   var x = 0; var y = 1;
    mouse = d3.mouse(this);
    // check if close to bounds
-   if (mouse[x] < 10){
-  circle.transition()
-    .delay(0)
-    .duration(200) 
-    .attr("cx", function(d){return d.px + 100})
+  //  if (mouse[x] < 10){
+  // circle.transition()
+  //   .delay(0)
+  //   .duration(200) 
+  //   .attr("cx", function(d){return d.px + 100})
 
-      // circle.attr("cx", function (d,i) { return d.x - 5; } ) // translate x value
-      // text.attr("cx", function (d,i) { return d.x - 5; } ) // translate x value
-      // path.attr("cx", function (d,i) { return d.x - 5; } ) // translate x value
-   }
-   if (mouse[y] < 10){
-      circle.attr("cy", function (d,i) { return d.x - 5; } ) // translate x value
-      text.attr("cy", function (d,i) { return d.x - 5; } ) // translate x value
-      path.attr("cy", function (d,i) { return d.x - 5; } ) // translate x value
-   }
+  //     // circle.attr("cx", function (d,i) { return d.x - 5; } ) // translate x value
+  //     // text.attr("cx", function (d,i) { return d.x - 5; } ) // translate x value
+  //     // path.attr("cx", function (d,i) { return d.x - 5; } ) // translate x value
+  //  }
+  //  if (mouse[y] < 10){
+  //     circle.attr("cy", function (d,i) { return d.x - 5; } ) // translate x value
+  //     text.attr("cy", function (d,i) { return d.x - 5; } ) // translate x value
+  //     path.attr("cy", function (d,i) { return d.x - 5; } ) // translate x value
+  //  }
 }
 
 

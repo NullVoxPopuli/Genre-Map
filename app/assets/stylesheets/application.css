@@ -107,6 +107,23 @@ text.shadow {
 /* 
 	DOM LAYOUT
 */
+.stop_playback{
+	position: fixed;
+	bottom: 20px;
+	left: 20px;
+	z-index: 2;
+	cursor: pointer;
+
+	background: #C83328;
+	color: white;
+	font-weight: bold;
+	padding: 5px;
+	text-decoration: none;
+	border: 1px solid #D9D9D9;
+	color: white;
+	border-bottom: 1px solid silver;
+}
+
 .information{
 	width: 350px;
 	position: fixed;
