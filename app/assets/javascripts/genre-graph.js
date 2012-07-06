@@ -67,21 +67,6 @@ var genre_details = $(".genre_details");
 
 initUI();
 
-
-$(".genre > .attribute[data-attr='name']").click(function(){
-  var parent = $(this).parent();
-  if (parent.hasClass("active")){
-    parent.find(".details").hide();
-    parent.removeClass("active");
-    // remove the theater iframe we don't use a ton of ram
-    $(".theater").html("");
-  } else {
-    $(this).parent().find(".details").show();
-    $(".genre").removeClass("active");
-    $(this).parent().addClass("active");
-  }
-});
-
 $(".genre_details .close").click(function(){
   $(".genre_details").fadeOut(FADE_OUT_SPEED);
   $(".theater").html("");
@@ -102,6 +87,7 @@ $(".interface_options .hide").click(function(){
   setTimeout(resizeSVG, 250);
 });
 
+
 function initUI(){
   if (interfaceIsHidden()){
     toolbar.hide();
@@ -121,6 +107,7 @@ function resizeSVG(){
     "width": size.w,
     "height": size.h
   });
+
 }
 
 function setTheaterForURL(url, autoplay){
@@ -208,7 +195,7 @@ function getSizeForCanvas(){
 function genreRadius(d){
   // d : d3 node object
   var radius;
-  genre = genres[d.name];
+  var genre = genres[d.name];
   if (genre.kind == SUPER_GENRE){ radius = 25; } 
   else { radius = 6; }
   return radius;
@@ -226,6 +213,14 @@ function genreKind(d){
     result = "sub_genre"
 
   return result;
+}
+
+function textOffsetY(d){
+  var offsetY = 0;
+  var genre = genres[d.name];
+  if (genre.kind == SUPER_GENRE){ offsetY = 4; } 
+  else { offsetY = 16; }
+  return offsetY;
 }
 
 var nodes = {};
@@ -246,12 +241,16 @@ var force = d3.layout.force()
     .nodes(d3.values(nodes))
     .links(links)
     .size([w, h])
-    .linkDistance(80)
-    .charge(-1000)
+    .linkDistance(70)
+    .charge(-1500)
     .on("tick", tick)
+    .friction(0.8)
     .start();
 
-var svg = d3.select("body").append("svg:svg");
+var svg = d3.select("body")
+  .append("svg:svg")
+  .on("mousemove", mouseMove)
+;
 resizeSVG();
 
 
@@ -289,14 +288,16 @@ var text = svg.append("svg:g").selectAll("g")
 
 // A copy of the text with a thick white stroke for legibility.
 text.append("svg:text")
+    .attr("text-anchor", "middle")
     .attr("x", 0)
-    .attr("y", ".31em")
+    .attr("y", function(d) {return textOffsetY(d); })
     .attr("class", "shadow")
     .text(function(d) { return genres[d.name].name; });
 
 text.append("svg:text")
+    .attr("text-anchor", "middle")  
     .attr("x", 0)
-    .attr("y", ".31em")
+    .attr("y", function(d) {return textOffsetY(d); })
     .text(function(d) { return genres[d.name].name; });
 
 // Use elliptical arc path segments to doubly-encode directionality.
@@ -315,6 +316,27 @@ function tick() {
   text.attr("transform", function(d) {
     return "translate(" + d.x + "," + d.y + ")";
   });
+}
+
+function mouseMove(){
+  var x = 0; var y = 1;
+   mouse = d3.mouse(this);
+   // check if close to bounds
+   if (mouse[x] < 10){
+  circle.transition()
+    .delay(0)
+    .duration(200) 
+    .attr("cx", function(d){return d.px + 100})
+
+      // circle.attr("cx", function (d,i) { return d.x - 5; } ) // translate x value
+      // text.attr("cx", function (d,i) { return d.x - 5; } ) // translate x value
+      // path.attr("cx", function (d,i) { return d.x - 5; } ) // translate x value
+   }
+   if (mouse[y] < 10){
+      circle.attr("cy", function (d,i) { return d.x - 5; } ) // translate x value
+      text.attr("cy", function (d,i) { return d.x - 5; } ) // translate x value
+      path.attr("cy", function (d,i) { return d.x - 5; } ) // translate x value
+   }
 }
 
 
