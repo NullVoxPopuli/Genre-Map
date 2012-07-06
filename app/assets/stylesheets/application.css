@@ -111,8 +111,9 @@ text.shadow {
 	position: fixed;
 	bottom: 20px;
 	left: 20px;
-	z-index: 2;
+	z-index: 10;
 	cursor: pointer;
+	display: none;
 
 	background: #C83328;
 	color: white;

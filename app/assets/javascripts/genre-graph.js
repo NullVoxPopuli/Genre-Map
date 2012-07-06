@@ -43,12 +43,16 @@ function interfaceIsHidden()
 var c=getCookie("interface_is_hidden");
 if (c!=null && c!="")
   {
-    return c;
+    return (c == 1);
   }
 else 
   return false;
 }
 
+function delCookie(name)
+{
+    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
 
 /*
   END COOKIE UTILS
@@ -64,6 +68,7 @@ var sidebar = $(".information");
 var toolbar_height = toolbar.outerHeight();
 var sidebar_width = sidebar.outerWidth();
 var genre_details = $(".genre_details");
+var stop_playback = $(".stop_playback");
 
 initUI();
 
@@ -73,19 +78,20 @@ $(".genre_details .close").click(function(){
 
 $(".stop_playback").click(function(){
     $(".theater").html("");
+    $(this).fadeOut();
 });
 
 $(".interface_options .hide").click(function(){
   if (toolbar.is(":visible") || (sidebar.is(":visible"))){
       toolbar.fadeOut(FADE_OUT_SPEED);
       sidebar.fadeOut(FADE_OUT_SPEED);
-      $(this).text("Show Interface")
-      setCookie("interface_is_hidden", true, COOKIE_EXPIRATION);
+      $(this).text("Show Interface");
+      setCookie("interface_is_hidden", 1, COOKIE_EXPIRATION);
   } else {
     toolbar.fadeIn(FADE_OUT_SPEED);
     sidebar.fadeIn(FADE_OUT_SPEED);
-    $(this).text("Hide Interface")
-    setCookie("interface_is_hidden", false, COOKIE_EXPIRATION);   
+    $(this).text("Hide Interface");
+    setCookie("interface_is_hidden", 0, COOKIE_EXPIRATION);   
   }
   setTimeout(resizeSVG, 250);
 });
@@ -129,6 +135,7 @@ function setTheaterForURL(url, autoplay){
 
   theater.html(tF);
   theater.show();
+  stop_playback.show();
 }
 
 function makeCenter(obj){
