@@ -205,19 +205,17 @@ function getSizeForCanvas(){
 function genreRadius(d){
   // d : d3 node object
   var radius;
-  var genre = genres[d.name];
-  if (genre.kind == SUPER_GENRE){ radius = 25; } 
+  if (d.kind == SUPER_GENRE){ radius = 25; } 
   else { radius = 6; }
   return radius;
 }
 
 function genreKind(d){
   // d : d3 node object
-  genre = genres[d.name];
   result = ""
-  if (genre.kind == SUPER_GENRE)
+  if (d.kind == SUPER_GENRE)
     result = "super_genre"
-  else if (genre.kind == NON_ELECTRONIC)
+  else if (d.kind == NON_ELECTRONIC)
     result = "non_electronic"
   else
     result = "sub_genre"
@@ -227,13 +225,10 @@ function genreKind(d){
 
 function textOffsetY(d){
   var offsetY = 0;
-  var genre = genres[d.name];
-  if (genre.kind == SUPER_GENRE){ offsetY = 4; } 
+  if (d.kind == SUPER_GENRE){ offsetY = 4; } 
   else { offsetY = 16; }
   return offsetY;
 }
-
-var nodes = {};
 
 // Compute the distinct nodes from the links.
 links.forEach(function(link) {
@@ -248,13 +243,13 @@ var w = initial_size.w;
     y = initial_size.y;
 
 var force = d3.layout.force()
-    .nodes(d3.values(nodes))
-    .links(links)
     .size([w, h])
     .linkDistance(70)
     .charge(-1500)
-    .on("tick", tick)
+    //.linkStrength(0.5)
     .friction(0.8)
+    .nodes(nodes)
+    .links(links)
     .start();
 
 var svg = d3.select("body")
@@ -262,7 +257,6 @@ var svg = d3.select("body")
   .on("mousemove", mouseMove)
 ;
 resizeSVG();
-
 
 // Per-type markers, as they don't inherit styles.
 svg.append("svg:defs").selectAll("marker")
@@ -302,16 +296,15 @@ text.append("svg:text")
     .attr("x", 0)
     .attr("y", function(d) {return textOffsetY(d); })
     .attr("class", "shadow")
-    .text(function(d) { return genres[d.name].name; });
+    .text(function(d) { return d.name; });
 
 text.append("svg:text")
     .attr("text-anchor", "middle")  
     .attr("x", 0)
     .attr("y", function(d) {return textOffsetY(d); })
-    .text(function(d) { return genres[d.name].name; });
+    .text(function(d) { return d.name; });
 
-// Use elliptical arc path segments to doubly-encode directionality.
-function tick() {
+force.on("tick", function() {
   path.attr("d", function(d) {
     var dx = d.target.x - d.source.x,
         dy = d.target.y - d.source.y,
@@ -326,7 +319,7 @@ function tick() {
   text.attr("transform", function(d) {
     return "translate(" + d.x + "," + d.y + ")";
   });
-}
+});
 
 function mouseMove(){
   var x = 0; var y = 1;
