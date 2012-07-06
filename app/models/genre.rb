@@ -38,12 +38,17 @@ class Genre < ActiveRecord::Base
         :non_electronic => NON_ELECTRONIC}
     end
 
+    def kind_key
+      return Genre.kinds.key(self.kind)
+    end
+
     def kind_name
       result = ""
       result = "Sub Genre" if self.kind == SUB_GENRE
       result = "Super Genre" if self.kind == SUPER_GENRE
       return result
     end
+
 
 
     validates_presence_of :name

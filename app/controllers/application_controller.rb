@@ -8,9 +8,23 @@ class ApplicationController < ActionController::Base
  		@data = {}
  		Genre.all.map{|g| @data.merge!({g[:id] => g.as_json})}
  		@data = @data.to_json
- 		@connections = Genre.all.map{|g| g.connections_as_json}.flatten.to_json
+ 		@connections = []
+ 		Genre.all.map{|g| 
+ 			@connections << {:source => g[:id], :target => g[:id]} if g.stylistic_origin_ids.empty?
+ 			g.stylistic_origin_ids.each {|id|
+ 				@connections << {
+ 					:source => id,
+        	  		:target => g[:id],
+          			:rel => "direct" }
+ 				}}
+ 		@connections = @connections.to_json
  		@nodes = []
- 		@nodes = Genre.all.each {|g| @nodes << {:name => g[:id], :kind => g.kind}}
+ 		 Genre.all.each {|g| 
+ 		 	@nodes << {
+ 		 			:name => g[:id],
+ 		 			:kind => g.kind_key
+ 		 		}
+ 		 	}
  		@nodes = @nodes.to_json
  	end
 

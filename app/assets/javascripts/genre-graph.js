@@ -178,6 +178,7 @@ function showGenreDetails(o){
 
 $(window).resize(resizeSVG);
 
+
 /*
   Graph Code
 
@@ -205,15 +206,17 @@ function getSizeForCanvas(){
 function genreRadius(d){
   // d : d3 node object
   var radius;
-  if (d.kind == SUPER_GENRE){ radius = 25; } 
+  var kind = genres[d.name].kind
+  if (kind == SUPER_GENRE){ radius = 25; } 
   else { radius = 6; }
   return radius;
 }
 
 function genreKind(d){
   // d : d3 node object
-  result = ""
-  if (d.kind == SUPER_GENRE)
+  var result = ""
+  var kind = genres[d.name].kind
+  if (kind == SUPER_GENRE)
     result = "super_genre"
   else if (d.kind == NON_ELECTRONIC)
     result = "non_electronic"
@@ -225,16 +228,33 @@ function genreKind(d){
 
 function textOffsetY(d){
   var offsetY = 0;
-  if (d.kind == SUPER_GENRE){ offsetY = 4; } 
+  var kind = genres[d.name].kind
+  if (kind == SUPER_GENRE){ offsetY = 4; } 
   else { offsetY = 16; }
   return offsetY;
 }
+function findGenreForName(name){
+  for (var i = 0; i < nodes.length; i++){
+    if (genre_nodes[i].name == name){
+      return i;
+    }
+  }
+}
+
+nodes = {}
+// // Compute the distinct nodes from the links.
+// connections.forEach(function(link) {
+//   link.source = findGenreForName(link.source);
+//   link.target = findGenreForName(link.target);
+// });
 
 // Compute the distinct nodes from the links.
+links = connections
 links.forEach(function(link) {
   link.source = nodes[link.source] || (nodes[link.source] = {name: link.source});
   link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
 });
+
 
 initial_size = getSizeForCanvas()
 var w = initial_size.w;
@@ -248,15 +268,48 @@ var force = d3.layout.force()
     .charge(-1500)
     //.linkStrength(0.5)
     .friction(0.8)
-    .nodes(nodes)
+    .nodes(d3.values(nodes))
     .links(links)
-    .start();
+   // .nodes(genre_nodes)
+   // .links(connections)
+   .start();
+
+down = false;
+var lastX, lastY;
+var tx = 0, ty = 0;
 
 var svg = d3.select("body")
   .append("svg:svg")
-  .on("mousemove", mouseMove)
-;
+  // .on("mousemove", function(){
+  //     var x = 0; var y = 1;
+  //     m = d3.mouse(this);
+  //       if( ! down )
+  //         return
+  //         var x = m[x]
+  //         var y = m[y]
+  //         var dx = x - lastX
+  //         var dy = y - lastY
+  //         lastX = x
+  //         lastY = y
+         
+         
+  //           tx += dx
+  //           ty += dy
+  //           d3.select("body").attr( "transform", "translate("+tx+","+ty+")" )
+          
+  // })
+  // .on("mousedown", function(){
+  //     lastX = d3.mouse(this)[0];
+  //     lastY = d3.mouse(this)[1];
+  //     down = true
+  // })
+  // .on("mouseup", function(){
+  //   down = false;
+  // })
+
 resizeSVG();
+
+
 
 // Per-type markers, as they don't inherit styles.
 svg.append("svg:defs").selectAll("marker")
@@ -296,13 +349,13 @@ text.append("svg:text")
     .attr("x", 0)
     .attr("y", function(d) {return textOffsetY(d); })
     .attr("class", "shadow")
-    .text(function(d) { return d.name; });
+    .text(function(d) { return genres[d.name].name; });
 
 text.append("svg:text")
     .attr("text-anchor", "middle")  
     .attr("x", 0)
     .attr("y", function(d) {return textOffsetY(d); })
-    .text(function(d) { return d.name; });
+    .text(function(d) { return genres[d.name].name; });
 
 force.on("tick", function() {
   path.attr("d", function(d) {
@@ -321,26 +374,6 @@ force.on("tick", function() {
   });
 });
 
-function mouseMove(){
-  var x = 0; var y = 1;
-   mouse = d3.mouse(this);
-   // check if close to bounds
-  //  if (mouse[x] < 10){
-  // circle.transition()
-  //   .delay(0)
-  //   .duration(200) 
-  //   .attr("cx", function(d){return d.px + 100})
-
-  //     // circle.attr("cx", function (d,i) { return d.x - 5; } ) // translate x value
-  //     // text.attr("cx", function (d,i) { return d.x - 5; } ) // translate x value
-  //     // path.attr("cx", function (d,i) { return d.x - 5; } ) // translate x value
-  //  }
-  //  if (mouse[y] < 10){
-  //     circle.attr("cy", function (d,i) { return d.x - 5; } ) // translate x value
-  //     text.attr("cy", function (d,i) { return d.x - 5; } ) // translate x value
-  //     path.attr("cy", function (d,i) { return d.x - 5; } ) // translate x value
-  //  }
-}
 
 
 
