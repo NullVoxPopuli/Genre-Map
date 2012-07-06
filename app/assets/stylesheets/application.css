@@ -65,6 +65,9 @@ marker#trance {
 path.link.direct {
   stroke: black;
 }
+path.non_electronic{
+	stroke-dasharray: 0,2 1;
+}
 
 
 circle {

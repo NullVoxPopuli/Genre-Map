@@ -271,7 +271,7 @@ svg.append("svg:defs").selectAll("marker")
 var path = svg.append("svg:g").selectAll("path")
     .data(force.links())
   .enter().append("svg:path")
-    .attr("class", function(d) { return "link " + d.type; })
+    .attr("class", function(d) { return "link " + d.type + " " + genreKind(d.source); })
     .attr("marker-end", function(d) { return "url(#" + d.type + ")"; });
 
 var circle = svg.append("svg:g").selectAll("circle")
