@@ -142,13 +142,13 @@ class GenresController < ApplicationController
     update = params[:update]
 
     if update == "add"
-      child.stylistic_origins << @genre
+      @genre.children << @genre
     else update == "remove"
-      child.stylistic_origins.delete(@genre)
+      @genre.children.delete(@genre)
     end
-    child.save
+    @genre.save
 
-    if child.errors.size > 0
+    if @genre.errors.size > 0
       flash[:notice] = "Something Bad Happened"
       redirect_to edit_genre_path(@genre)
     else

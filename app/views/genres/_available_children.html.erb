@@ -1,0 +1,30 @@
+<%= text_field_tag "search_available_children", nil, :placeholder => "Too lazy to scroll.." %>
+<br />
+<div class="genres">
+<% @available_children.each do |origin_genre| %>
+	<div class="child">
+		<%= link_to "Add", {:controller => :genres,
+			:action => :update_children, :id => @genre[:id], 
+			:child_id => origin_genre[:id], :update => "add"}, :class => "add", :remote => true %>
+		 | <%= link_to origin_genre.name, edit_genre_path(origin_genre), :class => "name" %>
+	</div>
+<% end %>
+</div>
+
+<script type="text/javascript">
+		// $("#search_available_origins").unbind("keyup input paste");
+		$("#search_available_children").bind("keyup input paste", function(){
+		    var search_text = $(this).val().toUpperCase();
+		    $("#available_children .child").hide().filter(function(){
+		        return $(this).find(".name").text().toUpperCase().indexOf(search_text) != -1
+		    }).show();
+			return false;     
+		});
+
+		$(".child .add").unbind("click");
+		$(".child .add").bind("click", function(){
+			// remove from this list, add to other list, change the link
+			$("#current_children .genres").append($(this).parent());
+			$(this).remove();
+		});
+</script>
