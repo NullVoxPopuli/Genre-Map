@@ -45,7 +45,7 @@ class GenresController < ApplicationController
     @current_tracks = @genre.tracks
     @available_tracks = Track.all - @current_tracks
 
-    @current_children = @genre.children
+    @current_children = @genre.childs
     @available_children = Genre.all - @current_children
   end
 
@@ -142,9 +142,9 @@ class GenresController < ApplicationController
     update = params[:update]
 
     if update == "add"
-      @genre.children << @genre
+      @genre.childs << child
     else update == "remove"
-      @genre.children.delete(@genre)
+      @genre.childs.delete(child)
     end
     @genre.save
 

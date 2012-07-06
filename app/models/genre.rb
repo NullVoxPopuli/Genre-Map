@@ -1,7 +1,8 @@
 class Genre < ActiveRecord::Base
   	attr_accessible :cultural_origins, 
   				  	:description, 
-  				  	:stylistic_origin_ids, 
+  				  	:stylistic_origin_ids,
+              :child_ids,
   				  	:name,
   				  	:aka,
               :kind,
@@ -22,7 +23,7 @@ class Genre < ActiveRecord::Base
                           	:join_table => 'genres_stylistic_origins',
                           	:foreign_key => 'genre_id',
                           	:association_foreign_key => 'stylistic_origin_id'
-    has_and_belongs_to_many :children,
+    has_and_belongs_to_many :childs,
                             :class_name => "Genre",
                             :join_table => "genres_stylistic_origins",
                             :foreign_key => "stylistic_origin_id",
