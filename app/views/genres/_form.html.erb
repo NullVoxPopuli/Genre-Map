@@ -21,11 +21,12 @@
   </div>
   <div class="field">
     <%= f.label :kind %><br />
-    <%= f.select :kind, Genre.kinds %> 
+    <%= @genre.kind %>
+    <%= f.select :kind, options_for_select(Genre.kinds, @genre.kind.to_i), {:selected => @genre.kind.to_i }%> 
   </div>
   <div class="field">
     <%= f.label :super_genre %><br />
-    <%= f.select :super_genre_id, (Genre.all - [@genre]).map {|r| [r.name,r.id] }, {:selected => @genre.super_genre_id, :include_blank => true} %>
+    <%= f.select :super_genre_id, (Genre.all - [@genre]).map {|r| [r.name,r.id] }, {:include_blank => true} %>
   </div>
   <div class="field">
     <%= f.label :description %><br />
