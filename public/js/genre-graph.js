@@ -3,6 +3,8 @@ var VIDEO_PLAYER_WIDTH = 853;
 var VIDEO_PLAYER_HEIGHT = 480;
 var TRANSITION_DURATION = 500;
 var COOKIE_EXPIRATION = 1825;
+var CANVAS_HEIGHT = 3000;
+var CANVAS_WIDTH = 3000;
 var SUPER_GENRE_TEXT = "super_genre"
 var SUB_GENRE_TEXT = "sub_genre"
 var NON_ELECTRONIC_TEXT = "non_electronic"
@@ -215,7 +217,7 @@ var w = initial_size.w,
     text;
 
 force = d3.layout.force()
-    .size([3000, 3000])
+    .size([CANVAS_WIDTH, CANVAS_HEIGHT])
     .linkDistance(70)
     .charge(-700)
     //.linkStrength(0.5)
@@ -248,7 +250,7 @@ function update(){
     .data(force.links());
 
   // Enter new links
-  path.enter().insert("svg:path", ".node")
+  path.enter().insert("svg:path", "cicle")
     .attr("class", function(d) { return "link " + d.type + " " + d.source.kind; })
     .attr("marker-end", function(d) { return "url(#" + d.type + ")"; });
 
@@ -358,21 +360,21 @@ function tick() {
 
 
 function genreNodeClick(d){
-  // if (genreKind(d) == SUB_GENRE){
+  if (true ){//genreKind(d) == SUB_GENRE){
     showGenreDetails(d);
-  // }else{
+  }else{
 
-  //   // toogle collapsedness
-  //   for(var i; i < links.length; i++){
-  //     var link = links[i];
-  //     if (link.target == d){
-  //       link._target = d
-  //     } else if (link._target == d){
-  //       link.target = d
-  //     }
-  //   }
-  //   update();
-  // }
+    // toogle collapsedness
+    for(var i; i < links.length; i++){
+      var link = links[i];
+      if (link.target == d){
+        link._target = d
+      } else if (link._target == d){
+        link.target = d
+      }
+    }
+    update();
+  }
 }
 
 

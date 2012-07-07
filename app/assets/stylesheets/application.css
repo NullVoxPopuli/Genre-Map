@@ -85,6 +85,11 @@ circle {
   fill: #ddd;
   stroke: #333;
   stroke-width: 1.5px;
+  	border: 1px solid #E5E5E5;
+	background: #f4f4f4;
+	-webkit-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+	-moz-box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 circle.sub_genre{
 }

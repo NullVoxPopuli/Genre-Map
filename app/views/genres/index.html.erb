@@ -1,8 +1,9 @@
 <br />
 <br />
 <h1>Listing genres</h1>
+<%= text_field_tag "search_genres", nil, :placeholder => "Too lazy to scroll.." %>
 
-<table>
+<table class="genres">
   <tr>
     <th>Name</th>
     <th></th>
@@ -12,7 +13,7 @@
 
 <% @genres.each do |genre| %>
   <tr>
-    <td><%= genre.name %></td>
+    <td class="name"><%= genre.name %></td>
     <td><%= link_to 'Show', genre %></td>
     <td><%= link_to 'Edit', edit_genre_path(genre) %></td>
     <td><%= link_to 'Destroy', genre, method: :delete, data: { confirm: 'Are you sure?' } %></td>
@@ -23,3 +24,14 @@
 <br />
 
 <%= link_to 'New Genre', new_genre_path %>
+
+<script type="text/javascript">
+    // $("#search_available_origins").unbind("keyup input paste");
+    $("#search_genres").bind("keyup input paste", function(){
+        var search_text = $(this).val().toUpperCase();
+        $(".genres .name").parent().hide().filter(function(){
+            return $(this).find(".name").text().toUpperCase().indexOf(search_text) != -1
+        }).show();
+      return false;     
+    });
+</script>

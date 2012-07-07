@@ -33,6 +33,8 @@ class Genre < ActiveRecord::Base
     SUPER_GENRE = 1
     NON_ELECTRONIC = 2
 
+    validates :name, :uniqueness => {:case_sensitive => false}
+
     def self.kinds
       return {:sub_genre => SUB_GENRE, :super_genre => SUPER_GENRE,
         :non_electronic => NON_ELECTRONIC}
