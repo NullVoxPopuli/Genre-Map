@@ -343,21 +343,21 @@ function tick() {
 
 
 function genreNodeClick(d){
-  if (genreKind(d) == SUB_GENRE){
+  // if (genreKind(d) == SUB_GENRE){
     showGenreDetails(d);
-  }else{
+  // }else{
 
-    // toogle collapsedness
-    for(var i; i < links.length; i++){
-      var link = links[i];
-      if (link.target == d){
-        link._target = d
-      } else if (link._target == d){
-        link.target = d
-      }
-    }
-    update();
-  }
+  //   // toogle collapsedness
+  //   for(var i; i < links.length; i++){
+  //     var link = links[i];
+  //     if (link.target == d){
+  //       link._target = d
+  //     } else if (link._target == d){
+  //       link.target = d
+  //     }
+  //   }
+  //   update();
+  // }
 }
 
 
