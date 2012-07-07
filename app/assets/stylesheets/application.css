@@ -215,6 +215,22 @@ text.shadow {
 	box-shadow: 
 		0 1px 3px rgba(150,150,255,0.5);}
 
+.repulsion_slider{
+	position: fixed;
+	z-index: 3;
+	right: 20px;
+	top: 52px;
+}
+.repulsion_slider input{
+	width: 258px;
+}
+ input[type="range"]{
+
+ }
+
+ input[type="range"]::-webkit-slider-thumb{
+   
+ }
 .interface_options{
 	position: fixed;
 	bottom: 20px;

@@ -13,6 +13,7 @@ var SUPER_GENRE = 1;
 var NON_ELECTRONIC = 2;
 // end ruby constants™
 
+var force;
 
 /*
   COOKIE UTILS - by w3c schools
@@ -98,6 +99,12 @@ $(".interface_options .hide").click(function(){
     setCookie("interface_is_hidden", 0, COOKIE_EXPIRATION);   
   }
   setTimeout(resizeSVG, 250);
+});
+
+$(".repulsion_slider input").change(function(){
+  force.charge($(this).val() * -1);
+  console.log($(this).val())
+  // update();
 });
 
 
@@ -207,10 +214,10 @@ var w = initial_size.w,
     path,
     text;
 
-var force = d3.layout.force()
+force = d3.layout.force()
     .size([3000, 3000])
     .linkDistance(70)
-    .charge(-1000)
+    .charge(-700)
     //.linkStrength(0.5)
     .friction(0.8)
     .on("tick", tick)
@@ -223,10 +230,9 @@ var svg = d3.select(".svg_container").append("svg:svg");
 
 resizeSVG(); // fit to window
 update(); // draw
-setTimeout(function(){  
-  svg_container.scrollLeft($(".TRANCE").position().left - w / 2);
-  svg_container.scrollTop($(".TRANCE").position().top - h / 2);
-}, 2000);
+svg_container.scrollLeft(svg_container.width() / 2);
+svg_container.scrollTop(svg_container.height() / 2 + h);
+
 
 // redraw everything
 // - mainly for collapsing
