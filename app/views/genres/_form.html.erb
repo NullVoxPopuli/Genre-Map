@@ -25,7 +25,7 @@
   </div>
   <div class="field">
     <%= f.label :super_genre %><br />
-    <%= f.select :super_genre_id, (Genre.all - [@genre]).map {|r| [r.name,r.id] }, {:include_blank => true} %>
+    <%= f.select :super_genre_id, (Genre.find(:all, :conditions => ["kind = ?", Genre::SUPER_GENRE])).map {|r| [r.name,r.id] }, {:include_blank => true} %>
   </div>
   <div class="field">
     <%= f.label :description %><br />
