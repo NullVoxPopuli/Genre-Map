@@ -230,8 +230,8 @@ var svg = d3.select(".svg_container").append("svg:svg");
 
 resizeSVG(); // fit to window
 update(); // draw
-svg_container.scrollLeft(svg_container.width() / 2);
-svg_container.scrollTop(svg_container.height() / 2 + h);
+svg_container.scrollLeft($("svg").width() / 2 - svg_container.width() / 2);
+svg_container.scrollTop($("svg").height() / 2 - svg_container.height() / 2);
 
 
 // redraw everything
