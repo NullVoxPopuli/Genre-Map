@@ -141,7 +141,7 @@ function makeCenter(obj){
 function showGenreDetails(o){
   // o : a d3.js node object
 
-  var genre = genres[o.name];
+  var genre = o.data;
   genre_details.find(".name").html(genre.name);
 
   // set tracks
