@@ -172,7 +172,7 @@ function showGenreDetails(o){
 
   genre_details.find(".description").html(genre.description);
   genre_details.find(".wiki a").attr("href", genre.wikipedia);
-
+  stop_playback.click();
   genre_details.fadeIn();
 
 }
