@@ -72,6 +72,7 @@ var toolbar_height = toolbar.outerHeight();
 var sidebar_width = sidebar.outerWidth();
 var genre_details = $(".genre_details");
 var stop_playback = $(".stop_playback");
+var svg_container = $(".svg_container");
 
 initUI();
 
@@ -138,6 +139,7 @@ function makeCenter(obj){
   })
 }
 
+
 function showGenreDetails(o){
   // o : a d3.js node object
 
@@ -168,7 +170,9 @@ function showGenreDetails(o){
 
 }
 
-$(window).resize(resizeSVG);
+
+// $(window).resize(resizeSVG);
+
 
 
 /*
@@ -201,13 +205,12 @@ var w = initial_size.w,
     y = initial_size.y,
     circle,
     path,
-    text,
-    root;
+    text;
 
 var force = d3.layout.force()
-    .size([w, h])
+    .size([3000, 3000])
     .linkDistance(70)
-    .charge(-1500)
+    .charge(-1000)
     //.linkStrength(0.5)
     .friction(0.8)
     .on("tick", tick)
@@ -216,10 +219,14 @@ var force = d3.layout.force()
    .start();
 
 
-var svg = d3.select("body").append("svg:svg");
+var svg = d3.select(".svg_container").append("svg:svg");
 
 resizeSVG(); // fit to window
 update(); // draw
+setTimeout(function(){  
+  svg_container.scrollLeft($(".TRANCE").position().left - w / 2);
+  svg_container.scrollTop($(".TRANCE").position().top - h / 2);
+}, 2000);
 
 // redraw everything
 // - mainly for collapsing
@@ -252,7 +259,9 @@ function update(){
     .attr("r", function(d) { return genreRadius(d); })
     .call(force.drag)
     .on("click", function(d) { genreNodeClick(d) })
-    .attr("class", function(d) {return d.kind;});
+    .attr("class", function(d) {
+      return d.kind + " " + d.data.name.replace(" ", "").toUpperCase();
+    });
 
   // exit old nodes
   circle.exit().remove();
@@ -419,11 +428,11 @@ function findGenreForName(name){
 
 function resizeSVG(){
   var size = getSizeForCanvas();
-  $("svg").animate({
+  $(".svg_container").animate({
     "top": size.y,
     "left": size.x,
-    "width": size.w,
-    "height": size.h
+    // "width": size.w,
+    // "height": size.h
   });
 
 }
