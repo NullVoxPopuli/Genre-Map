@@ -4,25 +4,27 @@ class ApplicationController < ActionController::Base
  	before_filter :create_toolbar
 
  	def index
- 		@genres = Genre.all
- 		@data = {}
- 		Genre.all.map{|g| @data.merge!({g[:id] => g.as_json})}
- 		@data = @data.to_json
+ 		genres = Genre.all
+
  		@connections = []
- 		Genre.all.map{|g| 
- 			@connections << {:source => g[:id], :target => g[:id]} if g.stylistic_origin_ids.empty?
- 			g.stylistic_origin_ids.each {|id|
+ 		Genre.all.each{|g|
+ 			g_index = genres.index(g)
+ 			@connections << {:source => g_index, :target => g_index} if g.stylistic_origin_ids.empty?
+ 			g.stylistic_origins.each {|o|
+ 				o_index = genres.index(o)
  				@connections << {
- 					:source => id,
-        	  		:target => g[:id],
+ 					:source => o_index,
+        	  		:target => g_index,
           			:rel => "direct" }
  				}}
  		@connections = @connections.to_json
+
  		@nodes = []
  		 Genre.all.each {|g| 
  		 	@nodes << {
  		 			:name => g[:id],
- 		 			:kind => g.kind_key
+ 		 			:kind => g.kind_key,
+ 		 			:data => g.as_json
  		 		}
  		 	}
  		@nodes = @nodes.to_json

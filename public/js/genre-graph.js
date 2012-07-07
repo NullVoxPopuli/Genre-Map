@@ -3,6 +3,9 @@ var VIDEO_PLAYER_WIDTH = 853;
 var VIDEO_PLAYER_HEIGHT = 480;
 var TRANSITION_DURATION = 500;
 var COOKIE_EXPIRATION = 1825;
+var SUPER_GENRE_TEXT = "super_genre"
+var SUB_GENRE_TEXT = "sub_genre"
+var NON_ELECTRONIC_TEXT = "non_electronic"
 
 // make sure these stay synced with Genre.rb
 var SUB_GENRE = 0;
@@ -108,17 +111,6 @@ function initUI(){
   }
 }
 
-function resizeSVG(){
-  var size = getSizeForCanvas();
-  $("svg").animate({
-    "top": size.y,
-    "left": size.x,
-    "width": size.w,
-    "height": size.h
-  });
-
-}
-
 function setTheaterForURL(url, autoplay){
   var autoplay = (typeof(autoplay) == "undefined") ? "?autoplay=1" : ""
   var theater = $(".theater");
@@ -186,6 +178,190 @@ $(window).resize(resizeSVG);
 // http://blog.thomsonreuters.com/index.php/mobile-patent-suits-graphic-of-the-day/
 
 
+nodes = {}
+// // Compute the distinct nodes from the links.
+// connections.forEach(function(link) {
+//   link.source = findGenreForName(link.source);
+//   link.target = findGenreForName(link.target);
+// });
+
+// Compute the distinct nodes from the links.
+links = connections
+
+// links.forEach(function(link) {
+//   link.source = nodes[link.source] || (nodes[link.source] = {name: link.source});
+//   link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
+// });
+
+
+initial_size = getSizeForCanvas()
+var w = initial_size.w,
+    h = initial_size.h,
+    x = initial_size.x,
+    y = initial_size.y,
+    circle,
+    path,
+    text,
+    root;
+
+var force = d3.layout.force()
+    .size([w, h])
+    .linkDistance(70)
+    .charge(-1500)
+    //.linkStrength(0.5)
+    .friction(0.8)
+    .on("tick", tick)
+   // .nodes(genre_nodes)
+   // .links(connections)
+   .start();
+
+
+var svg = d3.select("body").append("svg:svg");
+
+resizeSVG(); // fit to window
+update(); // draw
+
+// redraw everything
+// - mainly for collapsing
+function update(){
+
+  force
+    .nodes(genre_nodes)
+    .links(connections)
+    .start();
+
+  // update the links
+  path = svg.selectAll("path")
+    .data(force.links());
+
+  // Enter new links
+  path.enter().insert("svg:path", ".node")
+    .attr("class", function(d) { return "link " + d.type + " " + d.source.kind; })
+    .attr("marker-end", function(d) { return "url(#" + d.type + ")"; });
+
+  // exit any old links
+  path.exit().remove();
+
+  // update the nodes
+  circle = svg.selectAll("circle.node")
+    .data(force.nodes())
+    // change color?
+
+  // enter new nodes
+  circle.enter().append("svg:circle")
+    .attr("r", function(d) { return genreRadius(d); })
+    .call(force.drag)
+    .on("click", function(d) { genreNodeClick(d) })
+    .attr("class", function(d) {return d.kind;});
+
+  // exit old nodes
+  circle.exit().remove();
+
+
+  // // Per-type markers, as they don't inherit styles.
+  // var markers = svg.append("svg:defs").selectAll("marker")
+  //     .data(["direct"]);
+    
+  // markers.enter().append("svg:marker")
+  //     .attr("id", String)
+  //     .attr("viewBox", "0 -5 10 10")
+  //     .attr("refX", 15)
+  //     .attr("refY", -1.5)
+  //     .attr("markerWidth", 6)
+  //     .attr("markerHeight", 6)
+  //     .attr("orient", "auto")
+  //   .append("svg:path")
+  //     .attr("d", "M0,-5L10,0L0,5");
+     
+
+
+  // update the text
+  text = svg.selectAll("g")
+    .data(force.nodes());
+
+  // Enter new text
+  text.enter().append("svg:g");
+  text.append("svg:text")
+      .attr("text-anchor", "middle")
+      .attr("x", 0)
+      .attr("y", function(d) {return textOffsetY(d); })
+      .attr("class", "shadow")
+      .text(function(d) { return d.data.name; });
+
+
+  text.append("svg:text")
+      .attr("text-anchor", "middle")  
+      .attr("x", 0)
+      .attr("y", function(d) {return textOffsetY(d); })
+      .text(function(d) { return d.data.name; });
+
+
+  // exit old text
+  text.exit().remove();
+
+
+  // var text = svg.append("svg:g").selectAll("g")
+  //     .data(force.nodes())
+  //   .enter().append("svg:g");
+
+  // // A copy of the text with a thick white stroke for legibility.
+  // text.append("svg:text")
+  //     .attr("text-anchor", "middle")
+  //     .attr("x", 0)
+  //     .attr("y", function(d) {return textOffsetY(d); })
+  //     .attr("class", "shadow")
+  //     .text(function(d) { return genres[d.name].name; });
+
+  // text.append("svg:text")
+  //     .attr("text-anchor", "middle")  
+  //     .attr("x", 0)
+  //     .attr("y", function(d) {return textOffsetY(d); })
+  //     .text(function(d) { return genres[d.name].name; });
+
+
+}
+
+
+
+
+function tick() {
+  path.attr("d", function(d) {
+    var dx = d.target.x - d.source.x,
+        dy = d.target.y - d.source.y,
+        dr = Math.sqrt(dx * dx + dy * dy);
+    return "M" + d.source.x + "," + d.source.y + "L"+ d.target.x + "," + d.target.y;
+  });
+
+  circle.attr("transform", function(d) {
+    return "translate(" + d.x + "," + d.y + ")";
+  });
+
+  text.attr("transform", function(d) {
+    return "translate(" + d.x + "," + d.y + ")";
+  });
+};
+
+
+function genreNodeClick(d){
+  if (genreKind(d) == SUB_GENRE){
+    showGenreDetails(d);
+  }else{
+
+    // toogle collapsedness
+    for(var i; i < links.length; i++){
+      var link = links[i];
+      if (link.target == d){
+        link._target = d
+      } else if (link._target == d){
+        link.target = d
+      }
+    }
+    update();
+  }
+}
+
+
+
 function getSizeForCanvas(){
   var w = $(window).width();
   var h = $(window).height();
@@ -206,7 +382,7 @@ function getSizeForCanvas(){
 function genreRadius(d){
   // d : d3 node object
   var radius;
-  var kind = genres[d.name].kind
+  var kind = d.data.kind
   if (kind == SUPER_GENRE){ radius = 25; } 
   else { radius = 6; }
   return radius;
@@ -215,20 +391,20 @@ function genreRadius(d){
 function genreKind(d){
   // d : d3 node object
   var result = ""
-  var kind = genres[d.name].kind
+  var kind = d.data.kind
   if (kind == SUPER_GENRE)
-    result = "super_genre"
-  else if (d.kind == NON_ELECTRONIC)
-    result = "non_electronic"
+    result = SUPER_GENRE_TEXT
+  else if (kind == NON_ELECTRONIC)
+    result = NON_ELECTRONIC_TEXT
   else
-    result = "sub_genre"
+    result = SUB_GENRE_TEXT
 
   return result;
 }
 
 function textOffsetY(d){
   var offsetY = 0;
-  var kind = genres[d.name].kind
+  var kind = d.data.kind
   if (kind == SUPER_GENRE){ offsetY = 4; } 
   else { offsetY = 16; }
   return offsetY;
@@ -241,140 +417,15 @@ function findGenreForName(name){
   }
 }
 
-nodes = {}
-// // Compute the distinct nodes from the links.
-// connections.forEach(function(link) {
-//   link.source = findGenreForName(link.source);
-//   link.target = findGenreForName(link.target);
-// });
-
-// Compute the distinct nodes from the links.
-links = connections
-links.forEach(function(link) {
-  link.source = nodes[link.source] || (nodes[link.source] = {name: link.source});
-  link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
-});
-
-
-initial_size = getSizeForCanvas()
-var w = initial_size.w;
-    h = initial_size.h;
-    x = initial_size.x;
-    y = initial_size.y;
-
-var force = d3.layout.force()
-    .size([w, h])
-    .linkDistance(70)
-    .charge(-1500)
-    //.linkStrength(0.5)
-    .friction(0.8)
-    .nodes(d3.values(nodes))
-    .links(links)
-   // .nodes(genre_nodes)
-   // .links(connections)
-   .start();
-
-down = false;
-var lastX, lastY;
-var tx = 0, ty = 0;
-
-var svg = d3.select("body")
-  .append("svg:svg")
-  // .on("mousemove", function(){
-  //     var x = 0; var y = 1;
-  //     m = d3.mouse(this);
-  //       if( ! down )
-  //         return
-  //         var x = m[x]
-  //         var y = m[y]
-  //         var dx = x - lastX
-  //         var dy = y - lastY
-  //         lastX = x
-  //         lastY = y
-         
-         
-  //           tx += dx
-  //           ty += dy
-  //           d3.select("body").attr( "transform", "translate("+tx+","+ty+")" )
-          
-  // })
-  // .on("mousedown", function(){
-  //     lastX = d3.mouse(this)[0];
-  //     lastY = d3.mouse(this)[1];
-  //     down = true
-  // })
-  // .on("mouseup", function(){
-  //   down = false;
-  // })
-
-resizeSVG();
-
-
-
-// Per-type markers, as they don't inherit styles.
-svg.append("svg:defs").selectAll("marker")
-    .data(["direct"])
-  .enter().append("svg:marker")
-    .attr("id", String)
-    .attr("viewBox", "0 -5 10 10")
-    .attr("refX", 15)
-    .attr("refY", -1.5)
-    .attr("markerWidth", 6)
-    .attr("markerHeight", 6)
-    .attr("orient", "auto")
-  .append("svg:path")
-    .attr("d", "M0,-5L10,0L0,5");
-
-var path = svg.append("svg:g").selectAll("path")
-    .data(force.links())
-  .enter().append("svg:path")
-    .attr("class", function(d) { return "link " + d.type + " " + genreKind(d.source); })
-    .attr("marker-end", function(d) { return "url(#" + d.type + ")"; });
-
-var circle = svg.append("svg:g").selectAll("circle")
-    .data(force.nodes())
-  .enter().append("svg:circle")
-    .attr("r", function(d) { return genreRadius(d); })
-    .call(force.drag)
-    .on("click", function(d) { showGenreDetails(d) })
-    .attr("class", function(d) {return genreKind(d);});
-
-var text = svg.append("svg:g").selectAll("g")
-    .data(force.nodes())
-  .enter().append("svg:g");
-
-// A copy of the text with a thick white stroke for legibility.
-text.append("svg:text")
-    .attr("text-anchor", "middle")
-    .attr("x", 0)
-    .attr("y", function(d) {return textOffsetY(d); })
-    .attr("class", "shadow")
-    .text(function(d) { return genres[d.name].name; });
-
-text.append("svg:text")
-    .attr("text-anchor", "middle")  
-    .attr("x", 0)
-    .attr("y", function(d) {return textOffsetY(d); })
-    .text(function(d) { return genres[d.name].name; });
-
-force.on("tick", function() {
-  path.attr("d", function(d) {
-    var dx = d.target.x - d.source.x,
-        dy = d.target.y - d.source.y,
-        dr = Math.sqrt(dx * dx + dy * dy);
-    return "M" + d.source.x + "," + d.source.y + "L"+ d.target.x + "," + d.target.y;
+function resizeSVG(){
+  var size = getSizeForCanvas();
+  $("svg").animate({
+    "top": size.y,
+    "left": size.x,
+    "width": size.w,
+    "height": size.h
   });
 
-  circle.attr("transform", function(d) {
-    return "translate(" + d.x + "," + d.y + ")";
-  });
-
-  text.attr("transform", function(d) {
-    return "translate(" + d.x + "," + d.y + ")";
-  });
-});
-
-
-
+}
 
 })
