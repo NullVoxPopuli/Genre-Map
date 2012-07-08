@@ -5215,6 +5215,7 @@ d3.layout.force = function() {
       y = size[1] / 2;
       i = -1; if (k) while (++i < n) {
         o = nodes[i];
+      if (o == undefined) continue;
         o.x += (x - o.x) * k;
         o.y += (y - o.y) * k;
       }
@@ -5224,7 +5225,9 @@ d3.layout.force = function() {
     if (charge) {
       d3_layout_forceAccumulate(q = d3.geom.quadtree(nodes), alpha, charges);
       i = -1; while (++i < n) {
-        if (!(o = nodes[i]).fixed) {
+        o = nodes[i]
+        if (o == undefined) continue;
+        if (!(o).fixed) {
           q.visit(repulse(o));
         }
       }
@@ -5233,6 +5236,7 @@ d3.layout.force = function() {
     // position verlet integration
     i = -1; while (++i < n) {
       o = nodes[i];
+      if (o == undefined) continue;
       if (o.fixed) {
         o.x = o.px;
         o.y = o.py;
@@ -5327,7 +5331,9 @@ d3.layout.force = function() {
         o;
 
     for (i = 0; i < n; ++i) {
-      (o = nodes[i]).index = i;
+      o = nodes[i];
+      if (o == undefined) continue;
+      o.index = i;
       o.weight = 0;
     }
 
@@ -5345,6 +5351,7 @@ d3.layout.force = function() {
 
     for (i = 0; i < n; ++i) {
       o = nodes[i];
+      if (o == undefined) continue; 
       if (isNaN(o.x)) o.x = position("x", w);
       if (isNaN(o.y)) o.y = position("y", h);
       if (isNaN(o.px)) o.px = o.x;
@@ -8564,7 +8571,9 @@ d3.geom.quadtree = function(points, x1, y1, x2, y2) {
       n = points.length;
 
   // Type conversion for deprecated API.
-  if (n && isNaN(points[0].x)) points = points.map(d3_geom_quadtreePoint);
+
+  var o = points.firstNonUndefined();
+  if (n && isNaN(o.x)) points = points.map(d3_geom_quadtreePoint);
 
   // Allow bounds to be specified explicitly.
   if (arguments.length < 5) {
@@ -8578,6 +8587,7 @@ d3.geom.quadtree = function(points, x1, y1, x2, y2) {
       // Compute bounds.
       while (++i < n) {
         p = points[i];
+        if (p == undefined) continue;
         if (p.x < x1) x1 = p.x;
         if (p.y < y1) y1 = p.y;
         if (p.x > x2) x2 = p.x;

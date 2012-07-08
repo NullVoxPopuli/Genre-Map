@@ -104,6 +104,9 @@ circle.non_electronic{
 	stroke-dasharray: 0,2 1;
 
 }
+circle.Trance{
+	fill: blue;
+}
 
 text {
   font: 10px sans-serif;

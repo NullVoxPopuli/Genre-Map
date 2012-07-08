@@ -24,6 +24,7 @@ class ApplicationController < ActionController::Base
  		 	@nodes << {
  		 			:name => g[:id],
  		 			:kind => g.kind_key,
+ 		 			:super_genre => g.super_genre ? g.super_genre.name : "",
  		 			:data => g.as_json
  		 		}
  		 	}
