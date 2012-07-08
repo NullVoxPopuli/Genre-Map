@@ -109,6 +109,11 @@ $(function(){
     force.charge($(this).val() * -1);
     // update();
   });
+  $(document).bind("keydown",  function(event){
+      if (event.which == 27) { // 27 is escape
+          $(".genre_details .close").click();
+      }
+  });
 
 
   function initUI(){
