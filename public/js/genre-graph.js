@@ -268,9 +268,9 @@ $(function(){
     node.enter().append("svg:circle")
       .attr("r", function(d) { return genreRadius(d); })
       .call(force.drag)
-      // .on("dblclick", function(d) { 
-      //     showGenreDetails(d);
-      // })
+      .on("dblclick", function(d) { 
+          showGenreDetails(d);
+      })
       .on("click", function(d){
           expandOrCollapse(d);
           update();
