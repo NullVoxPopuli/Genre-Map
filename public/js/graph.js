@@ -33,11 +33,12 @@ var hiddenSuperGenres = []
 var searchText = "" 
 
 
-// cotainer that allows scrolling
-var svg_container = $(".svg_container");
-
 
 $(function(){
+  // cotainer that allows scrolling
+  var svg_container = $(".svg_container");
+
+
   updateNetwork = function(){
     var prevNodes,
         currentNode, nodeName, parentName,
