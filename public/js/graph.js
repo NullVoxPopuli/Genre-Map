@@ -36,8 +36,39 @@ var searchText = ""
 
 $(function(){
   // cotainer that allows scrolling
-    var svg_container = $(".svg_container");
+  var svg_container = $(".svg_container");
 
+
+  var toolbar = $(".toolbar"); 
+  var sidebar = $(".information");
+  var toolbar_height = toolbar.outerHeight();
+  var sidebar_width = sidebar.outerWidth();
+  getSizeForCanvas = function(){
+    var w = $(window).width();
+    var h = $(window).height();
+    var x = 0;
+    var y = 0;
+    var toolbar_visible = typeof(toolbar) == "undefined" ? false : toolbar.is(":visible");
+    var sidebar_visible = typeof(sidebar) == "undefined" ? false : sidebar.is(":visible");
+    if (sidebar_visible) x = sidebar_width;
+    if (toolbar_visible) y = toolbar_height
+    return {
+      x: x,
+      y: y,
+      w: w - x,
+      h: h - y
+    }
+  }
+    resizeSVG = function(){
+    var size = getSizeForCanvas();
+    $(".svg_container").animate({
+      "top": size.y,
+      "left": size.x,
+      // "width": size.w,
+      // "height": size.h
+    });
+
+  }
 
   updateNetwork = function(){
     var prevNodes,
@@ -220,27 +251,6 @@ $(function(){
     // });
   };
 
-  var toolbar = $(".toolbar"); 
-  var sidebar = $(".information");
-  var toolbar_height = toolbar.outerHeight();
-  var sidebar_width = sidebar.outerWidth();
-  function getSizeForCanvas(){
-    var w = $(window).width();
-    var h = $(window).height();
-    var x = 0;
-    var y = 0;
-    var toolbar_visible = typeof(toolbar) == "undefined" ? false : toolbar.is(":visible");
-    var sidebar_visible = typeof(sidebar) == "undefined" ? false : sidebar.is(":visible");
-    if (sidebar_visible) x = sidebar_width;
-    if (toolbar_visible) y = toolbar_height
-    return {
-      x: x,
-      y: y,
-      w: w - x,
-      h: h - y
-    }
-  }
-
   function textOffsetY(d){
     var offsetY = 0;
     var kind = d.kind;
@@ -258,15 +268,5 @@ $(function(){
     return offsetX;
   }
 
-  function resizeSVG(){
-    var size = getSizeForCanvas();
-    $(".svg_container").animate({
-      "top": size.y,
-      "left": size.x,
-      // "width": size.w,
-      // "height": size.h
-    });
-
-  }
 
 })
