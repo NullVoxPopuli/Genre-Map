@@ -1,7 +1,8 @@
-<%= javascript_include_tag "/js/dom-utils.js", "/js/d3.js", "/js/genre-graph.js" %>
+<%= javascript_include_tag "/js/cookies.js", "/js/dom-utils.js", "/js/d3.js", "/js/interface.js","/js/graph.js" %>
 <script type="text/javascript">
-	var connections = <%= @connections.html_safe %>;
-	var genre_nodes = <%= @nodes.html_safe %>;
+	connections = <%= @connections.html_safe %>;
+	genre_nodes = <%= @nodes.html_safe %>;
+	hiddenSuperGenres = <%= @hidden_genres.html_safe %>;
 </script>
 
 <div class="debug_panel">
