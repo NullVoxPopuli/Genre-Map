@@ -36,7 +36,7 @@ var searchText = ""
 
 $(function(){
   // cotainer that allows scrolling
-  var svg_container = $(".svg_container");
+    var svg_container = $(".svg_container");
 
 
   updateNetwork = function(){
@@ -88,12 +88,9 @@ $(function(){
 
       // by default, we want to include whatever the searchText tells up to
       // and to exclude anything in "hiddenSuperGenres"
-      if (nodeName.indexOf(searchText) != -1 && 
-          (hiddenSuperGenres.indexOf(parentName) == -1 || parentName == "")  &&
-          nodes.indexOfObjectForField("id", currentNode.id) == -1){
-        if (currentNode.name == "Ambient"){
-          console.log(currentNode);
-        }
+      if ((searchText.length > 0 && nodeName.indexOf(searchText) != -1) || 
+          ( searchText.length == 0 && (hiddenSuperGenres.indexOf(parentName) == -1 || parentName == "")  &&
+                    nodes.indexOfObjectForField("id", currentNode.id) == -1)){
         nodes.push(currentNode);
       }
     }
