@@ -12,7 +12,8 @@ class ApplicationController < ActionController::Base
 
  		Genre.all.each {|g| 
  			node = {
-	 			:name => g[:id],
+	 			:id => g[:id],
+	 			:name => g[:name],
 	 			:kind => g.kind_key,
 	 			:super_genre => g.super_genre ? g.super_genre.name : "",
 	 			:data => g.as_json
@@ -20,14 +21,14 @@ class ApplicationController < ActionController::Base
  		 	@nodes << node
  		 	
  		 	g_index = genres.index(g)
- 			@connections << {:source => node, :target => node} if g.stylistic_origin_ids.empty?
- 			g.stylistic_origins.each {|o|
- 				o_index = genres.index(o)
+ 		 	origins = g.stylistic_origins
+ 		 	
+ 			@connections << {:source => node[:id], :target => node[:id]} if origins.empty?
+ 			origins.each {|o|
  				@connections << {
- 					:source => o_index,
-        	  		:target => g_index,
-          			:rel => "direct" 
-          		}
+ 					:source => o[:id],
+        	  		:target => g[:id]
+           		}
 			}
 		}
 

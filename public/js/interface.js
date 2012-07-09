@@ -91,7 +91,7 @@ $(function(){
     })
   }
 
-  function showGenreDetails(o){
+  showGenreDetails = function(o){
     // o : a d3.js node object
 
     var genre = o.data;

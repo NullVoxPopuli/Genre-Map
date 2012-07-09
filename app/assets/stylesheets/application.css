@@ -91,20 +91,20 @@ circle {
 	-moz-box-shadow: 0 4px 16px rgba(0,0,0,0.2);
 	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
-circle.sub_genre{
+.sub_genre{
 }
 
-circle.super_genre{
+.super_genre circle{
 	fill: #42B6C9;
 	stroke: #000;
 }
 
-circle.non_electronic{
+.non_electronic circle{
 	fill: white;
 	stroke-dasharray: 0,2 1;
 
 }
-circle.Trance{
+.Trance{
 }
 
 text {

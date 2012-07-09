@@ -39,6 +39,10 @@ var svg_container = $(".svg_container");
 
 $(function(){
   updateNetwork = function(){
+    var prevNodes,
+        currentNode, nodeName, parentName,
+        currentConnection, sourceID, targetID, sourceIndex, targetIndex;;
+
     console.log("updating network...");
     /*
      Things we need to do:
@@ -49,36 +53,59 @@ $(function(){
       - set current nodes to "nodes"
     */
 
-    // clear structures to be graphed
-    nodes.clear;
-    links.clear;    
+    // always compare in upper case
+    searchText = searchText.toUpperCase();
+
+
+    // clear links
+    links.clear();
+    nodes.clear();
+    // previous nodes
+    // prevNodes = nodes;
+    // nodes = [];
+    // for (var i = 0; i < prevNodes.length; i++){
+    //   currentNode = prevNodes[i];
+    //   nodeName = currentNode.data.name.toUpperCase();
+    //   parentName = currentNode.super_genre;
+
+    //   if (nodeName.indexOf(searchText) != -1 && 
+    //       (hiddenSuperGenres.indexOf(parentName) == -1 || parentName == "") &&
+    //       nodes.indexOfObjectForField("id", currentNode.id) == -1){
+    //     nodes.push(currentNode);
+
+    //   }
+
+    // }
+    
+    // keep old nodes
 
     // loop over genre_nodes, adding nodes as needed
-    var currentNode, nodeName, parentName;
     for (var i = 0; i < genre_nodes.length; i++){
       currentNode = genre_nodes[i];
       nodeName = currentNode.data.name.toUpperCase();
       parentName = currentNode.super_genre;
-      searchText = searchText.toUpperCase();
 
       // by default, we want to include whatever the searchText tells up to
       // and to exclude anything in "hiddenSuperGenres"
-      if (nodeName.indexOf(searchText) != -1 && (hiddenSuperGenres.indexOf(parentName) == -1) || parentName == ""){
+      if (nodeName.indexOf(searchText) != -1 && 
+          (hiddenSuperGenres.indexOf(parentName) == -1 || parentName == "")  &&
+          nodes.indexOfObjectForField("id", currentNode.id) == -1){
+        if (currentNode.name == "Ambient"){
+          console.log(currentNode);
+        }
         nodes.push(currentNode);
       }
     }
-
     // compute the links array
     //  - must lookup the new positions
     //  - loop over each connection, and see if both source and target are visible
-    var currentConnection, sourceID, targetID, sourceIndex, targetIndex;
     for (var i = 0; i < connections.length; i++){
 
       currentConnection = connections[i];
       sourceID = currentConnection.source;
       targetID = currentConnection.target;
-      sourceIndex = nodes.indexOfObjectForField("name", sourceID);
-      targetIndex = nodes.indexOfObjectForField("name", targetID);
+      sourceIndex = nodes.indexOfObjectForField("id", sourceID);
+      targetIndex = nodes.indexOfObjectForField("id", targetID);
 
       // both most exist in nodes
       if (sourceIndex != -1 && targetIndex != -1)
@@ -108,97 +135,47 @@ $(function(){
     link.exit().remove();
 
     // update the nodes
-    node = svg.selectAll("circle.node")
-      .data(force.nodes())
-      // change color?
-
-    // enter new nodes
-    node.enter().append("svg:circle")
-      .attr("r", function(d) { return genreRadius(d); })
-      .call(force.drag)
-      .on("dblclick", function(d) { 
-          showGenreDetails(d);
-      })
-      .on("click", function(d){
-          expandOrCollapse(d);
-          updateNetwork();
-          updateGraph();
-      })
-      .attr("class", function(d) {
-        return "node " + d.kind + " " + d.data.name.replace(" ", "").toUpperCase() + " " + d.super_genre;
-      });
-
-    // exit old nodes
-    node.exit().remove();
-
-
-    // // // Per-type markers, as they don't inherit styles.
-    // var markers = svg.append("svg:defs").selectAll("marker")
-    //     .data(["direct"])
-    //     .enter().append("svg:marker")
-    //     .attr("id", String)
-    //     .attr("viewBox", "0 -5 10 10")
-    //     .attr("refX", 15)
-    //     .attr("refY", -1.5)
-    //     .attr("markerWidth", 6)
-    //     .attr("markerHeight", 6)
-    //     .attr("orient", "auto")
-    //   .append("svg:path")
-    //     .attr("d", "M0,-5L10,0L0,5");
-       
-
-
-    // update the text
-    text = svg.selectAll("g")
+    node = svg.selectAll("g.node")
       .data(force.nodes());
 
-    // Enter new text
-    text.enter().append("svg:g");
-    text.append("svg:text")
-        .attr("text-anchor", "middle")
-        .attr("x", 0)
-        .attr("y", function(d) {return textOffsetY(d); })
-        .attr("class", function(d){  
-          return "shadow " + d.super_genre
+    // new nodes
+    node.enter().append("g")
+        .attr("class", function(d) {
+          return "node " + d.kind + " " + d.data.name.replace(" ", "").toUpperCase() + " " + d.super_genre;
         })
-        .text(function(d) {     
-          return d.data.name; });
+        .call(force.drag)
+        .on("click", function(d){
+          if (d.kind != SUPER_GENRE_TEXT) {
+            showGenreDetails(d);
+          } else {
+            var genre_name = d.data.name;
 
+            console.log("Expand / Collapse - ing: " + genre_name);
 
-    text.append("svg:text")
-        .attr("text-anchor", "middle")  
-        .attr("x", 0)
-        .attr("y", function(d) {return textOffsetY(d); })
-        .attr("class", function(d){
-          return d.super_genre
-        })
-        .text(function(d) { 
-          return d.data.name; });
+            // check if collapsed 
+            var indexOfGenre;
+            if ((indexOfGenre = hiddenSuperGenres.indexOf(genre_name)) != -1){
+              hiddenSuperGenres.remove(indexOfGenre);
+            } else {
+              hiddenSuperGenres.push(genre_name)
+            }
+            updateNetwork();
+            updateGraph();
+          }
+      })
+    node.append("circle")
+      .attr("r", function(d) {
+        var radius = 6;   
+        if (d.kind == SUPER_GENRE_TEXT){ radius = 25; } 
+        else { radius = 6; }
+        return radius; })
+    node.append("text")
+      .attr("dx", textOffsetX)
+      .attr("dy", textOffsetY)
+      .text(function(d){return d.name});
 
-
-    // exit old text
-    text.exit().remove();
-
-
-    // var text = svg.append("svg:g").selectAll("g")
-    //     .data(force.nodes())
-    //   .enter().append("svg:g");
-
-    // // A copy of the text with a thick white stroke for legibility.
-    // text.append("svg:text")
-    //     .attr("text-anchor", "middle")
-    //     .attr("x", 0)
-    //     .attr("y", function(d) {return textOffsetY(d); })
-    //     .attr("class", "shadow")
-    //     .text(function(d) { return genres[d.name].name; });
-
-    // text.append("svg:text")
-    //     .attr("text-anchor", "middle")  
-    //     .attr("x", 0)
-    //     .attr("y", function(d) {return textOffsetY(d); })
-    //     .text(function(d) { return genres[d.name].name; });
-
-
+    // remove the nodes
+    node.exit().remove();
   }
 
   initial_size = getSizeForCanvas()
@@ -212,9 +189,9 @@ $(function(){
 
   force = d3.layout.force()
       .size([CANVAS_WIDTH, CANVAS_HEIGHT])
-      .linkDistance(70)
-      .charge(-700)
-      .friction(0.7)
+      .linkDistance(50)
+      .charge(-600)
+      .friction(0.9)
       .on("tick", tick)
      .start();
 
@@ -226,27 +203,6 @@ $(function(){
   updateGraph(); // draw
   svg_container.scrollLeft($("svg").width() / 2 - svg_container.width() / 2);
   svg_container.scrollTop($("svg").height() / 2 - svg_container.height() / 2);
-
-
-  function expandOrCollapse(d){
-    if (d.kind != SUPER_GENRE_TEXT) return; // abort if sub_genre is clicked
-
-    // find what class of nodes to show / hide
-    var genre_name = d.data.name;
-    // check if collapsed 
-    var indexOfGenre;
-    if ((indexOfGenre = hiddenSuperGenres.indexOf(genre_name)) != -1){
-      // collapsed - lets uncollapse it!
-
-      // remove from hiddenSuperGenres, 
-      // so that it will uncollapse when updateNetwork() is called again
-      delete hiddenSuperGenres[indexOfGenre];
-      hiddenSuperGenres.clean(); // removes undefined values
-    } else {
-      // not collapsed.... so.. collapse it 
-      hiddenSuperGenres.push(genre_name)
-    }
-  }
 
 
   function tick() {
@@ -261,9 +217,9 @@ $(function(){
       return "translate(" + d.x + "," + d.y + ")";
     });
 
-    text.attr("transform", function(d) {
-      return "translate(" + d.x + "," + d.y + ")";
-    });
+    // text.attr("transform", function(d) {
+    //   return "translate(" + d.x + "," + d.y + ")";
+    // });
   };
 
   var toolbar = $(".toolbar"); 
@@ -287,21 +243,21 @@ $(function(){
     }
   }
 
-  function genreRadius(d){
-    // d : d3 node object
-    var radius;
-    var kind = d.data.kind
-    if (kind == SUPER_GENRE){ radius = 25; } 
-    else { radius = 6; }
-    return radius;
-  }
-
   function textOffsetY(d){
     var offsetY = 0;
-    var kind = d.data.kind
+    var kind = d.kind;
     if (kind == SUPER_GENRE){ offsetY = 4; } 
     else { offsetY = 16; }
     return offsetY;
+  }
+
+  function textOffsetX(d){
+    var offsetX = 0;
+
+    var kind = d.kind;
+    if (kind == SUPER_GENRE){ offsetX = -4; } 
+    else { offsetX = -16; }
+    return offsetX;
   }
 
   function resizeSVG(){
