@@ -16,6 +16,10 @@
   <b>Description:</b>
   <%= @genre.description %>
 </p>
+<p>
+  <b>Category:</b>
+  <%= @genre.category.name if @genre.category_id %>
+</p>
 
 <p>
   <b>Time of inception:</b>

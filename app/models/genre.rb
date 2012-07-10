@@ -9,11 +9,14 @@ class Genre < ActiveRecord::Base
   				  	:track_ids,
   				  	:time_of_inception,
               :super_genre_id,
-              :wikipedia
+              :wikipedia,
+              :category_id
   	
     belongs_to :super_genre,
                 :class_name => "Genre",
                 :foreign_key => "super_genre_id"
+
+    belongs_to :category
 
   	has_and_belongs_to_many :tracks, 
                             :join_table => 'genres_tracks',

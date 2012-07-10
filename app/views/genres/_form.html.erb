@@ -21,7 +21,11 @@
   </div>
   <div class="field">
     <%= f.label :kind %><br />
-    <%= f.select :kind, options_for_select(Genre.kinds, @genre.kind.to_i), {:selected => @genre.kind.to_i }%> 
+    <%= f.select :kind, options_for_select(Genre.kinds, @genre.kind.to_i), {:selected => @genre.kind.to_i } %> 
+  </div>
+  <div class="field">
+    <%= f.label :category_id %> <br />
+    <%= f.select :category_id, Category.all.map {|r| [r.name,r.id] }, {:include_blank => true} %>
   </div>
   <div class="field">
     <%= f.label :super_genre %><br />

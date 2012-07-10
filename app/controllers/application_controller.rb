@@ -22,7 +22,7 @@ class ApplicationController < ActionController::Base
  		 	
  		 	g_index = genres.index(g)
  		 	origins = g.stylistic_origins
- 		 	
+
  			@connections << {:source => node[:id], :target => node[:id]} if origins.empty?
  			origins.each {|o|
  				@connections << {
@@ -44,9 +44,11 @@ protected
 			:artists => artists_url,
 			:tracks => tracks_url,
 			:geners => genres_url,
+			:categories => categories_url,
 			:new_artist => new_artist_url,
 			:new_track => new_track_url,
-			:new_genre => new_genre_url
+			:new_genre => new_genre_url,
+			:new_category => new_category_url
 		}
 	end
 
