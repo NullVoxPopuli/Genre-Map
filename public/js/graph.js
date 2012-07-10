@@ -91,23 +91,22 @@ $(function(){
 
     // clear links
     links.clear();
-    nodes.clear();
-    // previous nodes
-    // prevNodes = nodes;
-    // nodes = [];
-    // for (var i = 0; i < prevNodes.length; i++){
-    //   currentNode = prevNodes[i];
-    //   nodeName = currentNode.data.name.toUpperCase();
-    //   parentName = currentNode.super_genre;
+    // nodes.clear();
+    // previous nodes - be sure to reuse them! RECYCLE!
+    prevNodes = nodes;
+    nodes = [];
+    for (var i = 0; i < prevNodes.length; i++){
+      currentNode = prevNodes[i];
+      nodeName = currentNode.data.name.toUpperCase();
+      parentName = currentNode.super_genre;
 
-    //   if (nodeName.indexOf(searchText) != -1 && 
-    //       (hiddenSuperGenres.indexOf(parentName) == -1 || parentName == "") &&
-    //       nodes.indexOfObjectForField("id", currentNode.id) == -1){
-    //     nodes.push(currentNode);
+      if ((searchText.length > 0 && nodeName.indexOf(searchText) != -1) || 
+          ( searchText.length == 0 && (hiddenSuperGenres.indexOf(parentName) == -1 || parentName == "")  &&
+                    nodes.indexOfObjectForField("id", currentNode.id) == -1)){
+        nodes.push(currentNode);
+      }
 
-    //   }
-
-    // }
+    }
     
     // keep old nodes
 
@@ -144,7 +143,6 @@ $(function(){
 
   // redraw everything
   updateGraph = function(){
-
     force
       .nodes(nodes)
       .links(links)
@@ -163,48 +161,67 @@ $(function(){
     // exit any old links
     link.exit().remove();
 
+
     // update the nodes
-    node = svg.selectAll("g.node")
+    // node = svg.selectAll("g.node")
+    //   .data(nodes)
+    //   .enter()
+    //   .insert("svg:g")
+    //   .attr("class", "node")
+    //   .call(force.drag);
+
+
+    // node.append("svg:rect")
+    //   .attr("x", function(d) {return -4 * d.name.length;})
+    //   .attr("y", -14)
+    //   .attr("rx", 10)
+    //   .attr("class", nodeClass)
+    //   .attr("width", function(d) {return d.name.length * 8})
+    //   .attr("height", function(d) {return 20;});
+
+    // node.append("svg:text")
+    //   .attr("text-anchor", "middle")
+    //   .text(function(d) {return d.name});
+
+
+    // node.on("click", click);
+    // node.call(force.drag);
+
+    node = svg.selectAll("rect")
       .data(force.nodes());
 
     // new nodes
-    node.enter().append("g")
-        .attr("class", function(d) {
-          return "node " + d.kind + " " + d.data.name.replace(" ", "").toUpperCase() + " " + d.super_genre;
-        })
+    node.enter().append("svg:rect")
+        .attr("class", nodeClass)
         .call(force.drag)
-        .on("click", function(d){
-          if (d.kind != SUPER_GENRE_TEXT) {
-            showGenreDetails(d);
-          } else {
-            var genre_name = d.data.name;
+        .on("click", click)
+        // .attr("r", radius);
+        .attr("x", function(d) {return -4 * d.name.length;})
+        .attr("y", -14)
+        .attr("rx", 10)
+        .attr("class", nodeClass)
+        .attr("width", function(d) {return d.name.length * 8})
+        .attr("height", function(d) {return 20;});
 
-            console.log("Expand / Collapse - ing: " + genre_name);
-
-            // check if collapsed 
-            var indexOfGenre;
-            if ((indexOfGenre = hiddenSuperGenres.indexOf(genre_name)) != -1){
-              hiddenSuperGenres.remove(indexOfGenre);
-            } else {
-              hiddenSuperGenres.push(genre_name)
-            }
-            updateNetwork();
-            updateGraph();
-          }
-      })
-    node.append("circle")
-      .attr("r", function(d) {
-        var radius = 6;   
-        if (d.kind == SUPER_GENRE_TEXT){ radius = 25; } 
-        else { radius = 6; }
-        return radius; })
-    node.append("text")
-      .attr("dx", textOffsetX)
-      .attr("dy", textOffsetY)
-      .text(function(d){return d.name});
+    // node.append("svg:text")
+    //   .attr("text-anchor", "middle")
+    //   .text(function(d) {return d.name});
 
     // remove the nodes
     node.exit().remove();
+
+    // update the text
+    text = svg.selectAll("text")
+      .data(force.nodes());
+
+    // // new nodes
+    text.enter().append("svg:text")
+      .attr("text-anchor", "middle")
+      .text(function(d){return d.name});
+
+    // // remove the text
+    text.exit().remove();
+
   }
 
   initial_size = getSizeForCanvas()
@@ -218,7 +235,7 @@ $(function(){
 
   force = d3.layout.force()
       .size([CANVAS_WIDTH, CANVAS_HEIGHT])
-      .linkDistance(50)
+      .linkDistance(100)
       .charge(-600)
       .friction(0.9)
       .on("tick", tick)
@@ -233,6 +250,37 @@ $(function(){
   svg_container.scrollLeft($("svg").width() / 2 - svg_container.width() / 2);
   svg_container.scrollTop($("svg").height() / 2 - svg_container.height() / 2);
 
+  function nodeClass(d){
+    return " " + 
+            d.kind + " " + 
+            d.data.name.replace(" ", "").toUpperCase() + " " + 
+            d.super_genre;
+  }
+
+  function radius(d) {
+    var radius = 6;   
+      if (d.kind == SUPER_GENRE_TEXT){ radius = 25; } 
+      else { radius = 6; }
+      return radius; 
+  }
+
+  function click(d) {
+    if (d.kind != SUPER_GENRE_TEXT) {
+      showGenreDetails(d);
+    } else {
+      var genre_name = d.data.name;
+      console.log("Expand / Collapse - ing: " + genre_name);
+        // check if collapsed 
+      var indexOfGenre;
+      if ((indexOfGenre = hiddenSuperGenres.indexOf(genre_name)) != -1){
+        hiddenSuperGenres.remove(indexOfGenre);
+      } else {
+        hiddenSuperGenres.push(genre_name)
+      }
+      updateNetwork();
+      updateGraph();
+    }
+  }
 
   function tick() {
     link.attr("d", function(d) {
@@ -246,9 +294,9 @@ $(function(){
       return "translate(" + d.x + "," + d.y + ")";
     });
 
-    // text.attr("transform", function(d) {
-    //   return "translate(" + d.x + "," + d.y + ")";
-    // });
+    text.attr("transform", function(d) {
+      return "translate(" + d.x + "," + d.y + ")";
+    });
   };
 
   function textOffsetY(d){

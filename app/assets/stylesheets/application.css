@@ -81,25 +81,26 @@ path.non_electronic{
 }
 
 
-circle {
+rect {
   fill: #ddd;
   stroke: #333;
   stroke-width: 1.5px;
-  	border: 1px solid #E5E5E5;
+  	border: 1px solid #f4f4f4;
 	background: #f4f4f4;
 	-webkit-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 	-moz-box-shadow: 0 4px 16px rgba(0,0,0,0.2);
 	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+	  font: 10px sans-serif;
 }
 .sub_genre{
 }
 
-.super_genre circle{
-	fill: #42B6C9;
+.super_genre{
+	fill: #62D6E9;
 	stroke: #000;
 }
 
-.non_electronic circle{
+.non_electronic{
 	fill: white;
 	stroke-dasharray: 0,2 1;
 
