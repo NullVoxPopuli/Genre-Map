@@ -69,17 +69,17 @@ function hasGroup(d){
     d.category != null) && d.category != "";
 }
 
-function getGroup(n) { return n.group; }
+function getCategory(n) { return n.category; }
 
-function convexHulls(nodes, index, offset) {
+function convexHulls(nodes, offset) {
   var hulls = {};
 
   // create point sets
   for (var k=0; k<nodes.length; ++k) {
     var n = nodes[k];
       if (hasGroup(n)){
-        if (n.size) continue;
-        var i = index(n),
+       // if (n.size) continue;
+        var i = getCategory(n),
             l = hulls[i] || (hulls[i] = []);
             l.push([n.x-offset, n.y-offset]);
             l.push([n.x-offset, n.y+offset]);
@@ -204,7 +204,7 @@ function network(data, prev, index) {
                     nodeIndex == -1)){
 
         if (categories.indexOf(currentNode.category) != -1) {
-                        var i = nodeIndex,
+          i = getCategory(currentNode);
         l = gm[i] || (gm[i]=gn[i]) || (gm[i]={group:i, size:0, nodes:[]});
           // the node should be directly visible
           nm[currentNode.name] = nodes.length;
@@ -222,7 +222,7 @@ function network(data, prev, index) {
 
       }
           // l.size += 1;
-    currentNode.group_data = l;
+    currentNode.group_data = {size:5};
     }
 
 
@@ -320,7 +320,7 @@ $(function(){
 
 
 
-  // network = function(data, prevForceLayout, getGroup){
+  // network = function(data, prevForceLayout, getCategory){
   //   var groupMap,
   //       nodeMap,
   //       linkMap,
@@ -427,7 +427,7 @@ $(function(){
   updateGraph = function(){
     if (forceDiagram) forceDiagram.stop();
 
-    net = network(data, net, getGroup);
+    net = network(data, net, getCategory);
 
     forceDiagram
       .nodes(net.nodes)
@@ -446,7 +446,7 @@ $(function(){
         return 100 + 
           Math.min(20 * Math.min((n1.size || (n1.group != n2.group ? n1.group_data.size : 0)), 
                                  (n2.size || (n1.group != n2.group ? n2.group_data.size : 0))), 
-                   -30 + 
+                   -100 + 
                    30 * Math.min((n1.link_count || (n1.group != n2.group ? n1.group_data.link_count : 0)),
                                  (n2.link_count || (n1.group != n2.group ? n2.group_data.link_count : 0))), 
                    100);
@@ -456,7 +456,7 @@ $(function(){
 
  hullg.selectAll("path.hull").remove();
   hull = hullg.selectAll("path.hull")
-      .data(convexHulls(net.nodes, getGroup, clusterHullOffset))
+      .data(convexHulls(net.nodes, clusterHullOffset))
     .enter().append("path")
       .attr("class", "hull")
       .attr("d", drawCluster)
@@ -568,7 +568,7 @@ $(function(){
   function tick() {
 
         if (!hull.empty()) {
-      hull.data(convexHulls(net.nodes, getGroup, clusterHullOffset))
+      hull.data(convexHulls(net.nodes, clusterHullOffset))
           .attr("d", drawCluster);
     }
 
