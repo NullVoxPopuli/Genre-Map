@@ -47,7 +47,6 @@ $(function(){
   	if(e.keyCode == 13){
 	  	// searchText defined in graph.js
 		searchText = $(this).val();
-		updateNetwork();
 		updateGraph();
 	}
   });

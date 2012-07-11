@@ -15,6 +15,7 @@ class ApplicationController < ActionController::Base
 	 			:id => g[:id],
 	 			:name => g[:name],
 	 			:kind => g.kind_key,
+	 			:category => g.category ? g.category.name : "",
 	 			:super_genre => g.super_genre ? g.super_genre.name : "",
 	 			:data => g.as_json
  		 	}
@@ -34,7 +35,8 @@ class ApplicationController < ActionController::Base
 
  		@nodes = @nodes.to_json
  		@connections = @connections.to_json
- 		@hidden_genres = Genre.find(:all, :conditions => ["kind = ?", Genre::SUPER_GENRE], :select => "name").map{|g| g.name}.to_json
+ 		@super_genres = Genre.find(:all, :conditions => ["kind = ?", Genre::SUPER_GENRE], :select => "name").map{|g| g.name}.to_json
+ 		@categories = Category.all.to_json
  	end
 
 protected

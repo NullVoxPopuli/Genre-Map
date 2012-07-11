@@ -119,6 +119,17 @@ text.shadow {
   stroke-opacity: .8;
 }
 
+path.hull {
+  fill: lightsteelblue;
+  fill-opacity: 0.2;
+  pointer-events: none;
+}
+line {
+  stroke: #333;
+  stroke-opacity: 0.5;
+  pointer-events: none;
+}​
+
 /* 
 	END GRAPHICAL ELEMENTS
 */
