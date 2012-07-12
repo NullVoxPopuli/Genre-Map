@@ -60,3 +60,62 @@ Array.prototype.clear = function(){
   this.length = 0;
   return this;
 }
+
+Array.prototype.min = function() {
+// http://stackoverflow.com/questions/1669190/javascript-min-max-array-values
+    var r = this[0];
+    this.forEach(function(v,i,a){if (v<r) r=v;});
+    return r;
+};
+
+
+
+
+
+// ← Kenneth Tynan prophesies CGIThe BBC, Glow and jQuery →
+// Additional methods for JavaScript Array
+// Posted on 7 October, 2010 
+// Below is a basic set of additions to the JavaScript Array prototype to make it easier to work with numeric arrays.
+
+// Disclaimer: these additions work for me, but I can’t vouch for their correctness or efficiency, with all values in all situations on all platforms.
+
+// I’m also aware that adding methods to an existing class is, in many situations, a bad idea! These additions were useful to me in a highly constrained context but, obviously, this kind of approach does not scale well, particularly with multiple coders and multiple JavaScript libraries.
+
+Array.prototype.absMax = function(){
+  return Math.max.apply({}, Math.abs(this));
+};
+
+Array.prototype.absMin = function(){
+  return Math.min.apply({}, Math.abs(this));
+};
+
+Array.prototype.avg = function(){
+  return this.sum() / this.length;
+};
+
+Array.prototype.max = function(){
+  return Math.max.apply({}, this);
+};
+
+Array.prototype.median = function(){
+  var sortedArray = this.slice().sort(function(a, b){return a - b;}); // make a deep copy and sort it
+return sortedArray[Math.floor(this.length / 2)]; // for one item, i = 0; two items, i = 1; 3 items, i = 1...
+};
+
+Array.prototype.min = function(){
+  return Math.min.apply({}, this);
+};
+
+Array.prototype.numSort = function(){
+  return this.sort(function(a, b){return a - b;});
+};
+
+Array.prototype.sum = function(){
+  for (var i = 0, sum = 0 ; i != this.length; ++i) {
+    var n = this[i];
+    if(!isNaN(n)) {
+      sum += n;
+    }
+  }
+  return sum;
+};

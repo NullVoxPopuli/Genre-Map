@@ -121,7 +121,7 @@ text.shadow {
 
 path.hull {
   fill: lightsteelblue;
-  fill-opacity: 0.2;
+  fill-opacity: 0.3;
   pointer-events: none;
 }
 line {
