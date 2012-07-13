@@ -1,3 +1,7 @@
+var VIDEO_PLAYER_WIDTH = 853;
+var VIDEO_PLAYER_HEIGHT = 480;
+var SOUNDCLOUD_WIDTH = "100%"
+var SOUNDCLOUD_HEIGHT = "166"
 $(function(){
 
   var toolbar = $(".toolbar"); 
@@ -66,16 +70,37 @@ $(function(){
   function setTheaterForURL(url, autoplay){
     var autoplay = (typeof(autoplay) == "undefined") ? "?autoplay=1" : ""
     var theater = $(".theater");
-    var theaterFrame = document.createElement("iframe");
+    var tf, theaterFrame;
+    if (url.indexOf("youtube") != -1){
+      theaterFrame = document.createElement("iframe");
 
-    var tF = $(theaterFrame);
-    tF.attr({
-      "width": VIDEO_PLAYER_WIDTH,
-      "height": VIDEO_PLAYER_HEIGHT,
-      "frameborder": 0,
-      "allowfullscreen":"",
-      "src": url + autoplay
-    });
+      tF = $(theaterFrame);
+
+      tF.attr({
+        "width": VIDEO_PLAYER_WIDTH,
+        "height": VIDEO_PLAYER_HEIGHT,
+        "frameborder": 0,
+        "allowfullscreen":"",
+        "src": url.replace("watch?v=", "embed/") + autoplay
+      });
+    } else {
+        //  vimeo and soundcloud require embedding, and cutting up the URL of their 
+        // main pages to derive the embed code isn't entrely straight forward
+
+        // we have embed code
+        // convert to jQuery object
+        theaterFrame = $(document.createElement("div")).html(url)
+        var frame = theaterFrame.find("iframe");
+        var src = frame.attr("src");
+        if (src.indexOf("soundcloud") != -1){
+          frame.attr("src", src + "&auto_play=true");
+        } else if (src.indexOf("vimeo") != -1){
+          frame.attr("src", src + "&autoplay=true");
+          frame.attr("width", VIDEO_PLAYER_WIDTH);
+          frame.attr("height", VIDEO_PLAYER_HEIGHT);
+        }
+        tF = theaterFrame.contents();
+    }
 
     theater.html(tF);
     theater.show();
@@ -108,7 +133,7 @@ $(function(){
       example.html(i + 1);
 
       example.click(function(){
-        setTheaterForURL($(this).attr("data-url").replace("watch?v=", "embed/"));
+        setTheaterForURL($(this).attr("data-url"));
       });
       example.appendTo(examples);
     }
