@@ -34,12 +34,15 @@ html, body{
 	GRAHPICAL ELEMENTS
 */
 
-  .line {
+  line, .line {
   	position: absolute;
 	height: 1px;
     background: black;
     margin: 0px;
     z-index: 0;
+      stroke: #333;
+	  stroke-opacity: 0.5;
+	  pointer-events: none;
   }​
 
   .genre{
@@ -47,8 +50,6 @@ html, body{
   }
 
   svg{
-  	/*position: fixed;*/
-  	/*z-index: 0;*/
   	width: 3000px;
   	height: 3000px;
   }
@@ -105,8 +106,7 @@ rect {
 	stroke-dasharray: 0,2 1;
 
 }
-.Trance{
-}
+
 
 text {
   font: 10px sans-serif;
@@ -124,20 +124,14 @@ path.hull {
   fill-opacity: 0.3;
   pointer-events: none;
 }
-line {
-  stroke: #333;
-  stroke-opacity: 0.5;
-  pointer-events: none;
-}​
 
 /* 
 	END GRAPHICAL ELEMENTS
 */
-
 /* 
 	DOM LAYOUT
 */
-.stop_playback{
+.stop_playback {
 	position: fixed;
 	bottom: 20px;
 	left: 20px;

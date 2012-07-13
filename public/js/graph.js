@@ -48,6 +48,11 @@ var hullG, linkg, nodeG, nodeLabelG, hullLabelG;
 var hull, link, node, nodeLabel, hullLabel;
 // current state of the network 
 var net;
+// different gravity wells for each year
+var gravityWells = {"2000s": {
+	x: CANVAS_WIDTH / 2,
+	y: CANVAS_HEIGHT / 2
+}};
 
 var curve = d3.svg.line()
 	.interpolate("caridnal-closed")
@@ -405,10 +410,8 @@ $(function(){
 		}
 	}
 
-	function tick() {
-		// while (++i < n) {
-  //   		q.visit(collide(nodes[i]));
-  // 		}
+	function tick(event) {
+		var k = event.alpha * 0.1;
 
 		if (!hull.empty()) {
 			var hullData = convexHulls(net.nodes, clusterHullOffset);
@@ -426,6 +429,11 @@ $(function(){
 			.attr("x2", function(d) { return d.target.x; })
 			.attr("y2", function(d) { return d.target.y; });
 			
+
+		forceDiagram.nodes().forEach(function(node){
+			node.x += (gravityWells["2000s"].x - node.x) * k;
+			node.y += (gravityWells["2000s"].y - node.y) * k;
+		});
 		node.attr("transform", function(d) {
 			return "translate(" + d.x + "," + d.y + ")";
 		});
