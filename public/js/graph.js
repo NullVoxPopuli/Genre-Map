@@ -97,11 +97,10 @@ function convexHulls(nodes, offset) {
 
 	for (i in hulls) {
 		var current_hull = hulls[i]
-		hull_path = d3.geom.hull(current_hull);
-		xVals = [];
-		yVals = [];
+		var hull_path = d3.geom.hull(current_hull);
+		var xVals = [];
+		var yVals = [];
 		for (var j = 0; j < hull_path.length; j++){
-			console.log()
 			xVals.push(hull_path[j][0]);
 			yVals.push(hull_path[j][1]);
 		}
@@ -109,7 +108,7 @@ function convexHulls(nodes, offset) {
 		hullset.push({
 			group: i,
 			path: hull_path,
-			"label-location": {
+			location: {
 				x: xVals.avg(),
 				y: yVals.min()
 			}
@@ -126,12 +125,7 @@ function drawCluster(d) {
 
 // constructs the network to visualize
 function network(data, prev, index) {
-	var gm = {},	// group map
-		nm = {},	// node map
-		lm = {},	// link map
-		gn = {},	// previous group nodes
-		gc = {},	// previous group centroids
-		nodes = [], // output nodes
+	var nodes = [], // output nodes
 		links = []; // output links
 
 	
@@ -151,16 +145,23 @@ function network(data, prev, index) {
 		// and to exclude anything in "hiddenSuperGenres"
 		var shouldSearch = (searchText.length > 0);
 		var shouldNotSearch = (!shouldSearch);
+		var nodeExists = (nodeIndex == -1);
 		var partOfCollapsedSuperGenre = (hiddenSuperGenres.indexOf(parentName) == -1 || parentName == "");
 
 		if ((shouldSearch && (nodeName.indexOf(searchText) != -1 || categoryName.indexOf(searchText) != -1)) || 
-			( shouldNotSearch && partOfCollapsedSuperGenre)){//	&& nodeIndex == -1)){
+			( shouldNotSearch && partOfCollapsedSuperGenre && nodeExists)){
 
 			// add the node
 			nodes.push(currentNode);
+
+			// update category size
+			if (hasGroup(currentNode)){
+				var category_index = categories.indexOfObjectForField("name", currentNode.category)
+				categories[category_index].size = (categories[category_index].size == undefined ? 0 : categories[category_index].size + 1);
+			}
 		}
 			// l.size += 1;
-	currentNode.group_data = {size:5};
+		currentNode.group_data = {size:5};
 	}
 
 
@@ -234,25 +235,21 @@ $(function(){
 		forceDiagram
 			.nodes(net.nodes)
 			.links(net.links)
-			.linkDistance(function(l, i){
-			var n1 = l.source, n2 = l.target;
+			.linkDistance(function(n, i){
 			// larger distance for bigger groups:
 			// both between single nodes and _other_ groups (where size of own node group still counts),
 			// and between two group nodes.
 			// 
-			// reduce distance for groups with very few outer links,
-			// again both in expanded and grouped form, i.e. between individual nodes of a group and
-			// nodes of another group or other group node or between two group nodes.
-			//
-			// The latter was done to keep the single-link groups ('blue', rose, ...) close.
-			return 300 + 
-				Math.min(100 * Math.min((n1.size || (n1.group != n2.group ? n1.group_data.size : 0)), 
-									 (n2.size || (n1.group != n2.group ? n2.group_data.size : 0))), 
-						 -300 + 
-						 100 * Math.min((n1.link_count || (n1.group != n2.group ? n1.group_data.link_count : 0)),
-									 (n2.link_count || (n1.group != n2.group ? n2.group_data.link_count : 0))), 
-						 100);
-			// return 150;
+
+			var sourceCategory = hasGroup(n.source) ? n.source.category : false;
+			var targetCategory = hasGroup(n.target) ? n.target.category : false;
+
+			var differentCategories = sourceCategory != targetCategory;
+			var sourceCategorySize = sourceCategory ? categories[categories.indexOfObjectForField("name", sourceCategory)].size : 0;
+			var targetCategorySize = targetCategory ? categories[categories.indexOfObjectForField("name", targetCategory)].size : 0;
+
+
+			return 40 + (sourceCategory && targetCategory ? (differentCategories ? 160 : 0) : 50);
 			})
 			.start();
 
@@ -264,7 +261,7 @@ $(function(){
 		hull = hullG.selectAll("path.hull")
 			.data(hullData)
 			.enter().append("path")
-			.attr("class", "hull")
+			.attr("class", function(d) { return "hull " + d.group})
 			.attr("d", drawCluster)
 			.style("fill", function(d) { return fill(d.group); });
 
@@ -274,12 +271,12 @@ $(function(){
 		*/
 
 		hullLabelG.selectAll("text.hull").remove();
-		hullLabel = hullLabelG.selectAll("path.hull")
+		hullLabel = hullLabelG.selectAll("text.hull")
 			.data(hullData)
 			.enter().append("svg:text")
 			.attr("text-anchor", "middle")
-			.attr("class", "hull")
-			.text(function(d) { console.log(d);return d.group});
+			.attr("class", function(d) { return "hull " + d.group})
+			.text(function(d) { return d.group});
 
 
 		/*
@@ -299,11 +296,11 @@ $(function(){
 		/*
 			NODES
 		*/
-		node = nodeG.selectAll(".node")
-			.data(forceDiagram.nodes());
+		nodeG.selectAll("rect").remove();
 
-		// new nodes
-		node.enter().append("svg:rect")
+		node = nodeG.selectAll("rect")
+			.data(net.nodes)
+			.enter().append("svg:rect")
 			.attr("class", nodeClass)
 			.call(forceDiagram.drag)
 			.on("click", click)
@@ -316,15 +313,15 @@ $(function(){
 			.attr("height", function(d) {return SUB_GENRE_NODE_HEIGHT;});
 
 		// remove the nodes
-		node.exit().remove();
 
 
 		/* 
 			LABELS FOR NODES
 		*/ 
-		nodeLabel = nodeLabelG.selectAll("text.node").data(net.nodes);
-		nodeLabel.exit().remove();
-		nodeLabel.enter().append("svg:text")
+		nodeLabelG.selectAll("text.node").remove();
+		nodeLabel = nodeLabelG.selectAll("text.node")
+			.data(net.nodes)
+			.enter().append("svg:text")
 			.attr("text-anchor", "middle")
 			.attr("class", "node")
 			.text(function(d){return d.name});
@@ -354,9 +351,9 @@ $(function(){
 		// .linkDistance(100)
 		.charge(function(d){
 			if (hasGroup(d)){
-				return -800;
+				return -900;
 			} else {
-				return -1600;
+				return -400;
 			}
 
 		})
@@ -409,10 +406,19 @@ $(function(){
 	}
 
 	function tick() {
+		// while (++i < n) {
+  //   		q.visit(collide(nodes[i]));
+  // 		}
 
 		if (!hull.empty()) {
-		hull.data(convexHulls(net.nodes, clusterHullOffset))
-			.attr("d", drawCluster);
+			var hullData = convexHulls(net.nodes, clusterHullOffset);
+			hull.data(hullData)
+				.attr("d", drawCluster);
+			hullLabel
+				.data(hull)
+				.attr("x", function(d) { console.log(svgCenter(d[0]));return svgCenter(d[0]).x })
+				.attr("y", function(d) { return svgCenter(d[0]).y });
+
 		}
 
 		link.attr("x1", function(d) { return d.source.x; })
@@ -426,28 +432,39 @@ $(function(){
 
 		nodeLabel.attr("x", function(d) { return d.x })
 				 .attr("y", function(d) { return d.y });
+	};
 
-		hullLabel.attr("x", function(d) { return d["label-location"].x })
-				 .attr("y", function(d) { return d["label-location"].y })
-		
-		};
 
-		function textOffsetY(d){
+	function svgCenter(p){
+		if (!p){
+			return 0;
+		}
+		// p is a path / shape
+		var bbox = p.getBBox(); 
+		var x = Math.floor(bbox.x + bbox.width/2.0); 
+		var y = Math.floor(bbox.y + bbox.height);
+		return {
+			x: x,
+			y: y
+		}
+	}
+
+	function textOffsetY(d){
 		var offsetY = 0;
 		var kind = d.kind;
 		if (kind == SUPER_GENRE){ offsetY = 4; } 
 		else { offsetY = 16; }
 		return offsetY;
-		}
+	}
 
-		function textOffsetX(d){
+	function textOffsetX(d){
 		var offsetX = 0;
 
 		var kind = d.kind;
 		if (kind == SUPER_GENRE){ offsetX = -4; } 
 		else { offsetX = -16; }
 		return offsetX;
-		}
+	}
 
 
 })
