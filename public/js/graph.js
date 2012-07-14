@@ -453,7 +453,7 @@ $(function(){
 				// make sure to bound the nodes to the inside of the canvas, so they don't escape our sight
 				node.x = newX;
 				node.y += newY;
-			} else if (typeof(node.year) != "undefined" && node.year != ""){
+			} else if (gravityWells.hasOwnProperty(node.year)){
 				console.log(node.year - currentMinimumYear);
 				// node.x += (gravityWells[node.year - currentMinimumYear].x - node.x) * k;
 				node.y += (gravityWells[node.year - currentMinimumYear].y - node.y) * k;
