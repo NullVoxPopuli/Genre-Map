@@ -8,6 +8,7 @@ var NODE_WIDTH_MULTIPLIER = 8;
 var SUPER_GENRE_TEXT = "super_genre"
 var SUB_GENRE_TEXT = "sub_genre"
 var NON_ELECTRONIC_TEXT = "non_electronic"
+var WINDOW_PADDING = 100;
 
 // make sure these stay synced with Genre.rb
 var SUB_GENRE = 0;
@@ -27,14 +28,18 @@ var genre_nodes = [];
 var data = {};
 // list of available categories to group nodes with
 var categories = [];
+// list of years for each super genre
+var yearsByGenre = {};
 // current nodes
 var nodes = [];
  // current connections 
 var links = [];
 // list of names of the super genres that have their subgenres hidden
-var hiddenSuperGenres = [] 
+var hiddenSuperGenres = [];
+// to help keep track of the currently visible super geners
+var visibleSuperGenres = [];
 // text from the search field
-var searchText = "" 
+var searchText = "";
 
 /*
 	SVG VARIABLES
@@ -47,10 +52,12 @@ var hull, link, node, nodeLabel, hullLabel;
 // current state of the network 
 var net;
 // different gravity wells for each year
-var gravityWells = {"2000s": {
-	x: CANVAS_WIDTH / 2,
-	y: CANVAS_HEIGHT / 2
-}};
+var gravityWells = {};
+// filtered version yearsByGenre, to be used with currentMinimumYear and gravityWells
+var currentVisibleYears = []
+// to be subtracted from all the years, so we have a resonable range to work with
+var currentMinimumYear, currentMaximumYear;
+
 
 var curve = d3.svg.line()
 	.interpolate("caridnal-closed")
@@ -72,6 +79,11 @@ function linkid(l) {
 function hasGroup(d){
 	return (typeof(d.category) != "undefined" && 
 	d.category != null) && d.category != "";
+}
+
+function isSuperGenre(d){
+	return (typeof(d.kind) != "undefined" &&
+	        d.kind != null) && d.kind == "super_genre"
 }
 
 function getCategory(n) { return n.category; }
@@ -125,15 +137,27 @@ function drawCluster(d) {
 	return curve(d.path); // 0.8
 }
 
+function updateGravity(){
+	var numYears = currentMaximumYear - currentMinimumYear;
+	console.log(numYears);
+	// year separation should be a function of the number of years, and the 
+	// width of the screen, using as much as possible
+	var maxWidth = $(window).width() - (WINDOW_PADDING * 2) / 2;
+	var yearSize = maxWidth / numYears;
+	for (var i = 0; i < numYears + 1; i++){
+		gravityWells[i] = {
+			x: i * yearSize,
+			y: i * yearSize
+		}
+	}
+
+}
 
 // constructs the network to visualize
 function network(data, prev, index) {
 	var nodes = [], // output nodes
 		links = []; // output links
-
 	
-	// keep old nodes
-
 	// loop over genre_nodes, adding nodes as needed
 	searchText = searchText.toUpperCase();
 	for (var i = 0; i < data.nodes.length; i++){
@@ -199,20 +223,20 @@ $(function(){
 	var sidebar_width = sidebar.outerWidth();
 
 	getSizeForCanvas = function(){
-	var w = $(window).width();
-	var h = $(window).height();
-	var x = 0;
-	var y = 0;
-	var toolbar_visible = typeof(toolbar) == "undefined" ? false : toolbar.is(":visible");
-	var sidebar_visible = typeof(sidebar) == "undefined" ? false : sidebar.is(":visible");
-	if (sidebar_visible) x = sidebar_width;
-	if (toolbar_visible) y = toolbar_height
-	return {
-		x: x,
-		y: y,
-		w: w - x,
-		h: h - y
-	}
+		var w = $(window).width();
+		var h = $(window).height();
+		var x = 0;
+		var y = 0;
+		var toolbar_visible = typeof(toolbar) == "undefined" ? false : toolbar.is(":visible");
+		var sidebar_visible = typeof(sidebar) == "undefined" ? false : sidebar.is(":visible");
+		if (sidebar_visible) x = sidebar_width;
+		if (toolbar_visible) y = toolbar_height
+		return {
+			x: x,
+			y: y,
+			w: w - x,
+			h: h - y
+		}
 	}
 	resizeSVG = function(){
 	var size = getSizeForCanvas();
@@ -231,7 +255,10 @@ $(function(){
 		if (forceDiagram) forceDiagram.stop();
 
 		net = network(data, net, getCategory);
-
+		currentMinimumYear = net.nodes.minOfObjectForField("year");
+		currentMaximumYear = net.nodes.maxOfObjectForField("year"); + 1;
+		updateGravity();
+		
 		/*
 			REINITIALIZE THE GRAPH
 		*/
@@ -307,13 +334,12 @@ $(function(){
 			.attr("class", nodeClass)
 			.call(forceDiagram.drag)
 			.on("click", click)
-			// .attr("r", radius);
 			.attr("x", function(d) {return -4 * d.name.length;})
 			.attr("y", -14)
 			.attr("rx", 10)
 			.attr("class", nodeClass)
-			.attr("width", function(d) {return d.name.length * NODE_WIDTH_MULTIPLIER})
-			.attr("height", function(d) {return SUB_GENRE_NODE_HEIGHT;});
+			.attr("width", nodeWidth)
+			.attr("height", nodeHeight);
 
 		// remove the nodes
 
@@ -400,44 +426,76 @@ $(function(){
 			// check if collapsed 
 			var indexOfGenre;
 			if ((indexOfGenre = hiddenSuperGenres.indexOf(genre_name)) != -1){
-			hiddenSuperGenres.remove(indexOfGenre);
+				hiddenSuperGenres.remove(indexOfGenre);
+				visibleSuperGenres.push(genre_name);
 			} else {
-			hiddenSuperGenres.push(genre_name)
+				hiddenSuperGenres.push(genre_name)
+				visibleSuperGenres.remove(visibleSuperGenres.indexOf(genre_name));
 			}
+
 			updateGraph();
 		}
 	}
 
 	function tick(event) {
 		var k = event.alpha * 0.1;
+		var container = $(".svg_container");
+		var topCornerX = container.scrollLeft();
+		var topCornerY = container.scrollTop();
+		
+		forceDiagram.nodes().forEach(function(node){
+			if (isSuperGenre(node)){
+				// we want the super genres to be stuck on teh left hand side, so set fixed X
+				var newX = (topCornerX + WINDOW_PADDING);
+				var newY = ((topCornerY + WINDOW_PADDING * 2)- node.y) * k;
 
+				 // Math.max(r, Math.min(w - r, d.x)); }) <- how to bound to box
+				// make sure to bound the nodes to the inside of the canvas, so they don't escape our sight
+				node.x = newX;
+				node.y += newY;
+			} else if (typeof(node.year) != "undefined" && node.year != ""){
+				console.log(node.year - currentMinimumYear);
+				// node.x += (gravityWells[node.year - currentMinimumYear].x - node.x) * k;
+				node.y += (gravityWells[node.year - currentMinimumYear].y - node.y) * k;
+
+			}
+		});
+
+		// Update Visuals
 		if (!hull.empty()) {
 			var hullData = convexHulls(net.nodes, clusterHullOffset);
 			hull.data(hullData)
 				.attr("d", drawCluster);
 			hullLabel
 				.data(hull)
-				.attr("x", function(d) { console.log(svgCenter(d[0]));return svgCenter(d[0]).x })
+				.attr("x", function(d) { return svgCenter(d[0]).x })
 				.attr("y", function(d) { return svgCenter(d[0]).y });
-
 		}
 
 		link.attr("x1", function(d) { return d.source.x; })
 			.attr("y1", function(d) { return d.source.y; })
 			.attr("x2", function(d) { return d.target.x; })
 			.attr("y2", function(d) { return d.target.y; });
-			
 
-		forceDiagram.nodes().forEach(function(node){
-			node.x += (gravityWells["2000s"].x - node.x) * k;
-			node.y += (gravityWells["2000s"].y - node.y) * k;
-		});
 		node.attr("transform", function(d) {
 			return "translate(" + d.x + "," + d.y + ")";
 		});
-
+		 // node
+   //      	.attr("x", function(d){ 
+			// 	return d.x;
+   //      	})
+   //      	.attr("y", function(d) {
+   //      		var height = nodeHeight(d);
+			// 	return Math.max(topCornerY + WINDOW_PADDING, Math.min(container.height() - height + 2*WINDOW_PADDING, d.y));
+   //      	});
+		
 		nodeLabel.attr("x", function(d) { return d.x })
 				 .attr("y", function(d) { return d.y });
+			// .attr("y", function(d) {
+   //      		var height = nodeHeight(d);
+			// 	var y = Math.max(topCornerY + WINDOW_PADDING, Math.min(container.height() - height + 2*WINDOW_PADDING, d.y));
+   //      		return y + height / 2;
+   //      	});
 	};
 
 
@@ -472,5 +530,12 @@ $(function(){
 		return offsetX;
 	}
 
+	function nodeWidth(d) {
+		return d.name.length * NODE_WIDTH_MULTIPLIER
+	}
+
+	function nodeHeight(d) {
+		return SUB_GENRE_NODE_HEIGHT;
+	}
 
 })

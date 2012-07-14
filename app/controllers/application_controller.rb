@@ -8,15 +8,26 @@ class ApplicationController < ActionController::Base
 
  		@connections = []
  		@nodes = []
-
+ 		@years_by_genre = {}
 
  		Genre.all.each {|g| 
+ 			super_genre_name = g.super_genre ? g.super_genre.name : ""
+
+ 			if !g.time.blank? and !g.time.nil? and !g.is_super_genre?
+ 				ap super_genre_name
+ 				ap g
+ 				ap @years_by_genre
+ 				@years_by_genre[super_genre_name] = [] if (not @years_by_genre[super_genre_name])
+ 				@years_by_genre[super_genre_name] << g.time.year
+ 			end
+
  			node = {
 	 			:id => g[:id],
 	 			:name => g[:name],
 	 			:kind => g.kind_key,
+	 			:year => g.time ? g.time.year : "",
 	 			:category => g.category ? g.category.name : "",
-	 			:super_genre => g.super_genre ? g.super_genre.name : "",
+	 			:super_genre => super_genre_name,
 	 			:data => g.as_json
  		 	}
  		 	@nodes << node
@@ -37,6 +48,7 @@ class ApplicationController < ActionController::Base
  		@connections = @connections.to_json
  		@super_genres = Genre.find(:all, :conditions => ["kind = ?", Genre::SUPER_GENRE], :select => "name").map{|g| g.name}.to_json
  		@categories = Category.all.to_json
+ 		@years_by_genre = @years_by_genre.to_json
  	end
 
 protected

@@ -21,6 +21,32 @@ Array.prototype.indexOfObjectForField = function(field, itemToSearchFor, startIn
   return -1;
 }
 
+Array.prototype.minOfObjectForField = function(field){
+  var min = Infinity;
+  var curValue;
+  for (var i = 0; i < this.length; i++){
+    curValue = this[i][field];
+    console.log(this)
+    console.log(curValue)
+    if (curValue != "" && (curValue < min)){
+      min = curValue;
+    }
+  }
+  return min;
+}
+
+Array.prototype.maxOfObjectForField = function(field){
+  var max = -1 * Infinity;
+  var curValue;
+  for (var i = 0; i < this.length; i++){
+    curValue = this[i][field]
+    if (curValue != "" && (curValue > max)){
+      max = curValue;
+    }
+  }
+  return max;
+}
+
 Array.prototype.addAll = function(a) {
 //Adds all the elements in a to this array. 
 // By L. Preston Sego III (MIT Licensed)
@@ -28,6 +54,19 @@ Array.prototype.addAll = function(a) {
       this.push(a[i]);
   }
     
+}
+
+Array.prototype.addAllUniq = function(a){
+//Adds all the elements in a to this array, maintaining uniqness.
+//  Assumes the source array is already unique 
+// By L. Preston Sego III (MIT Licensed)
+  var curElement;
+  for (var i = 0;  i < a.length;  i++) {
+    curElement = a[i]
+    if (this.indexOf(curElement) == -1){
+      this.push(curElement);
+    }
+  }  
 }
 
 Array.prototype.firstNonUndefined = function(startIndex){

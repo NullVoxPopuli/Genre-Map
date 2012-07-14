@@ -39,7 +39,9 @@ class Genre < ActiveRecord::Base
     validates :name, :uniqueness => {:case_sensitive => false}
     validates_presence_of :name
     #validates :time_of_inception, :numericality => { :only_integer => true, :allow_nil => true }
-
+    def time
+      return self.time_of_inception
+    end
 
     def self.kinds
       return {:sub_genre => SUB_GENRE, :super_genre => SUPER_GENRE,
@@ -48,6 +50,10 @@ class Genre < ActiveRecord::Base
 
     def kind_key
       return Genre.kinds.key(self.kind)
+    end
+
+    def is_super_genre?
+      return (SUPER_GENRE == self.kind)
     end
 
     def kind_name
