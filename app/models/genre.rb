@@ -37,6 +37,9 @@ class Genre < ActiveRecord::Base
     NON_ELECTRONIC = 2
 
     validates :name, :uniqueness => {:case_sensitive => false}
+    validates_presence_of :name
+    #validates :time_of_inception, :numericality => { :only_integer => true, :allow_nil => true }
+
 
     def self.kinds
       return {:sub_genre => SUB_GENRE, :super_genre => SUPER_GENRE,
@@ -53,11 +56,6 @@ class Genre < ActiveRecord::Base
       result = "Super Genre" if self.kind == SUPER_GENRE
       return result
     end
-
-
-
-    validates_presence_of :name
-    validates :time_of_inception, :numericality => { :only_integer => true, :allow_nil => true }
 
     def as_json(options = {})
       self.attributes.merge({

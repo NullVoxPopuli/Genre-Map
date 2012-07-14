@@ -68,12 +68,25 @@ class GenresController < ApplicationController
   # PUT /genres/1.json
   def update
     @genre = Genre.find(params[:id])
+    params[:genre][:time_of_inception] = 
+      Date.strptime(params[:genre][:time_of_inception], "%Y") if params[:genre][:time_of_inception]
 
     respond_to do |format|
       if @genre.update_attributes(params[:genre])
         format.html { redirect_to @genre, notice: 'Genre was successfully updated.' }
         format.json { head :no_content }
       else
+        @genres = Genre.all
+
+        @current_origins = @genre.stylistic_origins
+        @available_origins =  Genre.all - @current_origins
+
+        @current_tracks = @genre.tracks
+        @available_tracks = Track.all - @current_tracks
+
+        @current_children = @genre.childs
+        @available_children = Genre.all - @current_children
+
         format.html { render action: "edit" }
         format.json { render json: @genre.errors, status: :unprocessable_entity }
       end
