@@ -139,7 +139,6 @@ function drawCluster(d) {
 
 function updateGravity(){
 	var numYears = currentMaximumYear - currentMinimumYear;
-	console.log(numYears);
 	// year separation should be a function of the number of years, and the 
 	// width of the screen, using as much as possible
 	var maxWidth = $(window).width() - (WINDOW_PADDING * 2) / 2;
@@ -312,9 +311,9 @@ $(function(){
 		/*
 			CONNECTIONS / LINKS BETWEEN NODES
 		*/
-		link = linkg.selectAll("line.link").data(net.links, linkid);
-		link.exit().remove();
-		link.enter().append("line")
+		linkg.selectAll("line.link").remove();
+		link = linkg.selectAll("line.link").data(net.links, linkid)
+			.enter().append("line")
 			.attr("class", "link")
 			.attr("x1", function(d) { return d.source.x; })
 			.attr("y1", function(d) { return d.source.y; })
@@ -327,7 +326,6 @@ $(function(){
 			NODES
 		*/
 		nodeG.selectAll("rect").remove();
-
 		node = nodeG.selectAll("rect")
 			.data(net.nodes)
 			.enter().append("svg:rect")
@@ -340,8 +338,6 @@ $(function(){
 			.attr("class", nodeClass)
 			.attr("width", nodeWidth)
 			.attr("height", nodeHeight);
-
-		// remove the nodes
 
 
 		/* 
@@ -439,22 +435,30 @@ $(function(){
 
 	function tick(event) {
 		var k = event.alpha * 0.1;
-		var container = $(".svg_container");
+		var container = svg_container;
 		var topCornerX = container.scrollLeft();
 		var topCornerY = container.scrollTop();
 		
+		// apply collision and edge constraints on the nodes
 		forceDiagram.nodes().forEach(function(node){
+
 			if (isSuperGenre(node)){
-				// we want the super genres to be stuck on teh left hand side, so set fixed X
+				/*
+					SUPER GENRES MUST STAY ON LEFT SIDE
+				*/
 				var newX = (topCornerX + WINDOW_PADDING);
-				var newY = ((topCornerY + WINDOW_PADDING * 2)- node.y) * k;
+				var newY = ((topCornerY + h / 2) - node.y) * k;
 
 				 // Math.max(r, Math.min(w - r, d.x)); }) <- how to bound to box
 				// make sure to bound the nodes to the inside of the canvas, so they don't escape our sight
 				node.x = newX;
 				node.y += newY;
+				if (node.y < topCornerY + WINDOW_PADDING) node.y += nodeHeight(node);
+				if (node.y > topCornerY + $(window).height() - WINDOW_PADDING) node.y -= nodeHeight(node);
 			} else if (gravityWells.hasOwnProperty(node.year)){
-				console.log(node.year - currentMinimumYear);
+				/*
+					YEAR CONSTRAINTS / FOCI
+				*/
 				// node.x += (gravityWells[node.year - currentMinimumYear].x - node.x) * k;
 				node.y += (gravityWells[node.year - currentMinimumYear].y - node.y) * k;
 
@@ -467,9 +471,15 @@ $(function(){
 			hull.data(hullData)
 				.attr("d", drawCluster);
 			hullLabel
-				.data(hull)
-				.attr("x", function(d) { return svgCenter(d[0]).x })
-				.attr("y", function(d) { return svgCenter(d[0]).y });
+				.data(hullData)
+				.attr("x", function(d) { 
+					var bBox = getBBoxOfPointArray(d.path);
+					var x = (bBox.bottomRightX + bBox.topLeftX) / 2;
+					return x })
+				.attr("y", function(d) {
+					var bBox = getBBoxOfPointArray(d.path)
+					var y = bBox.bottomRightY;
+					return y + 25});
 		}
 
 		link.attr("x1", function(d) { return d.source.x; })
@@ -480,24 +490,44 @@ $(function(){
 		node.attr("transform", function(d) {
 			return "translate(" + d.x + "," + d.y + ")";
 		});
-		 // node
-   //      	.attr("x", function(d){ 
-			// 	return d.x;
-   //      	})
-   //      	.attr("y", function(d) {
-   //      		var height = nodeHeight(d);
-			// 	return Math.max(topCornerY + WINDOW_PADDING, Math.min(container.height() - height + 2*WINDOW_PADDING, d.y));
-   //      	});
 		
 		nodeLabel.attr("x", function(d) { return d.x })
 				 .attr("y", function(d) { return d.y });
-			// .attr("y", function(d) {
-   //      		var height = nodeHeight(d);
-			// 	var y = Math.max(topCornerY + WINDOW_PADDING, Math.min(container.height() - height + 2*WINDOW_PADDING, d.y));
-   //      		return y + height / 2;
-   //      	});
 	};
 
+	function averagePoint(arr){
+		var x = 0;
+		var y = 0;
+		for(var i = 0; i < arr.length; i++){
+			x += arr[i][0];
+			y += arr[i][1];
+		}
+		return {
+			x: x / arr.length,
+			y: y / arr.length
+		}
+	}
+
+	function getBBoxOfPointArray(arr){
+		var topLeftX = CANVAS_WIDTH,
+			topLeftY = CANVAS_HEIGHT, // min
+			bottomRightX = 0,
+			bottomRightY = 0; // max
+
+		for(var i = 0; i < arr.length; i++){
+			if (arr[i][1] > bottomRightY) bottomRightY = arr[i][1];
+			if (arr[i][0] > bottomRightX) bottomRightX = arr[i][0];
+			if (arr[i][1] < topLeftY) topLeftY = arr[i][1];
+			if (arr[i][0] < topLeftX) topLeftX = arr[i][0];
+
+		}
+		return {
+			topLeftX: topLeftX,
+			topLeftY: topLeftY,
+			bottomRightX: bottomRightX,
+			bottomRightY: bottomRightY
+		}
+	}
 
 	function svgCenter(p){
 		if (!p){

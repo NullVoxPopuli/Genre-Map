@@ -26,8 +26,6 @@ Array.prototype.minOfObjectForField = function(field){
   var curValue;
   for (var i = 0; i < this.length; i++){
     curValue = this[i][field];
-    console.log(this)
-    console.log(curValue)
     if (curValue != "" && (curValue < min)){
       min = curValue;
     }

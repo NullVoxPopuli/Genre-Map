@@ -81,6 +81,10 @@ path.non_electronic{
 	stroke-dasharray: 0,2 1;
 }
 
+text.hull{
+	font-size: 28px;
+	opacity: 0.5;
+}
 
 rect {
   fill: #ddd;
