@@ -378,7 +378,7 @@ $(function(){
 			if (hasGroup(d)){
 				return -900;
 			} else {
-				return -400;
+				return -200;
 			}
 
 		})

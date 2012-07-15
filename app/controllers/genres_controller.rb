@@ -69,7 +69,7 @@ class GenresController < ApplicationController
   def update
     @genre = Genre.find(params[:id])
     params[:genre][:time_of_inception] = 
-      Date.strptime(params[:genre][:time_of_inception], "%Y") if params[:genre][:time_of_inception]
+      Date.strptime(params[:genre][:time_of_inception], "%Y") if !params[:genre][:time_of_inception].blank?
 
     respond_to do |format|
       if @genre.update_attributes(params[:genre])
