@@ -2,10 +2,12 @@
 <br />
 <h1>Listing genres</h1>
 <%= text_field_tag "search_genres", nil, :placeholder => "Too lazy to scroll.." %>
+<%= text_field_tag "super_genres_filter", nil, :placeholder => "Super Genre Filter.." %>
 
 <table class="genres">
   <tr>
     <th>Name</th>
+    <th>SuperGenre</th>
     <th></th>
     <th></th>
     <th></th>
@@ -14,6 +16,7 @@
 <% @genres.each do |genre| %>
   <tr>
     <td class="name"><%= genre.name %></td>
+    <td class="super_genre"><%= genre.super_genre.name if genre.super_genre %></td>
     <td><%= link_to 'Show', genre %></td>
     <td><%= link_to 'Edit', edit_genre_path(genre) %></td>
     <td><%= link_to 'Destroy', genre, method: :delete, data: { confirm: 'Are you sure?' } %></td>
@@ -31,6 +34,13 @@
         var search_text = $(this).val().toUpperCase();
         $(".genres .name").parent().hide().filter(function(){
             return $(this).find(".name").text().toUpperCase().indexOf(search_text) != -1
+        }).show();
+      return false;     
+    });
+    $("#super_genres_filter").bind("keyup input paste", function(){
+        var search_text = $(this).val().toUpperCase();
+        $(".genres .super_genre").parent().hide().filter(function(){
+            return $(this).find(".super_genre").text().toUpperCase().indexOf(search_text) != -1
         }).show();
       return false;     
     });

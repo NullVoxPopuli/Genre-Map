@@ -564,7 +564,7 @@ $(function(){
 				 .attr("y", function(d) { return d.y });
 
 		if (SHOW_YEAR_LINES){
-		yearLine
+			yearLine
 			.attr("x1", function(d){return d.x})
 				.attr("x2", function(d){ return d.x})
 				.attr("class", function(d){
