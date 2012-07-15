@@ -4,11 +4,13 @@ var COOKIE_EXPIRATION = 1825;
 var CANVAS_HEIGHT = 3000;
 var CANVAS_WIDTH = 3000;
 var SUB_GENRE_NODE_HEIGHT = 20;
+var SUPER_GENRE_NODE_HEIGHT = 36;
 var NODE_WIDTH_MULTIPLIER = 8;
 var SUPER_GENRE_TEXT = "super_genre"
 var SUB_GENRE_TEXT = "sub_genre"
 var NON_ELECTRONIC_TEXT = "non_electronic"
 var WINDOW_PADDING = 100;
+var SHOW_YEAR_LINES = false;
 
 // make sure these stay synced with Genre.rb
 var SUB_GENRE = 0;
@@ -46,13 +48,14 @@ var searchText = "";
 */
 var clusterHullOffset = 25;
 // <g> containers
-var hullG, linkg, nodeG, nodeLabelG, hullLabelG;
+var hullG, linkg, nodeG, nodeLabelG, hullLabelG, yearLineG, yearLineLabelG;
 // instance vars for .update()
-var hull, link, node, nodeLabel, hullLabel;
+var hull, link, node, nodeLabel, hullLabel, yearLine, yearLineLabel;
 // current state of the network 
 var net;
 // different gravity wells for each year
 var gravityWells = {};
+var gravityLines = [];
 // filtered version yearsByGenre, to be used with currentMinimumYear and gravityWells
 var currentVisibleYears = []
 // to be subtracted from all the years, so we have a resonable range to work with
@@ -125,7 +128,7 @@ function convexHulls(nodes, offset) {
 			path: hull_path,
 			location: {
 				x: xVals.avg(),
-				y: yVals.min()
+				y: yVals.max()
 			}
 		});
 	}
@@ -141,15 +144,18 @@ function updateGravity(){
 	var numYears = currentMaximumYear - currentMinimumYear;
 	// year separation should be a function of the number of years, and the 
 	// width of the screen, using as much as possible
-	var maxWidth = $(window).width() - (WINDOW_PADDING * 2) / 2;
+	var maxWidth = $(window).width() - (WINDOW_PADDING * 3);
 	var yearSize = maxWidth / numYears;
 	for (var i = 0; i < numYears + 1; i++){
-		gravityWells[i] = {
-			x: i * yearSize,
-			y: i * yearSize
+		gravityWells[i + currentMinimumYear] = {
+			x: i * yearSize + WINDOW_PADDING * 2 + $(".svg_container").scrollLeft(),
+			y: i * yearSize + $(".svg_container").scrollTop()
 		}
+		gravityLines.push({
+			x:gravityWells[i + currentMinimumYear].x,
+			year: i + currentMinimumYear
+		})
 	}
-
 }
 
 // constructs the network to visualize
@@ -334,7 +340,7 @@ $(function(){
 			.on("click", click)
 			.attr("x", function(d) {return -4 * d.name.length;})
 			.attr("y", -14)
-			.attr("rx", 10)
+			.attr("rx", nodeBorderRadius)
 			.attr("class", nodeClass)
 			.attr("width", nodeWidth)
 			.attr("height", nodeHeight);
@@ -348,8 +354,30 @@ $(function(){
 			.data(net.nodes)
 			.enter().append("svg:text")
 			.attr("text-anchor", "middle")
-			.attr("class", "node")
+			.attr("class", nodeLabelClass)
 			.text(function(d){return d.name});
+
+
+		/*
+			YEAR LINES
+		*/
+		if (SHOW_YEAR_LINES){
+			yearLineG.selectAll("line").remove();
+			yearLine = yearLineG.selectAll("line")
+				.data(gravityLines)
+				.enter().append("svg:line")
+				.attr("x1", yearLineX)
+				.attr("x2", yearLineX)
+				.attr("y1", 0)
+				.attr("y2", CANVAS_HEIGHT);
+
+			yearLineLabelG.selectAll("text").remove();
+			yearLineLabel = yearLineLabelG.selectAll("text")
+				.data(gravityLines)
+				.enter().append("svg:text")
+				.attr("text-anchor", "middle")
+				.text(function(d){return d.year});
+		}
 
 
 		/*
@@ -374,25 +402,30 @@ $(function(){
 	forceDiagram = d3.layout.force()
 		.size([CANVAS_WIDTH, CANVAS_HEIGHT])
 		// .linkDistance(100)
+		// .linkStrength(0)
 		.charge(function(d){
 			if (hasGroup(d)){
 				return -900;
+			} else if (isSuperGenre(d)){
+				return -600;
 			} else {
-				return -200;
+				return -400;
 			}
 
 		})
 		.friction(0.9)
-		.gravity(0.1)
+		.gravity(0)
 		.on("tick", tick);
 
 	var svg = d3.select(".svg_container").append("svg");
 
+	yearLineG = svg.append("g");
 	hullG = svg.append("g");
 	linkg = svg.append("g");
 	nodeG = svg.append("g");
 	nodeLabelG = svg.append("g");
 	hullLabelG = svg.append("g");
+	yearLineLabelG = svg.append("g");
 
 	resizeSVG(); // fit to window
 	updateGraph(); // draw
@@ -403,7 +436,12 @@ $(function(){
 		return "node " + 
 			d.kind + " " + 
 			d.data.name.replace(" ", "").toUpperCase() + " " + 
-			d.super_genre;
+			d.super_genre + 
+			(isSuperGenre(d) && visibleSuperGenres.indexOf(d.name) != -1 ? "active" : "");
+	}
+
+	function nodeLabelClass(d){
+		return "node " + (isSuperGenre(d) ? "super_genre" : "");
 	}
 
 	function radius(d) {
@@ -418,15 +456,18 @@ $(function(){
 			showGenreDetails(d);
 		} else {
 			var genre_name = d.data.name;
-			console.log("Expand / Collapse - ing: " + genre_name);
+			console.log("Expand / Collapse - ing: " + genre_name.toUpperCase());
 			// check if collapsed 
 			var indexOfGenre;
+			var genreNode = $(".super_genre." + genre_name)
 			if ((indexOfGenre = hiddenSuperGenres.indexOf(genre_name)) != -1){
 				hiddenSuperGenres.remove(indexOfGenre);
 				visibleSuperGenres.push(genre_name);
+				genreNode.addClass("active");
 			} else {
 				hiddenSuperGenres.push(genre_name)
 				visibleSuperGenres.remove(visibleSuperGenres.indexOf(genre_name));
+				genreNode.removeClass("active");
 			}
 
 			updateGraph();
@@ -438,7 +479,27 @@ $(function(){
 		var container = svg_container;
 		var topCornerX = container.scrollLeft();
 		var topCornerY = container.scrollTop();
-		
+		var hullData;
+		var targetX, targetY;
+
+
+		// update hull data + visuals
+		if (!hull.empty()) {
+			hullData = convexHulls(net.nodes, clusterHullOffset);
+			hull.data(hullData)
+				.attr("d", drawCluster);
+			hullLabel
+				.data(hullData)
+				.attr("x", function(d) { 
+					var bBox = getBBoxOfPointArray(d.path);
+					var x = (bBox.bottomRightX + bBox.topLeftX) / 2;
+					return x })
+				.attr("y", function(d) {
+					var bBox = getBBoxOfPointArray(d.path)
+					var y = bBox.bottomRightY;
+					return d.location.y + 25});
+		}
+
 		// apply collision and edge constraints on the nodes
 		forceDiagram.nodes().forEach(function(node){
 
@@ -459,29 +520,37 @@ $(function(){
 				/*
 					YEAR CONSTRAINTS / FOCI
 				*/
-				// node.x += (gravityWells[node.year - currentMinimumYear].x - node.x) * k;
-				node.y += (gravityWells[node.year - currentMinimumYear].y - node.y) * k;
+				targetX = gravityWells[node.year].x;
+				targetY = topCornerY + (h / 2);
+				// targetY = gravityWells[node.year].y;
+				node.x += (targetX - node.x);
+				node.y += (targetY - node.y) * k;
+			} else {
+				// since there is no gravity, lets just push the ones that don't have
+				// a year to the center of the viewing area
+				targetX = topCornerX + (w / 2)
+				targetY = topCornerY + (h / 2);
+				// targetY = gravityWells[node.year].y;
+				node.x += (targetX - node.x) * k;
+				node.y += (targetY - node.y) * k;
+			}
 
+			/*
+				PUSH NODE TOWARDS CENTER OF HULL / CATEGORY BLOB
+			*/
+			if (hasGroup(node) && hullData != undefined){
+				var hullForNodeIndex = hullData.indexOfObjectForField("group", node.category);
+				var hullForNode = hullData[hullForNodeIndex];
+				var bBox = getBBoxOfPointArray(hullForNode.path);
+				targetX = (bBox.topLeftX + bBox.bottomRightX) / 2;
+				targetY = (bBox.topLeftY + bBox.bottomRightY) / 2;
+				node.x += (targetX - node.y) * k;
+				// node.y += (targetY - node.y) * k;
 			}
 		});
 
-		// Update Visuals
-		if (!hull.empty()) {
-			var hullData = convexHulls(net.nodes, clusterHullOffset);
-			hull.data(hullData)
-				.attr("d", drawCluster);
-			hullLabel
-				.data(hullData)
-				.attr("x", function(d) { 
-					var bBox = getBBoxOfPointArray(d.path);
-					var x = (bBox.bottomRightX + bBox.topLeftX) / 2;
-					return x })
-				.attr("y", function(d) {
-					var bBox = getBBoxOfPointArray(d.path)
-					var y = bBox.bottomRightY;
-					return y + 25});
-		}
 
+		// update nodes, links, and node labels
 		link.attr("x1", function(d) { return d.source.x; })
 			.attr("y1", function(d) { return d.source.y; })
 			.attr("x2", function(d) { return d.target.x; })
@@ -493,6 +562,21 @@ $(function(){
 		
 		nodeLabel.attr("x", function(d) { return d.x })
 				 .attr("y", function(d) { return d.y });
+
+		if (SHOW_YEAR_LINES){
+		yearLine
+			.attr("x1", function(d){return d.x})
+				.attr("x2", function(d){ return d.x})
+				.attr("class", function(d){
+					return d.year
+				});
+
+			yearLineLabel.attr("x", function(d) { return d.x })
+				.attr("y", function(d){
+					return $(".svg_container").scrollTop() + $(window).height() - 15;
+				});
+		}
+
 	};
 
 	function averagePoint(arr){
@@ -560,12 +644,20 @@ $(function(){
 		return offsetX;
 	}
 
+	function nodeBorderRadius(d){
+		return 10;//isSuperGenre(d) ? 1 : 2;
+	}
+
 	function nodeWidth(d) {
 		return d.name.length * NODE_WIDTH_MULTIPLIER
 	}
 
 	function nodeHeight(d) {
 		return SUB_GENRE_NODE_HEIGHT;
+	}
+
+	function yearLineX(d){
+		return d.x;
 	}
 
 })

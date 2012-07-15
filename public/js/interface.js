@@ -22,6 +22,17 @@ $(function(){
       $(this).fadeOut();
   });
 
+
+  /*
+    This version of jQueryUI only include .draggable
+  */
+  $(".genre_details .content").draggable({
+    handle: ".genre_details .content .header",
+    drag: function(){
+      $(".genre_details .background").fadeOut();
+    }
+  });
+
   $(".interface_options .hide").click(function(){
     if (toolbar.is(":visible") || (sidebar.is(":visible"))){
         toolbar.fadeOut(FADE_OUT_SPEED);
@@ -120,7 +131,8 @@ $(function(){
 
     var genre = o.data;
     genre_details.find(".name").html(genre.name);
-
+    // genre_details.find(".background").show();
+    // genre_details.find(".content").attr("style", "");
     // set tracks
     var examples = genre_details.find(".examples");
     examples.empty();

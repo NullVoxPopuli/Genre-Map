@@ -97,20 +97,29 @@ rect {
 	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 	  font: 10px sans-serif;
 }
-.sub_genre{
+rect.sub_genre{
 }
 
-.super_genre{
+rect.super_genre{
+	stroke-width: 1px;
 	fill: #62D6E9;
 	stroke: #000;
 }
 
-.non_electronic{
+rect.super_genre.active{
+	fill: #FB8520;
+	stroke: #333;
+}
+
+rect.non_electronic{
 	fill: white;
 	stroke-dasharray: 0,2 1;
 
 }
 
+text.super_genre{
+	font-size: 12px;
+}
 
 text {
   font: 10px sans-serif;
@@ -290,6 +299,7 @@ path.hull {
 	font-weight: bold;
 	height: 20px;
 	min-width: 300px;
+	cursor: pointer;
 }
 .genre_details .body{
 	padding: 5px;
