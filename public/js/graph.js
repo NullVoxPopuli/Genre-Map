@@ -140,20 +140,30 @@ function drawCluster(d) {
 	return curve(d.path); // 0.8
 }
 
+function decadeFor(str){
+	// take the first two letters of the the year, and make decade
+	// ie: 1967 =P 1960s
+	var decade = (str + "").substring(0, 3) + "0s"
+	return decade;
+}
+
 function updateGravity(){
 	var numYears = currentMaximumYear - currentMinimumYear;
 	// year separation should be a function of the number of years, and the 
 	// width of the screen, using as much as possible
-	var maxWidth = $(window).width() - (WINDOW_PADDING * 3);
-	var yearSize = maxWidth / numYears;
-	for (var i = 0; i < numYears + 1; i++){
-		gravityWells[i + currentMinimumYear] = {
-			x: i * yearSize + WINDOW_PADDING * 2 + $(".svg_container").scrollLeft(),
-			y: i * yearSize + $(".svg_container").scrollTop()
+	var numDecades = Math.ceil(numYears / 10.0);
+	var maxWidth = $(window).width() - (WINDOW_PADDING * 4);
+	var decadeSize = maxWidth / (numDecades + 1);
+	var decade;
+	for (var i = 0; i < numDecades + 1; i++){
+		decade = decadeFor((i * 10) + currentMinimumYear);
+		gravityWells[decade] = {
+			x: i * decadeSize + decadeSize * 1.5 + $(".svg_container").scrollLeft(),
+			y: i * decadeSize + $(".svg_container").scrollTop()
 		}
 		gravityLines.push({
-			x:gravityWells[i + currentMinimumYear].x,
-			year: i + currentMinimumYear
+			x:gravityWells[decade].x,
+			year: decade
 		})
 	}
 }
@@ -362,19 +372,21 @@ $(function(){
 			YEAR LINES
 		*/
 		if (SHOW_YEAR_LINES){
-			yearLineG.selectAll("line").remove();
-			yearLine = yearLineG.selectAll("line")
+			yearLineG.selectAll("line.axis_label").remove();
+			yearLine = yearLineG.selectAll("line.axis_label")
 				.data(gravityLines)
 				.enter().append("svg:line")
+				.attr("class", "axis_label")
 				.attr("x1", yearLineX)
 				.attr("x2", yearLineX)
 				.attr("y1", 0)
 				.attr("y2", CANVAS_HEIGHT);
 
-			yearLineLabelG.selectAll("text").remove();
-			yearLineLabel = yearLineLabelG.selectAll("text")
+			yearLineLabelG.selectAll("text.axis_label").remove();
+			yearLineLabel = yearLineLabelG.selectAll("text.axis_label")
 				.data(gravityLines)
 				.enter().append("svg:text")
+				.attr("class", "axis_label")
 				.attr("text-anchor", "middle")
 				.text(function(d){return d.year});
 		}
@@ -394,10 +406,7 @@ $(function(){
 	var w = initial_size.w,
 		h = initial_size.h,
 		x = initial_size.x,
-		y = initial_size.y,
-		node,
-		link,
-		text;
+		y = initial_size.y;
 
 	forceDiagram = d3.layout.force()
 		.size([CANVAS_WIDTH, CANVAS_HEIGHT])
@@ -429,6 +438,7 @@ $(function(){
 
 	resizeSVG(); // fit to window
 	updateGraph(); // draw
+	// center viewport on canvas
 	svg_container.scrollLeft($("svg").width() / 2 - svg_container.width() / 2);
 	svg_container.scrollTop($("svg").height() / 2 - svg_container.height() / 2);
 
@@ -516,21 +526,20 @@ $(function(){
 				node.y += newY;
 				if (node.y < topCornerY + WINDOW_PADDING) node.y += nodeHeight(node);
 				if (node.y > topCornerY + $(window).height() - WINDOW_PADDING) node.y -= nodeHeight(node);
-			} else if (gravityWells.hasOwnProperty(node.year)){
+			} else if (gravityWells.hasOwnProperty(decadeFor(node.year))){
 				/*
 					YEAR CONSTRAINTS / FOCI
 				*/
-				targetX = gravityWells[node.year].x;
+				targetX = gravityWells[decadeFor(node.year)].x;
 				targetY = topCornerY + (h / 2);
 				// targetY = gravityWells[node.year].y;
-				node.x += (targetX - node.x);
+				node.x += (targetX - node.x) * k;
 				node.y += (targetY - node.y) * k;
 			} else {
 				// since there is no gravity, lets just push the ones that don't have
 				// a year to the center of the viewing area
 				targetX = topCornerX + (w / 2)
 				targetY = topCornerY + (h / 2);
-				// targetY = gravityWells[node.year].y;
 				node.x += (targetX - node.x) * k;
 				node.y += (targetY - node.y) * k;
 			}
@@ -544,7 +553,7 @@ $(function(){
 				var bBox = getBBoxOfPointArray(hullForNode.path);
 				targetX = (bBox.topLeftX + bBox.bottomRightX) / 2;
 				targetY = (bBox.topLeftY + bBox.bottomRightY) / 2;
-				node.x += (targetX - node.y) * k;
+				// node.x += (targetX - node.y) * k;
 				// node.y += (targetY - node.y) * k;
 			}
 		});

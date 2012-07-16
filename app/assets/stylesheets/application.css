@@ -132,6 +132,13 @@ text.shadow {
   stroke-opacity: .8;
 }
 
+.axis_label{
+	opacity: 0.3;
+}
+text.axis_label{
+	opacity: 0.5
+}
+
 path.hull {
   fill: lightsteelblue;
   fill-opacity: 0.3;
@@ -186,6 +193,10 @@ path.hull {
 }
 .information .disclaimer .claimer{
 
+}
+
+.information .instructions{
+	padding-left: 10px;
 }
 .information .signin{
 	position: absolute;
