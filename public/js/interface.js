@@ -151,6 +151,11 @@ $(function(){
     }
 
     genre_details.find(".description").html(genre.description);
+    if (genre.wikipedia == ""){
+      genre_details.find(".wiki").hide();
+    } else {
+      genre_details.find(".wiki").show();
+    }
     genre_details.find(".wiki a").attr("href", genre.wikipedia);
     stop_playback.click();
     genre_details.fadeIn();
