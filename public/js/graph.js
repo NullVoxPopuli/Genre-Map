@@ -264,6 +264,19 @@ $(function(){
 
 	}
 
+	$(".super_genre_list li").click(function(){
+		var genre_name = $(this).attr("data-name");
+		if ((indexOfGenre = hiddenSuperGenres.indexOf(genre_name)) != -1){
+			hiddenSuperGenres.remove(indexOfGenre);
+			visibleSuperGenres.push(genre_name);
+			$(this).addClass("active");
+		} else {
+			hiddenSuperGenres.push(genre_name)
+			visibleSuperGenres.remove(visibleSuperGenres.indexOf(genre_name));
+			$(this).removeClass("active");
+		}
+		updateGraph();
+	})
 
 	updateGraph = function(){
 		var hullData;
@@ -407,14 +420,22 @@ $(function(){
 		h = initial_size.h,
 		x = initial_size.x,
 		y = initial_size.y;
-
+		var l1, l2;
 	forceDiagram = d3.layout.force()
 		.size([CANVAS_WIDTH, CANVAS_HEIGHT])
 		// .linkDistance(100)
 		// .linkStrength(0)
 		.charge(function(d){
 			if (hasGroup(d)){
-				return -900;
+				// lone nodes have a link to themselves
+				// l1 = net.links.indexOfObjectForField("source", d);
+				// l2 = net.links.indexOfObjectForField("target", d);
+				// if (l1 == l2 || (l1 == -1 && l2 == -1)){
+					// console.log(d.name);;
+					// return -10;
+				// } else {
+					return -900;					
+				// }
 			} else if (isSuperGenre(d)){
 				return -600;
 			} else {

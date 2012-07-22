@@ -151,6 +151,36 @@ path.hull {
 /* 
 	DOM LAYOUT
 */
+
+.super_genre_list{
+	z-index: 3;
+	position: fixed;
+	top: 20px;
+	left: 20px;
+	padding:0px;
+	margin: 0px;
+}
+
+.super_genre_list li{
+	padding: 5px;
+	margin: 5px;
+	background: #55B7C8;
+	color: white;
+	font-weight: bold;
+	cursor: pointer;
+	border: 1px solid silver;
+}
+
+.super_genre_list li.active{
+	background: #FB8520;
+	border: 1px solid #333;
+}
+
+
+/*
+
+###############################
+*/
 .stop_playback {
 	position: fixed;
 	bottom: 20px;
