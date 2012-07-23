@@ -155,16 +155,22 @@ function updateGravity(){
 	var maxWidth = $(window).width() - (WINDOW_PADDING * 4);
 	var decadeSize = maxWidth / (numDecades + 1);
 	var decade;
+	var yearList = $(".year_list");
+	var svg_container = $(".svg_container");
+
+	yearList.html("");
+
 	for (var i = 0; i < numDecades + 1; i++){
 		decade = decadeFor((i * 10) + currentMinimumYear);
 		gravityWells[decade] = {
-			x: i * decadeSize + decadeSize * 1.5 + $(".svg_container").scrollLeft(),
-			y: i * decadeSize + $(".svg_container").scrollTop()
+			x: i * decadeSize + decadeSize * 1.5 + svg_container.scrollLeft(),
+			y: i * decadeSize + svg_container.scrollTop()
 		}
 		gravityLines.push({
 			x:gravityWells[decade].x,
 			year: decade
 		})
+		yearList.append("<li class='active'>" + decade + "</li>");
 	}
 }
 
@@ -260,9 +266,6 @@ $(function(){
 		"left": size.x,
 		// "width": size.w,
 		// "height": size.h
-	});
-	$(".year_list").animate({
-		"width": (size.w - YEARS_PADDING_LEFT - YEARS_PADDING_RIGHT)
 	});
 	$(".super_genre_list").animate({
 		"left": size.x + 10,

@@ -169,6 +169,7 @@ path.hull {
 	font-weight: bold;
 	cursor: pointer;
 	border: 1px solid silver;
+	list-style-type: none;
 }
 .super_genre_list li:hover{
 	background: #65C7D8;
@@ -185,19 +186,14 @@ path.hull {
 .year_list{
 	z-index: 3;
 	position: fixed;
-	bottom: 0px;
+	bottom: 20px;
+	right: 20px;
 	list-style: nono;
 	margin: 0px;
 	padding: 0px;
-	width: 100%;
 	text-align: justify;
 	list-style-type: none;
 	padding-left: 150px;
-}
-.year_list:after{
-	content: "";
-	display: inline-block;
-	width: 100%;
 }
 
 .year_list li{
@@ -205,6 +201,7 @@ path.hull {
 	vertical-align: top;
 	display: inline-block;
 	border: 1px solid #E5E5E5;
+	border-left: none;
 	background: #F4F4F4;
 	-webkit-box-shadow: 0 2px 7px rgba(0, 0, 0, 0.2);
 	-moz-box-shadow: 0 2px 7px rgba(0,0,0,0.2);
@@ -213,6 +210,9 @@ path.hull {
 	line-height: 20px;
 	cursor: pointer;
 }
+.year_list li:first-child{
+	border-left: 1px solid #e5e5e5;
+}
 .year_list li:hover{
 	background: #E4E4E4;
 }
@@ -220,6 +220,10 @@ path.hull {
 .year_list li.active{
 	background: #FB8520;
 	border: 1px solid #333;
+	border-left: none;
+}
+.year_list li:first-child.active{
+	border-left: 1px solid #333;
 }
 .year_list li.active:hover{
 	background: #FF9530;
