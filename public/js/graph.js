@@ -261,6 +261,16 @@ $(function(){
 		// "width": size.w,
 		// "height": size.h
 	});
+	$(".year_list").animate({
+		"width": (size.w - YEARS_PADDING_LEFT - YEARS_PADDING_RIGHT)
+	});
+	$(".super_genre_list").animate({
+		"left": size.x + 10,
+		"top": 10 + (sidebar.is(":visible") ? 20 : 0)
+	})
+	$(".interface_options").animate({
+		"left": size.x + 10
+	})
 
 	}
 

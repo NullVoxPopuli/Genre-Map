@@ -155,8 +155,8 @@ path.hull {
 .super_genre_list{
 	z-index: 3;
 	position: fixed;
-	top: 20px;
-	left: 20px;
+	top: 10px;
+	left: 10px;
 	padding:0px;
 	margin: 0px;
 }
@@ -170,10 +170,59 @@ path.hull {
 	cursor: pointer;
 	border: 1px solid silver;
 }
-
+.super_genre_list li:hover{
+	background: #65C7D8;
+}
 .super_genre_list li.active{
 	background: #FB8520;
 	border: 1px solid #333;
+}
+.super_genre_list li.active:hover{
+	background: #FF9530;
+}
+
+
+.year_list{
+	z-index: 3;
+	position: fixed;
+	bottom: 0px;
+	list-style: nono;
+	margin: 0px;
+	padding: 0px;
+	width: 100%;
+	text-align: justify;
+	list-style-type: none;
+	padding-left: 150px;
+}
+.year_list:after{
+	content: "";
+	display: inline-block;
+	width: 100%;
+}
+
+.year_list li{
+	text-align: left;
+	vertical-align: top;
+	display: inline-block;
+	border: 1px solid #E5E5E5;
+	background: #F4F4F4;
+	-webkit-box-shadow: 0 2px 7px rgba(0, 0, 0, 0.2);
+	-moz-box-shadow: 0 2px 7px rgba(0,0,0,0.2);
+	box-shadow: 0 2px 7px rgba(0, 0, 0, 0.2);
+	padding: 0 5px;
+	line-height: 20px;
+	cursor: pointer;
+}
+.year_list li:hover{
+	background: #E4E4E4;
+}
+
+.year_list li.active{
+	background: #FB8520;
+	border: 1px solid #333;
+}
+.year_list li.active:hover{
+	background: #FF9530;
 }
 
 
@@ -183,8 +232,8 @@ path.hull {
 */
 .stop_playback {
 	position: fixed;
-	bottom: 20px;
-	left: 20px;
+	top: 60px;
+	right: 20px;
 	z-index: 10;
 	cursor: pointer;
 	display: none;
@@ -213,6 +262,7 @@ path.hull {
 	-webkit-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 	-moz-box-shadow: 0 4px 16px rgba(0,0,0,0.2);
 	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+	overflow: auto;
 }
 .information .author {
 	display: block;
@@ -301,8 +351,8 @@ path.hull {
 .interface_options{
 	position: fixed;
 	bottom: 20px;
-	right: 20px;
-	z-index: 1;
+	left: 20px;
+	z-index: 3;
 
 }
 .interface_options a{

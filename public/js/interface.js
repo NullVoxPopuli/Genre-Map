@@ -2,6 +2,8 @@ var VIDEO_PLAYER_WIDTH = 853;
 var VIDEO_PLAYER_HEIGHT = 480;
 var SOUNDCLOUD_WIDTH = "100%"
 var SOUNDCLOUD_HEIGHT = "166"
+var YEARS_PADDING_LEFT = 150;
+var YEARS_PADDING_RIGHT = 50;
 $(function(){
 
   var toolbar = $(".toolbar"); 
@@ -37,12 +39,12 @@ $(function(){
     if (toolbar.is(":visible") || (sidebar.is(":visible"))){
         toolbar.fadeOut(FADE_OUT_SPEED);
         sidebar.fadeOut(FADE_OUT_SPEED);
-        $(this).text("Show Interface");
+        $(this).text("Show UI");
         setCookie("interface_is_hidden", 1, COOKIE_EXPIRATION);
     } else {
       toolbar.fadeIn(FADE_OUT_SPEED);
       sidebar.fadeIn(FADE_OUT_SPEED);
-      $(this).text("Hide Interface");
+      $(this).text("Hide UI");
       setCookie("interface_is_hidden", 0, COOKIE_EXPIRATION);   
     }
     setTimeout(resizeSVG, 250);
@@ -71,7 +73,7 @@ $(function(){
     if (interfaceIsHidden()){
       toolbar.hide();
       sidebar.hide();
-      $(".interface_options .hide").text("Show Interface")
+      $(".interface_options .hide").text("Show UI")
 
     } else {
       // do nothing, they are visible by default
