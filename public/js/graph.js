@@ -48,9 +48,9 @@ var searchText = "";
 */
 var clusterHullOffset = 25;
 // <g> containers
-var hullG, linkg, nodeG, nodeLabelG, hullLabelG, yearLineG, yearLineLabelG;
+var hullG, linkg, nodeG, nodeLabelG, hullLabelG, yearLineG, yearLineLabelG, markerG;
 // instance vars for .update()
-var hull, link, node, nodeLabel, hullLabel, yearLine, yearLineLabel;
+var hull, link, node, nodeLabel, hullLabel, yearLine, yearLineLabel, marker;
 // current state of the network 
 var net;
 // different gravity wells for each year
@@ -361,7 +361,26 @@ $(function(){
 			.attr("y1", function(d) { return d.source.y; })
 			.attr("x2", function(d) { return d.target.x; })
 			.attr("y2", function(d) { return d.target.y; })
+			.attr("marker-end", function(d) { return "url(#influnces)"; })
 			.style("stroke-width", function(d) { return d.size || 1; });
+
+
+		/*
+			MARKERS
+		 	Per-type markers, as they don't inherit styles.
+		 */
+		markerG.selectAll(".marker").remove();
+		marker = markerG.selectAll(".marker").data(["influnces"])
+			.enter().append("svg:marker")
+		    .attr("id", String)
+		    .attr("viewBox", "0 -5 10 10")
+		    .attr("refX", 15)
+		    .attr("refY", -1.5)
+		    .attr("markerWidth", 6)
+		    .attr("markerHeight", 6)
+		    .attr("orient", "auto")
+		  .append("svg:path")
+		    .attr("d", "M0,-5L10,0L0,5");
 
 
 		/*
@@ -461,7 +480,7 @@ $(function(){
 		.on("tick", tick);
 
 	var svg = d3.select(".svg_container").append("svg");
-
+	
 	yearLineG = svg.append("g");
 	hullG = svg.append("g");
 	linkg = svg.append("g");
@@ -469,6 +488,8 @@ $(function(){
 	nodeLabelG = svg.append("g");
 	hullLabelG = svg.append("g");
 	yearLineLabelG = svg.append("g");
+	markerG = svg.append("g");
+
 
 	resizeSVG(); // fit to window
 	updateGraph(); // draw

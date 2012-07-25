@@ -69,7 +69,9 @@ path.link {
   stroke-width: 1.5px;
 }
 
-
+marker{
+	fill: black;
+}
 marker#trance {
   fill: lightblue;
 }
