@@ -374,8 +374,8 @@ $(function(){
 			.enter().append("svg:marker")
 		    .attr("id", String)
 		    .attr("viewBox", "0 -5 10 10")
-		    .attr("refX", 15)
-		    .attr("refY", -1.5)
+		    .attr("refX", 15) // distance from end point
+		    .attr("refY", -1.5) // distarce from end point
 		    .attr("markerWidth", 6)
 		    .attr("markerHeight", 6)
 		    .attr("orient", "auto")
@@ -481,7 +481,7 @@ $(function(){
 
 	var svg = d3.select(".svg_container").append("svg");
 	
-	yearLineG = svg.append("g");
+	yearLineG = svg.append("g");	
 	hullG = svg.append("g");
 	linkg = svg.append("g");
 	nodeG = svg.append("g");
