@@ -45,7 +45,16 @@ class ArtistsController < ApplicationController
 
     respond_to do |format|
       if @artist.save
-        format.html { redirect_to @artist, notice: 'Artist was successfully created.' }
+        format.html { 
+          if request.xhr?
+            render :json => {
+              :artist => @artist,
+              #:artists => Artist.all
+            }
+          else
+            redirect_to @artist, notice: 'Artist was successfully created.' 
+          end
+        }
         format.json { render json: @artist, status: :created, location: @artist }
       else
         format.html { render action: "new" }

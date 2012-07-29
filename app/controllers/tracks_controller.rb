@@ -27,6 +27,7 @@ class TracksController < ApplicationController
   # GET /tracks/new.json
   def new
     @track = Track.new
+    @artist = Artist.new
 
     respond_to do |format|
       format.html # new.html.erb
@@ -43,7 +44,7 @@ class TracksController < ApplicationController
   # POST /tracks.json
   def create
     @track = Track.new(params[:track])
-
+        
     respond_to do |format|
       if @track.save
         format.html { redirect_to @track, notice: 'Track was successfully created.' }

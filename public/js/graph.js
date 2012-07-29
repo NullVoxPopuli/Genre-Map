@@ -42,7 +42,9 @@ var hiddenSuperGenres = [];
 var visibleSuperGenres = [];
 // text from the search field
 var searchText = "";
-
+// year filters, similar to search text, but by year
+// var visibleYears = [];
+var hiddenYears = [];
 /*
 	SVG VARIABLES
 */
@@ -57,9 +59,10 @@ var net;
 var gravityWells = {};
 var gravityLines = [];
 // filtered version yearsByGenre, to be used with currentMinimumYear and gravityWells
-var currentVisibleYears = []
+var currentVisibleYears = [];
 // to be subtracted from all the years, so we have a resonable range to work with
 var currentMinimumYear, currentMaximumYear;
+
 
 
 var curve = d3.svg.line()
@@ -158,7 +161,7 @@ function updateGravity(){
 	var yearList = $(".year_list");
 	var svg_container = $(".svg_container");
 
-	yearList.html("");
+	// yearList.html("");
 
 	for (var i = 0; i < numDecades + 1; i++){
 		decade = decadeFor((i * 10) + currentMinimumYear);
@@ -170,8 +173,25 @@ function updateGravity(){
 			x:gravityWells[decade].x,
 			year: decade
 		})
-		yearList.append("<li class='active'>" + decade + "</li>");
+		if (yearList.html().indexOf(decade) == -1){
+			yearList.append("<li class='active' data-decade='" + decade + "'>" + decade + "</li>");
+		}
 	}
+
+
+	$(".year_list li").unbind("click");	
+	$(".year_list li").click(function(){
+		var self = $(this);
+		var i = hiddenYears.indexOf(self.data("decade"))
+		if ( i < 0 ){
+			hiddenYears.push(self.text());
+			self.removeClass("active");
+		} else {
+			hiddenYears.remove(i);
+			self.addClass("active");
+		}
+		updateGraph();
+	});
 }
 
 // constructs the network to visualize
@@ -195,9 +215,9 @@ function network(data, prev, index) {
 		var shouldNotSearch = (!shouldSearch);
 		var nodeExists = (nodeIndex == -1);
 		var partOfCollapsedSuperGenre = (hiddenSuperGenres.indexOf(parentName) == -1 || parentName == "");
-
+		var partOfCurrentyHiddenDecade = hiddenYears.indexOf(decadeFor(currentNode.year)) > -1;
 		if ((shouldSearch && (nodeName.indexOf(searchText) != -1 || categoryName.indexOf(searchText) != -1)) || 
-			( shouldNotSearch && partOfCollapsedSuperGenre && nodeExists)){
+			( shouldNotSearch && partOfCollapsedSuperGenre && nodeExists && !partOfCurrentyHiddenDecade)){
 
 			// add the node
 			nodes.push(currentNode);
@@ -269,7 +289,7 @@ $(function(){
 	});
 	$(".super_genre_list").animate({
 		"left": size.x + 10,
-		"top": 10 + (sidebar.is(":visible") ? 20 : 0)
+		"top": 10 + (toolbar.is(":visible") ? 20 : 0)
 	})
 	$(".interface_options").animate({
 		"left": size.x + 10
@@ -289,7 +309,7 @@ $(function(){
 			$(this).removeClass("active");
 		}
 		updateGraph();
-	})
+	});
 
 	updateGraph = function(){
 		var hullData;
