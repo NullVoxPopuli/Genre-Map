@@ -138,6 +138,12 @@ $(function(){
     // set tracks
     var examples = genre_details.find(".examples");
     examples.empty();
+
+    if (genre.tracks.length == 0) {
+      $(".example_title").text("");
+    } else {
+      $(".example_title").text("Examples:");
+    }
     for(var i = 0; i < genre.tracks.length; i++){
       var current_track = genre.tracks[i];
       var example = $(document.createElement("span"));
