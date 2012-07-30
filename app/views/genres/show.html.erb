@@ -14,9 +14,9 @@
 </p>
   <b>Description:</b>
 
-<p style="max-height: 200px; overflow-y: auto;">
+<div style="max-height: 200px; overflow-y: auto;">
   <%= @genre.description.html_safe %>
-</p>
+</div>
 <p>
   <b>Category:</b>
   <%= @genre.category.name if @genre.category_id %>

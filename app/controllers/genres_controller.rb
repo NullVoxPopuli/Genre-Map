@@ -203,12 +203,12 @@ class GenresController < ApplicationController
       current_sibling = i.next_sibling
       # gets the first description at the top of the wiki
       # article
-      while (current_sibling.pathname != "p")
+      while (current_sibling and current_sibling.pathname != "p")
         current_sibling = current_sibling.next_sibling
       end
 
       # loop through until we hit something not a "p" tag
-      while (current_sibling.pathname == "p")
+      while (current_sibling and current_sibling.pathname == "p")
         description << current_sibling.to_html
         current_sibling = current_sibling.next_sibling
       end
