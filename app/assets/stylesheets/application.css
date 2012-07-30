@@ -24,6 +24,15 @@ html, body{
 	margin: 0px;
 	background: white;
 }
+
+a, a:visited{
+	color: #4D47bb;
+	text-decoration: none;
+}
+a:hover{
+	text-decoration: underline;
+}
+
 .debug_panel{
 	position:fixed;
 	top:30px;
@@ -415,6 +424,12 @@ path.hull {
 	}
 	.genre_details .description{
 		max-width: 843px;
+		max-height: 200px;
+		overflow-y: auto;
+	}
+
+	.genre_details .description p:first-child{
+		margin-top: 0px;
 	}
 
 	.genre_details .wiki{

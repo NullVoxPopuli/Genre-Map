@@ -16,6 +16,7 @@ var SHOW_YEAR_LINES = false;
 var SUB_GENRE = 0;
 var SUPER_GENRE = 1;
 var NON_ELECTRONIC = 2;
+var ELECTRONIC = 3;
 // end ruby constants™
 
 // force diagram object

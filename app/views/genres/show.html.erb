@@ -12,9 +12,10 @@
 <p>Kind:</b>
   <%= @genre.kind_name %>
 </p>
-<p>
   <b>Description:</b>
-  <%= @genre.description %>
+
+<p style="max-height: 200px; overflow-y: auto;">
+  <%= @genre.description.html_safe %>
 </p>
 <p>
   <b>Category:</b>
@@ -22,8 +23,8 @@
 </p>
 
 <p>
-  <b>Time of inception:</b>
-  <%= @genre.time_of_inception %>
+  <b>Decade:</b>
+  <%= @genre.decade %>
 </p>
 
 <p>

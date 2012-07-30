@@ -5,6 +5,8 @@ gem "devise"
 gem 'omniauth-openid'
 gem "thin"
 
+gem "nokogiri"
+gem "hpricot"
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 

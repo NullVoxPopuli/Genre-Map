@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120710073308) do
+ActiveRecord::Schema.define(:version => 20120730003715) do
 
   create_table "artists", :force => true do |t|
     t.string "name"
@@ -27,12 +27,13 @@ ActiveRecord::Schema.define(:version => 20120710073308) do
     t.string  "name"
     t.string  "aka"
     t.text    "description"
-    t.date    "time_of_inception"
     t.string  "cultural_origins"
     t.string  "wikipedia"
     t.decimal "kind"
     t.integer "super_genre_id"
     t.integer "category_id"
+    t.text    "suggested_origins"
+    t.string  "decade"
   end
 
   create_table "genres_direct_influences", :id => false, :force => true do |t|

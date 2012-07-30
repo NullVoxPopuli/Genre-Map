@@ -13,19 +13,16 @@ class ApplicationController < ActionController::Base
  		Genre.find(:all, :conditions => ["kind != ?", Genre::SUPER_GENRE]).each {|g| 
  			super_genre_name = g.super_genre ? g.super_genre.name : ""
 
- 			if !g.time.blank? and !g.time.nil? and !g.is_super_genre?
- 				ap super_genre_name
- 				ap g
- 				ap @years_by_genre
- 				@years_by_genre[super_genre_name] = [] if (not @years_by_genre[super_genre_name])
- 				@years_by_genre[super_genre_name] << g.time.year
+ 			if !g.decade.blank? and !g.decade.nil? and !g.is_super_genre?
+				@years_by_genre[super_genre_name] = [] if (not @years_by_genre[super_genre_name])
+ 				@years_by_genre[super_genre_name] << g.decade
  			end
 
  			node = {
 	 			:id => g[:id],
 	 			:name => g[:name],
 	 			:kind => g.kind_key,
-	 			:year => g.time ? g.time.year : "",
+	 			:year => g.decade ? g.decade : "",
 	 			:category => g.category ? g.category.name : "",
 	 			:super_genre => super_genre_name,
 	 			:data => g.as_json
@@ -50,6 +47,10 @@ class ApplicationController < ActionController::Base
  		@super_genres_json = @super_genres.map{|g| g.name}.to_json
  		@categories = Category.all.to_json
  		@years_by_genre = @years_by_genre.to_json
+ 	end
+
+ 	def wiki
+ 		redirect_to "http://en.wikipedia.org/wiki/" + params[:page]
  	end
 
 protected

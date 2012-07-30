@@ -148,7 +148,7 @@ class GenresController < ApplicationController
     end
   end
 
-    def update_children
+  def update_children
     # updates songs based on artist selected
     @genre = Genre.find(params[:id])
     child = Genre.find(params[:child_id].to_i)
@@ -167,6 +167,76 @@ class GenresController < ApplicationController
     else
       render :nothing => true
     end
+  end
+
+
+  require 'open-uri'
+  def scrape_wiki
+    wiki = ""
+    if params[:id]
+      @genre = Genre.find(params[:id])
+      wiki = params[:wiki].empty? ? @genre.wikipedia : params[:wiki]
+    else
+      wiki = params[:wiki]
+    end
+
+    origins = []
+    p = open(wiki) {|f| Hpricot(f)} 
+
+    # remove citations, as we don't display the entire wiki page
+    (p/:sup/:a).remove
+
+    # scan the page for the stylistic origins
+    (p/".infobox th").each {|a| 
+      if a.inner_html == "Stylistic origins" 
+       origin_genres = a.next_sibling
+       origin_genres = origin_genres.search("/a")
+       origin_genres.each {|g|
+        origins << g.inner_html
+       }
+      end 
+    }
+
+    # scan the page for the description / summary
+    description = []
+    (p/".infobox").each {|i| 
+      current_sibling = i.next_sibling
+      # gets the first description at the top of the wiki
+      # article
+      while (current_sibling.pathname != "p")
+        current_sibling = current_sibling.next_sibling
+      end
+
+      # loop through until we hit something not a "p" tag
+      while (current_sibling.pathname == "p")
+        description << current_sibling.to_html
+        current_sibling = current_sibling.next_sibling
+      end
+    }
+
+    # scan the page for the title
+    name = (p/"#firstHeading span").inner_html.titleize
+
+    # scan the page for the decade
+    decade = ""
+    (p/".infobox th").each {|a| 
+      if a.inner_html == "Cultural origins" 
+       decade = a.next_sibling.inner_html.match(/\d{0,4}s/).to_s
+      end 
+    }
+
+    respond_to {|format|
+      format.html{
+        if request.xhr?
+          render :json => {
+            :origins => origins,
+            :description => description,
+            :name => name,
+            :decade => decade
+          }
+        end
+      }
+    }
   end
 
 end

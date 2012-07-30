@@ -12,40 +12,41 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :name %><br />
-    <%= f.text_field :name %>
+    <%= f.label :name %> : 
+    <%= f.text_field :name %> aka <%= f.text_field :aka %>
+
   </div>
   <div class="field">
-    <%= f.label :aka %><br />
-    <%= f.text_field :aka %>
-  </div>
-  <div class="field">
-    <%= f.label :kind %><br />
+    <%= f.label :kind %> : 
     <%= f.select :kind, options_for_select(Genre.kinds, @genre.kind.to_i), {:selected => @genre.kind.to_i } %> 
-  </div>
-  <div class="field">
-    <%= f.label :category_id %> <br />
+
+    <%= f.label :category_id %> : 
     <%= f.select :category_id, Category.all.map {|r| [r.name,r.id] }, {:include_blank => true} %>
   </div>
   <div class="field">
-    <%= f.label :super_genre %><br />
+    <%= f.label :super_genre %> : 
     <%= f.select :super_genre_id, (Genre.find(:all, :conditions => ["kind = ?", Genre::SUPER_GENRE])).map {|r| [r.name,r.id] }, {:include_blank => true} %>
   </div>
   <div class="field">
-    <%= f.label :description %><br />
+    <%= f.label :wikipedia %> : 
+    <%= f.text_field :wikipedia %> <br />
+    <%= link_to "Attempt Info Scrape from Wiki", 
+          {:action => "scrape_wiki",
+            :id => @genre[:id]}, 
+          :class => "wiki_scrape", 
+          :remote => true %>
+  </div>
+  <div class="field">
+    <%= f.label :description %> <br />
     <%= f.text_area :description %>
   </div>
   <div class="field">
-    <%= f.label :time_of_inception %><br />
-    <%= f.text_field :time_of_inception %>
-  </div>
-  <div class="field">
-    <%= f.label :cultural_origins %><br />
-    <%= f.text_field :cultural_origins %>
+    <%= f.label :decade %> : 
+    <%= f.text_field :decade %>
   </div>
     <div class="field">
-    <%= f.label :wikipedia %><br />
-    <%= f.text_field :wikipedia %>
+    <%= f.label :suggested_origins %> <br />
+    <%= f.text_area :suggested_origins, :rows => "5"%>
   </div>
 <br/>
 
@@ -92,3 +93,36 @@
 
   </table>
 <% end %>
+
+
+<script type="text/javascript">
+$(function(){
+  $(".wiki_scrape").bind("ajax:before", function(){
+    var href = $(this).attr("href");
+    $(this).attr("href", 
+      href + (href.indexOf("?") > -1 ? "&" : "?") + "wiki=" + encodeURIComponent($("#genre_wikipedia").val()));
+  })
+  $('.wiki_scrape').bind('ajax:success', function(evt, data, status, xhr){
+    var data = JSON.parse(data);
+    var o = $("#genre_suggested_origins");
+    o.val("");
+    var d = $("#genre_description");
+    d.val("");
+
+    // suggested origin genres
+    $.each(data.origins, function(index, element){
+      o.val(o.val() + element + "\n" );
+    });
+
+    // description - html, don't do newline
+    $.each(data.description, function(index, element){
+      d.val(d.val() + element);
+    });
+
+    $("#genre_name").val(data.name);
+    $("#genre_decade").val(data.decade);
+  });
+});
+
+
+</script>

@@ -7,10 +7,11 @@ class Genre < ActiveRecord::Base
   				  	:aka,
               :kind,
   				  	:track_ids,
-  				  	:time_of_inception,
               :super_genre_id,
               :wikipedia,
-              :category_id
+              :category_id,
+              :suggested_origins,
+              :decade
   	
     belongs_to :super_genre,
                 :class_name => "Genre",
@@ -35,13 +36,11 @@ class Genre < ActiveRecord::Base
     SUB_GENRE = 0 # or nil
     SUPER_GENRE = 1
     NON_ELECTRONIC = 2
+    ELECTRONIC = 3
 
     validates :name, :uniqueness => {:case_sensitive => false}
     validates_presence_of :name
-    #validates :time_of_inception, :numericality => { :only_integer => true, :allow_nil => true }
-    def time
-      return self.time_of_inception
-    end
+
 
     def self.kinds
       return {:sub_genre => SUB_GENRE, :super_genre => SUPER_GENRE,

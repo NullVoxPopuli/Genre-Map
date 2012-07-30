@@ -1,3 +1,9 @@
+<style type="text/css">
+  table th, table td{
+    padding: 0 5px;
+  }
+</style>
+
 <br />
 <br />
 <h1>Listing genres</h1>
@@ -8,17 +14,19 @@
   <tr>
     <th>Name</th>
     <th>SuperGenre</th>
-    <th></th>
-    <th></th>
+    <th>Has Origins?</th>
+    <th>Has Children?</th>
+    <th>Wikipedia?</th>
     <th></th>
   </tr>
 
 <% @genres.each do |genre| %>
   <tr>
-    <td class="name"><%= genre.name %></td>
+    <td class="name"><%= link_to 'Edit', edit_genre_path(genre) %> | <%= link_to genre.name, genre %></td>
     <td class="super_genre"><%= genre.super_genre.name if genre.super_genre %></td>
-    <td><%= link_to 'Show', genre %></td>
-    <td><%= link_to 'Edit', edit_genre_path(genre) %></td>
+    <td><%= genre.stylistic_origin_ids.size > 0 %> </td>
+    <td><%= genre.child_ids.size > 0 %> </td>
+    <td><%= genre.wikipedia %> </td>
     <td><%= link_to 'Destroy', genre, method: :delete, data: { confirm: 'Are you sure?' } %></td>
   </tr>
 <% end %>
