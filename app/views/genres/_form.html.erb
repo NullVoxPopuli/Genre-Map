@@ -104,21 +104,8 @@ $(function(){
   })
   $('.wiki_scrape').bind('ajax:success', function(evt, data, status, xhr){
     var data = JSON.parse(data);
-    var o = $("#genre_suggested_origins");
-    o.val("");
-    var d = $("#genre_description");
-    d.val("");
-
-    // suggested origin genres
-    $.each(data.origins, function(index, element){
-      o.val(o.val() + element + "\n" );
-    });
-
-    // description - html, don't do newline
-    $.each(data.description, function(index, element){
-      d.val(d.val() + element);
-    });
-
+    $("#genre_suggested_origins").val(data.origins);
+    $("#genre_description").val(data.description);
     $("#genre_name").val(data.name);
     $("#genre_decade").val(data.decade);
   });

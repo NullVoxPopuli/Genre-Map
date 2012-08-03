@@ -84,4 +84,103 @@ class Genre < ActiveRecord::Base
       }
       return result
     end
+
+    def set_wiki_info!; self.scrape_information_from_wiki(true); end
+    def scrape_information_from_wiki(wiki = self.wikipedia, save_when_done = false)
+      origins = []
+      description = []
+      name = ""
+      decade = ""
+      p = open(wiki) {|f| Hpricot(f)} 
+
+      # remove citations, as we don't display the entire wiki page
+      (p/:sup/:a).remove
+
+      # scan the page for the stylistic origins
+      (p/".infobox th").each {|a| 
+        if a.inner_html == "Stylistic origins" 
+         origin_genres = a.next_sibling
+         origin_genres = origin_genres.search("/a")
+         origin_genres.each {|g|
+          origins << g.inner_html
+         }
+        end 
+      }
+
+      # scan the page for the title
+      name = (p/"#firstHeading span").inner_html.titleize
+
+      # scan the page for the description / summary
+      # there are several types of descriptions 
+      #
+      # 1. The Easy
+      #   - http://en.wikipedia.org/wiki/Ambient_music
+      #   Has an info box on the right hand side with a summary 
+      #   of the origins of the genre
+      #
+      # 2. The Sub / Derivitive / Fusion Genre (doesn't get it's own page)
+      #   - http://en.wikipedia.org/wiki/Ambient_dub#Ambient_dub
+      #   these have a #name to jump to a specific ID on the page.
+      #   these are often short descriptions about something that evolved
+      #   out of the parent genre, but isn't that big of a deal
+      #
+      # 3. The Super Generic Overview - Not really a Genre, but more a sound
+      #   - http://en.wikipedia.org/wiki/Psychedelic_music
+      #   No info box on the right
+      #   - need to get get info prior to table of contents (table.toc#toc)
+      if (i = wiki.index("#")) != nil
+        # try method 2  
+        id = wiki[i..wiki.length - 1]
+        # get the proper name
+        name = (p/"#{id}").inner_html
+        # only get the first sibling of the parent element of the title (which is an h2)
+        description << (p/"#{id}")[0].parent.next_sibling.inner_html
+      else
+        # try method 1
+        (p/".infobox").each {|i| 
+          current_sibling = i.next_sibling
+          # gets the first description at the top of the wiki
+          # article
+          while (current_sibling and current_sibling.pathname != "p")
+            current_sibling = current_sibling.next_sibling
+          end
+
+          # loop through until we hit something not a "p" tag
+          while (current_sibling and current_sibling.pathname == "p")
+            description << current_sibling.to_html
+            current_sibling = current_sibling.next_sibling
+          end
+        }
+      end
+
+   
+
+      # scan the page for the decade
+      decade = ""
+      (p/".infobox th").each {|a| 
+        if a.inner_html == "Cultural origins" 
+         decade = a.next_sibling.inner_html.match(/\d{0,4}s/).to_s
+        end 
+      }
+
+      # set corresponding fields
+      self.suggested_origins = ""
+      origins.each {|o|
+        self.suggested_origins += (o + "\n")
+      }
+      self.description = ""
+      description.each {|d|
+        self.description += d
+      }
+
+      self.name = name
+      self.decade = decade
+
+      success = true
+      if save_when_done
+        success = self.save
+      end
+
+      return success
+    end
 end
