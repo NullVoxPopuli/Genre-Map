@@ -137,7 +137,7 @@ class Genre < ActiveRecord::Base
         description << (p/"#{id}")[0].parent.next_sibling.inner_html
       else
         # try method 1
-        (p/".infobox").each {|i| 
+        (p/".infobox, .mw-content-ltr").each {|i| 
           current_sibling = i.next_sibling
           # gets the first description at the top of the wiki
           # article
@@ -151,6 +151,10 @@ class Genre < ActiveRecord::Base
             current_sibling = current_sibling.next_sibling
           end
         }
+      end
+      # if the description is still empty, try method 3
+      if description.empty?
+        description << (p/".toc")[0].previous_sibling.inner_html
       end
 
    
