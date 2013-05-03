@@ -1,5 +1,6 @@
 class GenresController < ApplicationController
   before_filter :authenticate_user!
+
   # GET /genres
   # GET /genres.json
   def index
