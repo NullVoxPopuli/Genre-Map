@@ -18,7 +18,6 @@ class ApplicationController < ActionController::Base
  		# 	@nodes << node
 
  			@tree << genre.recursive_to_hash
- 			ap @tree
  		end
  		@tree = @tree[0].to_json
 
