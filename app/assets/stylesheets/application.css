@@ -23,6 +23,7 @@ html, body{
 	padding: 0px;
 	margin: 0px;
 	background: white;
+	font-family: Helvetica, "Lucida Grand", Arial, sans-serif;
 }
 
 a, a:visited{
@@ -58,10 +59,10 @@ a:hover{
   	z-index: 1;
   }
 
-  svg{
+/*  svg{
   	width: 3000px;
   	height: 3000px;
-  }
+  }*/
   .svg_container{
   	position: fixed;
   	z-index: 0;

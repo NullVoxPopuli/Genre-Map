@@ -4,49 +4,28 @@ class ApplicationController < ActionController::Base
  	before_filter :create_toolbar
 
  	def index
- 		genres = Genre.all
+ 		genres = Genre.where("parent_genre_id IS NULL")
 
- 		@connections = []
- 		@nodes = []
- 		@years_by_genre = {}
+ 		# @nodes = []
+ 		# @connections = []
+ 		@tree = []
 
- 		Genre.find(:all, :conditions => ["kind != ?", Genre::SUPER_GENRE]).each {|g| 
- 			super_genre_name = g.super_genre ? g.super_genre.name : ""
+ 		genres.each do |genre|
+			# node = {
+ 		# 		id: genre.id,
+ 		# 		url: genre.wikipedia
+ 		# 	}
+ 		# 	@nodes << node
 
- 			if !g.decade.blank? and !g.decade.nil? and !g.is_super_genre?
-				@years_by_genre[super_genre_name] = [] if (not @years_by_genre[super_genre_name])
- 				@years_by_genre[super_genre_name] << g.decade
- 			end
+ 			@tree << genre.recursive_to_hash
+ 			ap @tree
+ 		end
+ 		@tree = @tree[0].to_json
 
- 			node = {
-	 			:id => g[:id],
-	 			:name => g[:name],
-	 			:kind => g.kind_key,
-	 			:year => g.decade ? g.decade : "",
-	 			:category => g.category ? g.category.name : "",
-	 			:super_genre => super_genre_name,
-	 			:data => g.as_json
- 		 	}
- 		 	@nodes << node
- 		 	
- 		 	g_index = genres.index(g)
- 		 	origins = g.stylistic_origins
-
- 			@connections << {:source => node[:id], :target => node[:id]} if origins.empty?
- 			origins.each {|o|
- 				@connections << {
- 					:source => o[:id],
-        	  		:target => g[:id]
-           		}
-			}
-		}
-
- 		@nodes = @nodes.to_json
- 		@connections = @connections.to_json
- 		@super_genres = Genre.find(:all, :conditions => ["kind = ?", Genre::SUPER_GENRE], :select => "name")
- 		@super_genres_json = @super_genres.map{|g| g.name}.to_json
- 		@categories = Category.all.to_json
- 		@years_by_genre = @years_by_genre.to_json
+ 		respond_to do |format|
+ 			format.html { }
+ 			format.js { }
+ 		end
  	end
 
  	def wiki

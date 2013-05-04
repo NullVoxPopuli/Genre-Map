@@ -1,29 +1,20 @@
-<%= javascript_include_tag "/js/jquery-ui-1.8.21.custom.min.js", "/js/cookies.js", "/js/dom-utils.js", "/js/d3.js", "/js/interface.js","/js/graph.js" %>
-<script type="text/javascript">
-	connections = <%= @connections.html_safe %>;
-	genre_nodes = <%= @nodes.html_safe %>;
-	hiddenSuperGenres = <%= @super_genres_json.html_safe %>;
-	categories = <%= @categories.html_safe %>;
-	yearsByGenre = <%= @years_by_genre.html_safe %>;
+<%= javascript_include_tag "/assets/jquery.js",
+	"/assets/jquery-ui-1.8.21.custom.min.js", 
+	"/assets/cookies.js", 
+	"/assets/dom-utils.js", 
+	"/assets/d3.js", 
+	"/assets/interface.js" %>
 
-	data = {
-		nodes: genre_nodes,
-		links: connections
-	};
+
+<script type="text/javascript">
+	tree = <%= @tree.html_safe %>;
 </script>
+
+<%= javascript_include_tag "/assets/graph.js" %>
 
 <div class="debug_panel">
 
 </div>
-
-<ul class="super_genre_list">
-	<% @super_genres.each do |genre| %>
-		<li class="super_genre_list_item" data-name="<%= genre.name %>">
-			<%= genre.name %>
-		</li>
-	<% end %>
-</ul>
-
 
 <div class="stop_playback">
 	Stop Music
@@ -119,6 +110,7 @@
 				<a href="http://www.ishkur.com/">Ishkur</a> and his <a href="http://techno.org/electronic-music-guide/">Electronic Music Guide</a>.
 			</p>
 			<p>
+				<a href="http://last.fm">Last.fm</a>,
 				<a href="http://youtube.com">YouTube</a>, 
 				<a href="http://soundcloud.com">Soundcloud</a>, and 
 				<a href="http://vimeo.com">Vimeo</a> for hosting the Audio used for this project.
@@ -133,7 +125,4 @@
 	<% end %>
 </div>
 
-<div class="svg_container">
-<ul class="year_list">
-</ul>
-</div>
+<div class="svg_container" id="svg_container"></div>
