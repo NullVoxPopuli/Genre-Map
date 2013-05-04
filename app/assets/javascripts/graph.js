@@ -20,8 +20,8 @@ var link, node, nodeLabel, yearLine, yearLineLabel, marker;
 // current state of the network 
 var net;
 
-var w = $(window).width(),
-    h = $(window).height(),
+var w = CANVAS_WIDTH,
+    h = CANVAS_HEIGHT,
     node,
     link,
     label,
@@ -67,6 +67,30 @@ function update() {
   // Exit any old links.
   link.exit().remove();
 
+  // Update the nodes…
+  node = vis.selectAll("circle.node")
+      .data(nodes, function(d) { return d.id; })
+      .style("fill", color);
+
+  node.transition()
+      .attr("r", function(d) { return d.children ? 4.5 : Math.sqrt(d.size) / 10; });
+
+  // Enter any new nodes.
+  node.enter().append("svg:circle")
+      .attr("class", "node")
+      .attr("cx", function(d) { return d.x; })
+      .attr("cy", function(d) { return d.y; })
+      .attr("r", function(d) { return d.children ? 4 + Math.sqrt(d.children.length) * 2 :10; })
+      .style("fill", color)
+      .on("click", function(d){
+        console.log("fake click;");s
+      })
+      .call(force.drag);
+
+  // Exit any old nodes.
+  node.exit().remove();
+
+
 label = vis.append("svg:g").selectAll("g")
     .data(force.nodes())
   .enter().append("svg:g");
@@ -85,26 +109,6 @@ label.append("svg:text")
 
     // text.exit().remove();
 
-  // Update the nodes…
-  node = vis.selectAll("circle.node")
-      .data(nodes, function(d) { return d.id; })
-      .style("fill", color);
-
-  node.transition()
-      .attr("r", function(d) { return d.children ? 4.5 : Math.sqrt(d.size) / 10; });
-
-  // Enter any new nodes.
-  node.enter().append("svg:circle")
-      .attr("class", "node")
-      .attr("cx", function(d) { return d.x; })
-      .attr("cy", function(d) { return d.y; })
-      .attr("r", function(d) { return d.children ? 4.5 : Math.sqrt(d.size) / 10; })
-      .style("fill", color)
-      .on("click", click)
-      .call(force.drag);
-
-  // Exit any old nodes.
-  node.exit().remove();
 }
 
 function tick() {
@@ -129,6 +133,7 @@ function color(d) {
 
 // Toggle children on click.
 function click(d) {
+  console.log("click");
   if (d.children) {
     d._children = d.children;
     d.children = null;
