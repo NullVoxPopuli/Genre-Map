@@ -34,6 +34,11 @@ a:hover{
 	text-decoration: underline;
 }
 
+.notice, .alert{
+	display: none;
+	position: fixed;
+}
+
 .debug_panel{
 	position:fixed;
 	top:30px;
@@ -60,8 +65,7 @@ a:hover{
   }
 
   svg{
-  	width: 3000px;
-  	height: 3000px;
+
   }
   .svg_container{
   	position: fixed;
@@ -109,39 +113,19 @@ rect {
 	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 	  font: 10px sans-serif;
 }
-rect.sub_genre{
-}
-
-rect.super_genre{
-	stroke-width: 1px;
-	fill: #62D6E9;
-	stroke: #000;
-}
-
-rect.super_genre.active{
-	fill: #FB8520;
-	stroke: #333;
-}
-
 rect.non_electronic{
 	fill: white;
 	stroke-dasharray: 0,2 1;
 
 }
+circle{
+	stroke: #333;
+	stroke-wwidth: 1px;
 
-text.super_genre{
-	font-size: 12px;
 }
-
 text {
-  font: 10px sans-serif;
+  font: 12px sans-serif;
   pointer-events: none;
-}
-
-text.shadow {
-  stroke: #fff;
-  stroke-width: 3px;
-  stroke-opacity: .8;
 }
 
 .axis_label{
@@ -163,84 +147,6 @@ path.hull {
 /* 
 	DOM LAYOUT
 */
-
-.super_genre_list{
-	z-index: 3;
-	position: fixed;
-	top: 10px;
-	left: 10px;
-	padding:0px;
-	margin: 0px;
-}
-
-.super_genre_list li{
-	padding: 5px;
-	margin: 5px;
-	background: #55B7C8;
-	color: white;
-	font-weight: bold;
-	cursor: pointer;
-	border: 1px solid silver;
-	list-style-type: none;
-}
-.super_genre_list li:hover{
-	background: #65C7D8;
-}
-.super_genre_list li.active{
-	background: #FB8520;
-	border: 1px solid #333;
-}
-.super_genre_list li.active:hover{
-	background: #FF9530;
-}
-
-
-.year_list{
-	z-index: 3;
-	position: fixed;
-	bottom: 20px;
-	right: 20px;
-	list-style: nono;
-	margin: 0px;
-	padding: 0px;
-	text-align: justify;
-	list-style-type: none;
-	padding-left: 150px;
-}
-
-.year_list li{
-	text-align: left;
-	vertical-align: top;
-	display: inline-block;
-	border: 1px solid #E5E5E5;
-	border-left: none;
-	background: #F4F4F4;
-	-webkit-box-shadow: 0 2px 7px rgba(0, 0, 0, 0.2);
-	-moz-box-shadow: 0 2px 7px rgba(0,0,0,0.2);
-	box-shadow: 0 2px 7px rgba(0, 0, 0, 0.2);
-	padding: 0 5px;
-	line-height: 20px;
-	cursor: pointer;
-}
-.year_list li:first-child{
-	border-left: 1px solid #e5e5e5;
-}
-.year_list li:hover{
-	background: #E4E4E4;
-}
-
-.year_list li.active{
-	background: #FB8520;
-	border: 1px solid #333;
-	border-left: none;
-}
-.year_list li:first-child.active{
-	border-left: 1px solid #333;
-}
-.year_list li.active:hover{
-	background: #FF9530;
-}
-
 
 /*
 

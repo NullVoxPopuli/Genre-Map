@@ -34,9 +34,10 @@ class Genre < ActiveRecord::Base
 
     def recursive_to_hash(options = {})
       {
+        id: id,
         name: name,
         wiki: wikipedia,
-        children: children.map{|c| c.recursive_to_hash}
+        _children: children.map{|c| c.recursive_to_hash}
       }
     end
 end
