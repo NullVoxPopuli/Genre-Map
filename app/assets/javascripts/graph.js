@@ -135,7 +135,7 @@ var q = d3.geom.quadtree(nodes),
 
 // Color leaf nodes orange, and packages white or blue.
 function color(d) {
-  return d.children ? "#B3C732" : d._children ? "#1BA1E2" : "#fd8d3c";
+  return d.children ? "#B3C732" : d._children ? "#1BA1E2" : "#FC8521";
 }
 
 // Toggle children on click.

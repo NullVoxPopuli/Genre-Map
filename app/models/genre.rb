@@ -33,11 +33,13 @@ class Genre < ActiveRecord::Base
     validates_presence_of :name
 
     def recursive_to_hash(options = {})
-      {
+      c = children
+      result = {
         id: id,
         name: name,
-        wiki: wikipedia,
-        _children: children.map{|c| c.recursive_to_hash}
+        wiki: wikipedia
       }
+      result[:_children] = c.map{|c| c.recursive_to_hash} if !c.empty?
+      return result
     end
 end
