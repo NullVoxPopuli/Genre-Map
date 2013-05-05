@@ -140,6 +140,7 @@ function color(d) {
 
 // Toggle children on click.
 function click(d) {
+  showGenreDetails(d);
   if (d.children) {
     d._children = d.children;
     d.children = null;

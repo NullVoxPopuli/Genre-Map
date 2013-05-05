@@ -12,7 +12,7 @@ class Genesis
 		# create master electronic genre
 		electronic_master_genre = Genre.new({
 			name: "Electronic",
-			wikipedia: "http://en.wikipedia.org/wiki/Electronic_music"
+			wikipedia: "/wiki/Electronic_music"
 		})
 		electronic_master_genre.save!
 

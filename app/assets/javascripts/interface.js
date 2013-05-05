@@ -130,9 +130,7 @@ $(function(){
   }
 
   showGenreDetails = function(o){
-    // o : a d3.js node object
-
-    var genre = o.data;
+    var genre = o;
     genre_details.find(".name").html(genre.name);
     // genre_details.find(".background").show();
     // genre_details.find(".content").attr("style", "");
@@ -140,29 +138,41 @@ $(function(){
     var examples = genre_details.find(".examples");
     examples.empty();
 
-    if (genre.tracks.length == 0) {
-      $(".example_title").text("");
-    } else {
-      $(".example_title").text("Examples:");
-    }
-    for(var i = 0; i < genre.tracks.length; i++){
-      var current_track = genre.tracks[i];
-      var example = $(document.createElement("span"));
-      example.attr("data-track", current_track.name);
-      example.attr("data-artist", current_track.artist.name);
-      example.attr("data-url", current_track.link);
-      example.html(i + 1);
+    // if (genre.tracks.length == 0) {
+    //   $(".example_title").text("");
+    // } else {
+    //   $(".example_title").text("Examples:");
+    // }
+    // for(var i = 0; i < genre.tracks.length; i++){
+    //   var current_track = genre.tracks[i];
+    //   var example = $(document.createElement("span"));
+    //   example.attr("data-track", current_track.name);
+    //   example.attr("data-artist", current_track.artist.name);
+    //   example.attr("data-url", current_track.link);
+    //   example.html(i + 1);
 
-      example.click(function(){
-        setTheaterForURL($(this).attr("data-url"));
-      });
-      example.appendTo(examples);
-    }
+    //   example.click(function(){
+    //     setTheaterForURL($(this).attr("data-url"));
+    //   });
+    //   example.appendTo(examples);
+    // }
 
-    genre_details.find(".description").html(genre.description);
     if (genre.wikipedia == ""){
       genre_details.find(".wiki").hide();
     } else {
+      var iframe = genre_details.find("iframe");
+      iframe.attr("src", "http://en.wikipedia.com" + o.wiki);
+
+      // fix css 
+      var content = iframe.contents();
+      content.find('#mw-panel, #mw-head, #mw-page-base, #mw-head-base').css({
+        display: "none"    
+      });
+      content.find("#content").css({
+        margin: 0
+      })
+
+
       genre_details.find(".wiki").show();
     }
     genre_details.find(".wiki a").attr("href", genre.wikipedia);
