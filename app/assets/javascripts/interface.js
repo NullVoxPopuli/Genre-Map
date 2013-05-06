@@ -18,7 +18,8 @@ $(function(){
     $(".genre_details").fadeOut(FADE_OUT_SPEED);
   });
 
-    $(".information .close").click(function(){
+  $(".information .close").unbind("click");
+  $(".information .close").click(function(){
     $(".information").fadeOut(FADE_OUT_SPEED);
   });
 
