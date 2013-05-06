@@ -1,10 +1,11 @@
 <%= javascript_include_tag "/assets/jquery.js",
-	"/assets/jquery-ui-1.8.21.custom.min.js", 
-	"/assets/cookies.js", 
+	"/assets/jquery-ui-1.10.3.custom.min.js", 
 	"/assets/dom-utils.js", 
 	"/assets/d3.js", 
-	"/assets/interface.js" %>
+	"/assets/interface.js",
+	"/assets/lastfm.js" %>
 
+<%= stylesheet_link_tag "/assets/font-awesome.min.css" %>
 
 <script type="text/javascript">
 	tree = <%= @tree.html_safe %>;
@@ -12,23 +13,12 @@
 
 <%= javascript_include_tag "/assets/graph.js" %>
 
-<div class="debug_panel">
-
-</div>
-
-<div class="stop_playback">
-	Stop Music
-</div>
-
-<div class="repulsion_slider" style="display: none;">
-	<input type="range" value="700" min="0" max="3000" step="10">
-</div>
-
-<div class="search_container">
+<div class="search_container" style="display: none;">
+	<!-- @TODO NOT IMPLEMENTED YET -->
 	<%= text_field_tag 'search', nil, :placeholder => 'Search...' %>
 </div>
 <div class="interface_options">
-	<a href="#" class="hide">Hide UI</a>
+	<a href="#" class="hide"><i class="icon-info-sign"></i></a>
 </div>
 
 
@@ -40,17 +30,17 @@
 
 				</span>
 				<span class="close">
-					[X] Close
+					<i class="icon-remove-sign"></i>
 				</span>
 			</div>
 			<div class="body">
-				<iframe class="description">
-
-				</iframe>
+				<iframe id="description"></iframe>
 				<span class="wiki">
 					<a href="#">Wikipedia Info</a>
 				</span>
-				<span class="example_title"> Examples </span>
+				<span class="example_title">
+					Top Tracks (by <a href="http://last.fm">last.fm</a>)
+				</span>
 				<div class="examples">
 
 				</div>
@@ -63,63 +53,48 @@
 </div>
 
 
-<div class="information">
-	<div class="welcome">
-		<h2>Electronic Music Genre Graph</h2>
-		<div class="authors">
-			By:
-			<span class="author">
-				L. Preston Sego III
-			</span>
-			<span class="author">
-				Evan Kirsch
-			</span>
-		</div>
-		<div class="development_info">
+<div class="modal_outer_container information" style="display: none;">
+	<div class="modal_container">
+		<div class="content">
+			<div class="header">
+				Electronic Music Genre Graph
+				<span class="close">
+					<i class="icon-remove-sign"></i>
+				</span>
+			</div>
+			<div class="body">
+				<span class="author">
+					by: Preston Sego
+				</span>
+				<div class="disclaimer">
+					<h4>Disclaimer:</h4>
+					<div class="claimer">
+						This site is desigened with Webkit-based browsers on 1080p+ monitors.<br />
+						For best results: use a modern browser (FireFox 13+, Chrome 20+, Safari 5+), and use a resolution that is 1920 by 1080 pixels or greater.
 
+						<p>
+							The audio is pulled from <a href="http://last.fm">last.fm</a> by their tagging system. Since the tagging system is controlled by their userbase, it may not be accurate. While most genre's examples will have accurate samples, others may be completly wrong (for example, the examples for trancecore are all screamo... which isn't trancecore in teh silghtest :-P 
+						</p>
+					</div>
+				</div>
+				<div class="instructions_container">
+					<h4>Instructions:</h4>
+					<div class="instructions">
+						<p>Click on a node to view details about the genre and expand that genre's sub genres. </p> 
+					</div>
+				</div>
+				<div class="credits_container">
+					<h4>Credits</h4>
+					<div class="credits">
+						<p>
+							<a href="http://www.ishkur.com/">Ishkur</a> and his <a href="http://techno.org/electronic-music-guide/">Electronic Music Guide</a>.
+						</p>
+						<p>
+							<a href="http://last.fm">last.fm</a> for hosting the Audio used for this project.
+						</p>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
-	<div class="disclaimer">
-		<h4>Disclaimer:</h4>
-		<div class="claimer">
-			This site is desigened with Webkit-based browsers on 1080p+ monitors.<br />
-			For best results: use a modern browser (FireFox 13+, Chrome 20+, Safari 5+), and use a resolution that is 1920 by 1080 pixels or greater.
-
-			<p>
-				The current relationships of the genres in this graph may be out of date. If you would like to suggest a correction, or add content, please email: theprecognition+genre [at] gmail [dot] com. 
-			</p>
-		</div>
-	</div>
-	<div class="instructions_container">
-		<h4>Instructions:</h4>
-		<div class="instructions">
-			<p>Click on a node to view details about the genre.</p> 
-			<h5>Navigation</h5>
-			<p>Click on a super genre (blueish) to collapse / expand that genre's related sub genres.</p>
-			<p>
-				Clicking on a sub genre (gray) will bring up info about that genre.
-			</p>
-
-		</div>
-	</div>
-	<div class="credits_container">
-		<h4>Credits</h4>
-		<div class="credits">
-			<p>
-				<a href="http://www.ishkur.com/">Ishkur</a> and his <a href="http://techno.org/electronic-music-guide/">Electronic Music Guide</a>.
-			</p>
-			<p>
-				<a href="http://last.fm">Last.fm</a>,
-				<a href="http://youtube.com">YouTube</a>, 
-				<a href="http://soundcloud.com">Soundcloud</a>, and 
-				<a href="http://vimeo.com">Vimeo</a> for hosting the Audio used for this project.
-			</p>
-		</div>
-	</div>
-
-	<% unless user_signed_in? %>
-		<div class="signin">
-			<%= link_to "Sign In", new_user_session_path %> | 
-		</div>
-	<% end %>
 </div>

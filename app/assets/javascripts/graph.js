@@ -1,6 +1,5 @@
 var FADE_OUT_SPEED = 200;
 var TRANSITION_DURATION = 500;
-var COOKIE_EXPIRATION = 1825;
 var CANVAS_HEIGHT = $(window).height();
 var CANVAS_WIDTH = $(window).width();
 var NODE_WIDTH_MULTIPLIER = 8;
@@ -44,6 +43,17 @@ var force = d3.layout.force()
 var vis = d3.select("body").append("svg:svg")
     .attr("width", w)
     .attr("height", h);
+
+
+$(function(){
+  $(window).resize(function(){
+    w = $(window).width();
+    h = $(window).height();
+    $("svg").attr("width", w).attr("height", h);
+
+  });
+});
+
 
 update();
 
@@ -133,9 +143,9 @@ var q = d3.geom.quadtree(nodes),
   });
 }
 
-// Color leaf nodes orange, and packages white or blue.
+// Color leaf nodes orange
 function color(d) {
-  return d.children ? "#B3C732" : d._children ? "#1BA1E2" : "#FC8521";
+  return d.children ? "#506D80" : d._children ? "#1BA1E2" : "#B3C732";
 }
 
 // Toggle children on click.
@@ -183,6 +193,7 @@ function collide(node) {
       nx2 = node.x + r,
       ny1 = node.y - r,
       ny2 = node.y + r;
+
   return function(quad, x1, y1, x2, y2) {
     if (quad.point && (quad.point !== node)) {
       var x = node.x - quad.point.x,
@@ -195,7 +206,7 @@ function collide(node) {
         node.y -= y *= l;
         quad.point.x += x;
         quad.point.y += y;
-      }
+      } 
     }
     return x1 > nx2
         || x2 < nx1

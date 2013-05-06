@@ -24,6 +24,14 @@ html, body{
 	margin: 0px;
 	background: white;
 	font-family: Helvetica, "Lucida Grand", Arial, sans-serif;
+	overflow: hidden;
+}
+
+iframe html, iframe, body{
+	overflow: auto;
+}
+iframe{
+	border: 1px solid silver;
 }
 
 a, a:visited{
@@ -39,12 +47,6 @@ a:hover{
 	position: fixed;
 }
 
-.debug_panel{
-	position:fixed;
-	top:30px;
-	left:0px;
-	z-index: 10;
-}
 /*
 	GRAHPICAL ELEMENTS
 */
@@ -64,18 +66,6 @@ a:hover{
   	z-index: 1;
   }
 
-  svg{
-
-  }
-  .svg_container{
-  	position: fixed;
-  	z-index: 0;
-  	top: 0px;
-  	bottom: 0px;
-  	right: 0px;
-  	left: 0px;
-  	overflow: auto;
-  }
 
 path.link {
   fill: none;
@@ -123,6 +113,11 @@ circle{
 	stroke-wwidth: 1px;
 
 }
+ circle.active{
+ 	stroke-width: 3px;
+ }
+
+
 text {
   font: 12px sans-serif;
   pointer-events: none;
@@ -170,67 +165,79 @@ path.hull {
 	border-bottom: 1px solid silver;
 }
 
-.information{
-	width: 350px;
+.modal_outer_container{
 	position: fixed;
 	top: 0;
-	z-index: 1;
-	padding: 10px;
-	padding-top: 20px;	
-	left: 0px;
-	bottom: 0px;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	width: 100%;
+	font-size: 12px;
+	font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
+	color: #000;
+}
+
+.modal_container{
+	position: fixed;
+	top: 5%;
+	left: 50%;
+}
+
+.information .content{
+	float: left;
+	position: relative;
+	left: -50%;
+	width: 450px;
 	border: 1px solid #E5E5E5;
 	background: #f4f4f4;
+
+
 	-webkit-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 	-moz-box-shadow: 0 4px 16px rgba(0,0,0,0.2);
 	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-	overflow: auto;
 }
-.information .author {
-	display: block;
-	padding-left: 40px;
-}
-.information .disclaimer {
-	margin-top: 40px;
-}
-.information .disclaimer .claimer{
 
+.content .body{
+	padding: 10px;
+}
+
+.content .header {
+	display: block;
+	padding: 5px;
+	background: #55B7C8;
+	color: white;
+	font-weight: bold;
+	height: 20px;
+	cursor: pointer;
+	font-size: 20px;
+
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.information .content .header .close{
+	float: right;
+	margin-right: 3px;
+}
+
+.information .content .body .author{
+	float: right;
+	font-size: 12px;
+	line-height: 20px;
 }
 
 .information .instructions{
 	padding-left: 10px;
 }
-.information .signin{
-	position: absolute;
-	bottom: 20px;
-	left: 20px;
-}
+
 .graph_container{
 	position: fixed;
 	top: 30px;
 	left: 350px;
-}
-.toolbar {
-	position: fixed;
-	top: 0px;
-	left: 0px;
-	right: 0px;
-	background: #2d2d2d;
-	padding: 5px;
-	border-bottom: 1px solid black;
-	z-index: 2;
-}
-.toolbar .toolbar_item {
-	padding: 0px 10px;
-}
-.toolbar .toolbar_item a,
-.toolbar .toolbar_item a:visited{
-	color: white;
-	text-decoration: none;
-}
-.toolbar .toolbar_item a:hover{
-	color: gray;
-	background: none;
 }
 .search_container input[type="text"] {
 	border: 1px solid #D9D9D9;
@@ -278,19 +285,15 @@ path.hull {
 
 }
 .interface_options a{
-	background: #55B7C8;
-	color: white;
 	font-weight: bold;
-	padding: 5px;
 	text-decoration: none;
-	border: 1px solid #D9D9D9;
-	color: white;
-	border-bottom: 1px solid silver;
+	font-size: 32px;
+	width: 38px;
+	display: block;
 }
 .interface_options a:hover,
 .interface_options a:active{
-	background: #45a7b8;
-	color: white;
+	color: #1BA1E2;
 }
 
 .genre_details{
@@ -320,7 +323,9 @@ path.hull {
 }
 	.genre_details .name{
 		margin-right: 70px;
-		display: inline-block
+		display: inline-block;
+		font-size: 24px;
+		line-height: 20px;
 
 	}
 	.genre_details .close{
@@ -328,13 +333,6 @@ path.hull {
 		top: 4px;
 		right: 8px;
 		cursor: pointer;
-	}
-	.genre_details .description{
-		overflow-y: auto;
-	}
-
-	.genre_details .description p:first-child{
-		margin-top: 0px;
 	}
 
 	.genre_details .wiki{
@@ -347,14 +345,25 @@ path.hull {
 		height: 300px;
 	}
 .genre_details .examples{
-	margin: 5px;
+	margin-top: 5px;
+	-moz-column-count:2; /* Firefox */
+	-webkit-column-count:2; /* Safari and Chrome */
+	column-count:2;
 }
-.genre_details .examples span{
+.genre_details .examples a{
 	background: white;
 	border: 1px solid silver;
 	padding: 0px 5px;
-	margin: 5px;
 	cursor: pointer;
+	display: block;
+	line-height: 22px;
+	font-size: 12px;
+	margin-bottom: 5px;
+}
+
+.genre_details .examples a:hover{
+	text-decoration: none;
+	background: #efefef;
 }
 
 .example_title{
@@ -439,23 +448,4 @@ path.hull {
 	border: 1px solid #777;
 	background: #DADADA;
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-}
-
-
-
-/*wikipedia iframe modifications*/
-#mw-panel {
-	display: none;
-}
-
-#mw-head{
-	display: none;
-}
-
-#content{
-	margin: 0;
-}
-
-#mw-page-base, #mw-head-base{
-	display: none;
 }

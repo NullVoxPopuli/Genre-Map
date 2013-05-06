@@ -1,22 +1,5 @@
 GenreMap::Application.routes.draw do
 
-  resources :categories
-
-  match "genres/update_tracks" => "genres#update_tracks"
-  match "genres/update_origin_genres" => "genres#update_origin_genres"
-  match "genres/update_children" => "genres#update_children"
-  match "genres/scrape_wiki" => "genres#scrape_wiki"
-  match "wiki/:page" => "application#wiki"
-
-  devise_for :users
-  devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
-  match "users/auth/google/callback" => "users/omniauth_callbacks#google"
-  resources :artists
-
-  resources :tracks
-
-  resources :genres
-
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

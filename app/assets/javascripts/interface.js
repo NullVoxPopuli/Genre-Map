@@ -14,10 +14,12 @@ $(function(){
   var genre_details = $(".genre_details");
   var stop_playback = $(".stop_playback");
 
-  initUI();
-
   $(".genre_details .close").click(function(){
     $(".genre_details").fadeOut(FADE_OUT_SPEED);
+  });
+
+    $(".information .close").click(function(){
+    $(".information").fadeOut(FADE_OUT_SPEED);
   });
 
   $(".stop_playback").click(function(){
@@ -25,30 +27,25 @@ $(function(){
       $(this).fadeOut();
   });
 
-
   /*
     This version of jQueryUI only include .draggable
   */
   $(".genre_details .content").draggable({
-    handle: ".genre_details .content .header",
-    drag: function(){
-      $(".genre_details .background").fadeOut();
-    }
+    handle: ".genre_details .content .header"
+  });
+
+  $(".information .content").draggable({
+    handle: ".information .header"
   });
 
   $(".interface_options .hide").click(function(){
     if (toolbar.is(":visible") || (sidebar.is(":visible"))){
         toolbar.fadeOut(FADE_OUT_SPEED);
         sidebar.fadeOut(FADE_OUT_SPEED);
-        $(this).text("Show UI");
-        setCookie("interface_is_hidden", 1, COOKIE_EXPIRATION);
     } else {
       toolbar.fadeIn(FADE_OUT_SPEED);
       sidebar.fadeIn(FADE_OUT_SPEED);
-      $(this).text("Hide UI");
-      setCookie("interface_is_hidden", 0, COOKIE_EXPIRATION);   
     }
-    setTimeout(resizeSVG, 250);
   });
 
   $(".repulsion_slider input").change(function(){
@@ -69,58 +66,6 @@ $(function(){
 	}
   });
 
-
-  function initUI(){
-    if (interfaceIsHidden()){
-      toolbar.hide();
-      sidebar.hide();
-      $(".interface_options .hide").text("Show UI")
-
-    } else {
-      // do nothing, they are visible by default
-    }
-  }
-
-  function setTheaterForURL(url, autoplay){
-    var autoplay = (typeof(autoplay) == "undefined") ? "?autoplay=1" : ""
-    var theater = $(".theater");
-    var tf, theaterFrame;
-    if (url.indexOf("youtube") != -1){
-      theaterFrame = document.createElement("iframe");
-
-      tF = $(theaterFrame);
-
-      tF.attr({
-        "width": VIDEO_PLAYER_WIDTH,
-        "height": VIDEO_PLAYER_HEIGHT,
-        "frameborder": 0,
-        "allowfullscreen":"",
-        "src": url.replace("watch?v=", "embed/") + autoplay
-      });
-    } else {
-        //  vimeo and soundcloud require embedding, and cutting up the URL of their 
-        // main pages to derive the embed code isn't entrely straight forward
-
-        // we have embed code
-        // convert to jQuery object
-        theaterFrame = $(document.createElement("div")).html(url)
-        var frame = theaterFrame.find("iframe");
-        var src = frame.attr("src");
-        if (src.indexOf("soundcloud") != -1){
-          frame.attr("src", src + "&auto_play=true");
-        } else if (src.indexOf("vimeo") != -1){
-          frame.attr("src", src + "&autoplay=true");
-          frame.attr("width", VIDEO_PLAYER_WIDTH);
-          frame.attr("height", VIDEO_PLAYER_HEIGHT);
-        }
-        tF = theaterFrame.contents();
-    }
-
-    theater.html(tF);
-    theater.show();
-    stop_playback.show();
-  }
-
   function makeCenter(obj){
     // obj : jQuery object
     obj.css({
@@ -131,51 +76,24 @@ $(function(){
 
   showGenreDetails = function(o){
     var genre = o;
+    if (genre_details.find(".name").html() == genre.name){
+      return; // current genre
+    }
     genre_details.find(".name").html(genre.name);
-    // genre_details.find(".background").show();
-    // genre_details.find(".content").attr("style", "");
-    // set tracks
-    var examples = genre_details.find(".examples");
-    examples.empty();
 
-    // if (genre.tracks.length == 0) {
-    //   $(".example_title").text("");
-    // } else {
-    //   $(".example_title").text("Examples:");
-    // }
-    // for(var i = 0; i < genre.tracks.length; i++){
-    //   var current_track = genre.tracks[i];
-    //   var example = $(document.createElement("span"));
-    //   example.attr("data-track", current_track.name);
-    //   example.attr("data-artist", current_track.artist.name);
-    //   example.attr("data-url", current_track.link);
-    //   example.html(i + 1);
+    // add track examples
+    getTracksForGenre(o.name);
 
-    //   example.click(function(){
-    //     setTheaterForURL($(this).attr("data-url"));
-    //   });
-    //   example.appendTo(examples);
-    // }
+    var url = "http://en.wikipedia.com" + o.wiki;
 
     if (genre.wikipedia == ""){
       genre_details.find(".wiki").hide();
     } else {
-      var iframe = genre_details.find("iframe");
-      iframe.attr("src", "http://en.wikipedia.com" + o.wiki);
-
-      // fix css 
-      var content = iframe.contents();
-      content.find('#mw-panel, #mw-head, #mw-page-base, #mw-head-base').css({
-        display: "none"    
-      });
-      content.find("#content").css({
-        margin: 0
-      })
-
+      $("#description").attr("src", url);
 
       genre_details.find(".wiki").show();
     }
-    genre_details.find(".wiki a").attr("href", genre.wikipedia);
+    genre_details.find(".wiki a").attr("href", url);
     stop_playback.click();
     genre_details.fadeIn();
 
