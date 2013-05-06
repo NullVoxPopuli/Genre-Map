@@ -2,3 +2,4 @@
 /log/
 /tmp/
 /config/lastfm.yml
+/public/**
