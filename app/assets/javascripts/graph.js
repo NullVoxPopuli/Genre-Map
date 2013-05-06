@@ -52,10 +52,12 @@ $(function(){
     $("svg").attr("width", w).attr("height", h);
 
   });
+
+  update();
+
 });
 
 
-update();
 
 function update() {
   nodes = flatten(tree),

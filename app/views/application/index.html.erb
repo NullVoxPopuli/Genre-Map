@@ -1,3 +1,8 @@
+<script type="text/javascript">
+	tree = <%= @tree.html_safe %>;
+</script>
+
+
 <%= javascript_include_tag "/assets/jquery.js",
 	"/assets/jquery-ui-1.10.3.custom.min.js", 
 	"/assets/dom-utils.js", 
@@ -6,10 +11,6 @@
 	"/assets/lastfm.js" %>
 
 <%= stylesheet_link_tag "/assets/font-awesome.min.css" %>
-
-<script type="text/javascript">
-	tree = <%= @tree.html_safe %>;
-</script>
 
 <%= javascript_include_tag "/assets/graph.js" %>
 

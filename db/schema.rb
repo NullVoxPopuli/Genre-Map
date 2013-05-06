@@ -17,7 +17,6 @@ ActiveRecord::Schema.define(:version => 20120704160520) do
     t.string  "name"
     t.integer "kind"
     t.string  "wikipedia"
-    t.text    "suggested_origins"
     t.integer "parent_genre_id"
   end
 
