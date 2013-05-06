@@ -58,5 +58,9 @@ module GenreMap
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
+
+    # add Awesome-Font to Assets
+    config.assets.paths << Rails.root.join("app", "assets", "font")
+
   end
 end
