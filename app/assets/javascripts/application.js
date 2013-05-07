@@ -13,4 +13,8 @@
 //= require jquery
 //= require jquery_ujs
 //= require jquery-ui
-//= require_tree .
+//= require d3
+//= require dom-utils
+//= require interface
+//= require lastfm
+//= require graph
