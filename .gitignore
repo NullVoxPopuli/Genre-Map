@@ -3,3 +3,6 @@
 /tmp/
 /config/lastfm.yml
 /public/**
+/db/development.sqlite3
+/db/production.sqlite3
+/db/test.sqlite3
