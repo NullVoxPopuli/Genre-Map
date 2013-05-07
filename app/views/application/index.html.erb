@@ -1,5 +1,9 @@
+<%= javascript_include_tag "graph" %>
 <script type="text/javascript">
-	tree = <%= @tree.html_safe %>;
+$(function(){
+	var data = <%= @tree.html_safe %>;
+	startGraph(data);
+});
 </script>
 
 <div class="search_container" style="display: none;">

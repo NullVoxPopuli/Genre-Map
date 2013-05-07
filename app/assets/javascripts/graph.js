@@ -30,7 +30,8 @@ var w = CANVAS_WIDTH,
     label,
     root,
     nodes,
-    links;
+    links,
+    tree;
 
 var force = d3.layout.force()
     .on("tick", tick)
@@ -53,10 +54,12 @@ $(function(){
 
   });
 
-  update();
-
 });
 
+function startGraph(data){
+  tree = data;
+  update();
+}
 
 
 function update() {

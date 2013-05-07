@@ -10,7 +10,6 @@ function getTracksForGenre(genre){
 			"&api_key=" + API_KEY + 
 			"&format=json",
 		success: function( data, textStatus,  jqXHR ){
-			console.log
 			var tracks = data.toptracks.track;
 			// populate genre info with tracks 
 			var link, artistInfo, url, newArtist = false, hasEmbed = false;

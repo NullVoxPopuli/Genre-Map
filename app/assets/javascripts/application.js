@@ -17,4 +17,3 @@
 //= require dom-utils
 //= require interface
 //= require lastfm
-//= require graph
