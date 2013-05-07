@@ -85,7 +85,7 @@ $(function(){
     // add track examples
     getTracksForGenre(o.name);
 
-    var url = "http://en.m.wikipedia.com" + o.wiki;
+    var url = "http://en.m.wikipedia.org" + o.wiki;
 
     if (genre.wikipedia == ""){
       genre_details.find(".wiki").hide();
