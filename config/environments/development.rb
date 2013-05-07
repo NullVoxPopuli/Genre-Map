@@ -37,6 +37,6 @@ GenreMap::Application.configure do
   config.assets.debug = true
 
   # use pipeline
-  config.assets.compile = false
+  config.assets.compile = true
 
 end
