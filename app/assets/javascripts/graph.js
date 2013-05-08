@@ -35,7 +35,7 @@ var w = CANVAS_WIDTH,
 
 var force = d3.layout.force()
     .on("tick", tick)
-    .charge(-3000)
+    .charge(-4000)
     .linkDistance(100)
     .friction(0.5)
     .gravity(0.2)
