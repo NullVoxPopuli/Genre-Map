@@ -28,9 +28,6 @@ $(function(){
       $(this).fadeOut();
   });
 
-  /*
-    This version of jQueryUI only include .draggable
-  */
   $(".genre_details .content").draggable({
     handle: ".genre_details .content .header"
   });
@@ -49,15 +46,14 @@ $(function(){
     }
   });
 
-  $(".repulsion_slider input").change(function(){
-    force.charge($(this).val() * -1);
-    updateGraph();
-  });
+
   $(document).bind("keydown",  function(event){
       if (event.which == 27) { // 27 is escape
           $(".genre_details .close").click();
       }
   });
+
+
 
   $("#search").bind("keyup", function(e){
   	if(e.keyCode == 13){
@@ -66,6 +62,13 @@ $(function(){
 		updateGraph();
 	}
   });
+
+$(".examples a").click(function(){
+  var iframe = $("#description");
+  iframe.attr("src", $(this).attr("href"));
+  return false;
+});
+
 
   function makeCenter(obj){
     // obj : jQuery object
@@ -95,6 +98,7 @@ $(function(){
       genre_details.find(".wiki").show();
     }
     genre_details.find(".wiki a").attr("href", url);
+
     stop_playback.click();
     genre_details.fadeIn();
 

@@ -35,6 +35,7 @@ function getTracksForGenre(genre){
 				newArtist = uniqueArtists.indexOf(artistInfo.name) < 0;
 				hasEmbed = (track.streamable["#text"] || track.streamable.fulltrack);
 				if (newArtist && hasEmbed){
+					console.log(track)
 					link = $(document.createElement("a"));
 					link.html(artistInfo.name + " - '" + track.name +  "'");
 					link.attr("href", track.url);

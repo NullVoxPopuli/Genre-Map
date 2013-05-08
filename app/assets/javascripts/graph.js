@@ -35,9 +35,9 @@ var w = CANVAS_WIDTH,
 
 var force = d3.layout.force()
     .on("tick", tick)
-    .charge(-1850)
-    .linkDistance(120)
-    .friction(0.8)
+    .charge(-3000)
+    .linkDistance(100)
+    .friction(0.5)
     .gravity(0.2)
     .size([w, h]);
 
@@ -101,7 +101,7 @@ function update() {
       .attr("r", function(d) { return NODE_RADIUS + 2*Math.sqrt(numChildren(d)); })
       .style("fill", color)
       .on("click", click)
-      .call(force.drag);
+      // .call(force.drag);
 
   // Exit any old nodes.
   node.exit().remove();
@@ -162,6 +162,14 @@ function click(d) {
   } else {
     d.children = d._children;
     d._children = null;
+  
+    for (i = 0; i < d.children.length; ++i) {
+      o = d.children[i];
+      if (isNaN(o.x)) o.x = d.px;
+      if (isNaN(o.y)) o.y = d.py;
+      if (isNaN(o.px)) o.px = o.x;
+      if (isNaN(o.py)) o.py = o.y;
+    }
   }
   update();
 }
