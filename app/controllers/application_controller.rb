@@ -9,14 +9,9 @@ class ApplicationController < ActionController::Base
  		@tree = []
 
  		genres.each do |genre|
-			# node = {
- 		# 		id: genre.id,
- 		# 		url: genre.wikipedia
- 		# 	}
- 		# 	@nodes << node
-
  			@tree << genre.recursive_to_hash
  		end
+ 		
  		@tree = @tree[0].to_json
 
  		respond_to do |format|

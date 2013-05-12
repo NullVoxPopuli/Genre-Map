@@ -125,9 +125,9 @@ var q = d3.geom.quadtree(nodes),
       i = 0,
       n = nodes.length;
 
-  while (++i < n) {
-    q.visit(collide(nodes[i]));
-  }
+  // while (++i < n) {
+  //   q.visit(collide(nodes[i]));
+  // }
 
 
 
@@ -138,10 +138,6 @@ var q = d3.geom.quadtree(nodes),
 
   node.attr("cx", function(d) { return d.x; })
       .attr("cy", function(d) { return d.y; });
-
-  // node.attr("transform", function(d) {
-  //     return "translate(" + d.x + "," + d.y + ")";
-  //   });
 
   label.attr("transform", function(d) {
     return "translate(" + d.x + "," + d.y + ")";
@@ -155,7 +151,7 @@ function color(d) {
 
 // Toggle children on click.
 function click(d) {
-  showGenreDetails(d);
+
   if (d.children) {
     d._children = d.children;
     d.children = null;
@@ -172,6 +168,11 @@ function click(d) {
     }
   }
   update();
+  // async
+  setTimeout(function(){
+    showGenreDetails(d);
+  }, 0 ); 
+
 }
 
 // Returns a list of all nodes under the root.
