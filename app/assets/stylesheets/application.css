@@ -344,6 +344,14 @@ path.hull {
 		width: 400px;
 		height: 500px;
 	}
+	.genre_details #description {
+		width: 300px;
+		height: 300px;
+		overflow-y: auto;
+		background: white;
+		border: 1px solid #ababab;
+		padding: 5px;
+	}
 .genre_details .examples{
 	margin-top: 5px;
 /*	-moz-column-count:2; 

@@ -90,25 +90,23 @@ $(".examples a").click(function(){
 
     var url = "http://wikipedia.org/w/api.php?action=mobileview&format=json&page=" + 
       o.wiki.replace("/wiki/", "") + 
-      "&sections=all&prop=text&sectionprop=toclevel&noimages=";
+      "&sections=all&prop=all&sectionprop=index&noimages=";
 
     if (genre.wikipedia == ""){
       genre_details.find(".wiki").hide();
     } else {
-      // $.ajax({
-      //     url: url,
-      //     type: 'GET',
-      //     dataType: "jsonp",
-      //     success: function(data, textStatus, jqXHR) {
-      //       console.log(data);
-      //       var sections = data.mobileview.sections;
-      //       var html = "";
-      //       $.each(sections, function(index, section){
-      //         html += section.text;
-      //       });
-      //         $("#description").html(html);
-      //     }
-      // });
+      $.ajax({
+          url: url,
+          type: 'GET',
+          dataType: "jsonp",
+          success: function(data, textStatus, jqXHR) {
+            var sections = data.mobileview.sections;
+            var html = sections[0].text;
+            $("#description").html(html);
+          },
+          complete: function(){
+          }
+      });
       genre_details.find(".wiki").show();
     }
     genre_details.find(".wiki a").attr("href", url);
