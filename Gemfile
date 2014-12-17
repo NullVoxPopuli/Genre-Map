@@ -5,7 +5,7 @@ gem "thin"
 gem 'slim'
 gem 'slim-rails'
 
-gem "nokogiri"
+gem "nokogiri", '=1.5.2'
 gem "hpricot"
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
