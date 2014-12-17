@@ -1,7 +1,7 @@
 class Genesis
 	require 'open-uri'
 	require 'nokogiri'
-	
+
 	# scrape the http://en.wikipedia.org/wiki/List_of_electronic_music_genres page
 
 	ELECTRONIC = "http://en.wikipedia.org/wiki/List_of_electronic_music_genres"
@@ -14,7 +14,7 @@ class Genesis
 			name: "Electronic",
 			wikipedia: "/wiki/Electronic_music"
 		})
-		electronic_master_genre.save!
+		electronic_master_genre.save! if electronic_master_genre.valid?
 
 		# select the top level genre of the genre list
 		# at the time of writing this scraper, the genre list is formatted
@@ -37,21 +37,21 @@ class Genesis
 				link = con.css("> a")
 				genre_url = link.attribute("href")
 
-				# I think it's silly that some of these genres have music in the title 
-				# on wikipedia. of course they're music. 
+				# I think it's silly that some of these genres have music in the title
+				# on wikipedia. of course they're music.
 				# actualyl... that may be debatable depending on the genre...
-				genre_title = link.inner_html.titleize.gsub(" Music", "")	
+				genre_title = link.inner_html.titleize.gsub(" Music", "")
 
 				# current genre
 				ap ("     " * depth) + genre_title + " -- " + genre_url.content
-				
+
 				# create genre
 				sub_genre = Genre.new({
 					name: genre_title,
 					wikipedia: genre_url.content
 				})
 				sub_genre.parent_genre = parent_genre if parent_genre
-				sub_genre.save!
+				sub_genre.save! if sub_genre.valid?
 
 				sub_genres = con.css("> ul")
 				# repeat

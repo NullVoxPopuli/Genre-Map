@@ -1,0 +1,18 @@
+doctype html
+html
+  head
+    title GenreMap
+   	= javascript_include_tag 'jquery.js'
+   	= javascript_include_tag 'jquery_ujs.js'
+   	= javascript_include_tag 'jquery-ui-1.10.3.custom.min.js'
+   	= javascript_include_tag 'd3.js'
+   	= javascript_include_tag 'dom-utils.js'
+   	= javascript_include_tag 'interface.js'
+   	= javascript_include_tag 'lastfm.js'
+    = csrf_meta_tags
+    = stylesheet_link_tag "application.css"
+    / = javascript_include_tag "application.js"
+  body
+    p.notice = notice
+    p.alert = alert
+    = yield

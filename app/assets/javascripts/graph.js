@@ -10,7 +10,7 @@ var NODE_HEIGHT = 20;
 var NODE_RADIUS = 26;
 
 // force diagram object
-var forceDiagram; 
+var forceDiagram;
 // text from the search field
 var searchText = "";
 /*
@@ -20,7 +20,7 @@ var searchText = "";
 var linkg, nodeG, nodeLabelG, markerG;
 // instance vars for .update()
 var link, node, nodeLabel, marker;
-// current state of the network 
+// current state of the network
 var net;
 
 var w = CANVAS_WIDTH,
@@ -158,20 +158,22 @@ function click(d) {
   } else {
     d.children = d._children;
     d._children = null;
-  
-    for (i = 0; i < d.children.length; ++i) {
-      o = d.children[i];
-      if (isNaN(o.x)) o.x = d.px;
-      if (isNaN(o.y)) o.y = d.py;
-      if (isNaN(o.px)) o.px = o.x;
-      if (isNaN(o.py)) o.py = o.y;
+
+    if (!!d.children){
+      for (i = 0; i < d.children.length; ++i) {
+        o = d.children[i];
+        if (isNaN(o.x)) o.x = d.px;
+        if (isNaN(o.y)) o.y = d.py;
+        if (isNaN(o.px)) o.px = o.x;
+        if (isNaN(o.py)) o.py = o.y;
+      }
     }
   }
   update();
   // async
   setTimeout(function(){
     showGenreDetails(d);
-  }, 0 ); 
+  }, 0 );
 
 }
 
@@ -220,7 +222,7 @@ function collide(node) {
         node.y -= y *= l;
         quad.point.x += x;
         quad.point.y += y;
-      } 
+      }
     }
     return x1 > nx2
         || x2 < nx1

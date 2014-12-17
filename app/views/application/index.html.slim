@@ -1,0 +1,61 @@
+= javascript_include_tag "graph"
+javascript:
+  $(function(){
+    var data = #{@tree.html_safe};
+    startGraph(data);
+  });
+.search_container style=("display: none;")
+  /! @TODO NOT IMPLEMENTED YET
+  = text_field_tag 'search', nil, :placeholder => 'Search...'
+.interface_options
+  a.hide href="#"
+    i.icon-info-sign
+.genre_details.super_container style=("display: none;")
+  .container
+    .content
+      .header
+        span.name
+        span.close
+          i.icon-remove-sign
+      .body
+        #description
+        span.wiki
+          a href="#"  Wikipedia Info
+        span.example_title
+          | Top Tracks (by <a href="http://last.fm">last.fm</a>)
+        .examples
+        .theater
+.modal_outer_container.information style=("display: none;")
+  .modal_container
+    .content
+      .header
+        | Electronic Music Genre Graph
+        span.close
+          i.icon-remove-sign
+      .body
+        span.author
+          | by: Preston Sego
+        .disclaimer
+          h4 Disclaimer:
+          .claimer
+            | This site is desigened with Webkit-based browsers on 1080p+ monitors.
+            br/
+            | For best results: use a modern browser (FireFox 13+, Chrome 20+, Safari 5+), and use a resolution that is 1920 by 1080 pixels or greater.
+            p
+              | The audio is pulled from
+              a href="http://last.fm"  last.fm
+              | by their tagging system. Since the tagging system is controlled by their userbase, it may not be accurate. While most genre's examples will have accurate samples, others may be completly wrong (for example, the examples for trancecore are all screamo... which isn't trancecore in teh silghtest :-P
+        .instructions_container
+          h4 Instructions:
+          .instructions
+            p Click on a node to view details about the genre and expand that genre's sub genres.
+        .credits_container
+          h4 Credits
+          .credits
+            p
+              a href="http://www.ishkur.com/"  Ishkur
+              | and his
+              <a href="http://techno.org/electronic-music-guide/">Electronic Music Guide</a>.
+            p
+              a href="http://last.fm"  last.fm
+              | for hosting the Audio used for this project.
